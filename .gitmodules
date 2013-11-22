@@ -1,0 +1,3 @@
+[submodule "examples/MapperMK2"]
+	path = examples/MapperMK2
+	url = ssh://git@feldschmiederei.de:22/srv/git/MapperMK2.git
