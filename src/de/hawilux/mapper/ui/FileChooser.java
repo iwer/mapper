@@ -22,12 +22,13 @@
  * http://forum.processing.org/one/topic/controlp5-pop-up-dialogs.html
  *
  */
-package de.hawilux.mapper.gui;
+package de.hawilux.mapper.ui;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import processing.core.PApplet;
 import controlP5.Button;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
@@ -35,8 +36,6 @@ import controlP5.Group;
 import controlP5.ListBox;
 import controlP5.ListBoxItem;
 import controlP5.Textfield;
-
-import processing.core.PApplet;
 
 public class FileChooser {
     PApplet parent;
@@ -48,7 +47,7 @@ public class FileChooser {
     String filename;
     Button actionButton;
 
-    FileChooser(PApplet parent_) {
+    public FileChooser(PApplet parent_) {
         parent = parent_;
         filename = new String();
         enabled = false;

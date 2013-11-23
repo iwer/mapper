@@ -21,8 +21,9 @@
  * defines the User Interface
  *
  */
-package de.hawilux.mapper.gui;
+package de.hawilux.mapper.ui;
 
+import processing.core.PApplet;
 import controlP5.Accordion;
 import controlP5.CColor;
 import controlP5.CallbackListener;
@@ -32,7 +33,6 @@ import controlP5.Println;
 import controlP5.RadioButton;
 import controlP5.Textarea;
 import controlP5.Textlabel;
-import processing.core.PApplet;
 
 public class Gui {
     PApplet parent;
