@@ -39,23 +39,53 @@ import de.hawilux.mapper.ui.Cursor;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Mapper.
+ */
 public class Mapper implements PConstants {
+
+    /** The parent. */
     PApplet parent;
 
+    /** The gui. */
     Gui gui;
+
+    /** The form container. */
     FormContainer formContainer;
+
+    /** The file chooser. */
     FileChooser fileChooser;
+
+    /** The cursor. */
     Cursor cursor;
 
+    /** The my listener. */
     MapperControlListener myListener;
 
+    /** The show gui. */
     boolean showGUI = false;
+
+    /** The show console. */
     boolean showConsole = false;
 
+    /** The setup mode. */
     boolean setupMode = false;
+
+    /** The effect mode. */
     boolean effectMode = false;
+
+    /** The version. */
     String version = "0.1.0";
 
+    /**
+     * Instantiates a new mapper.
+     * 
+     * @param parent
+     *            the parent
+     * @param cp5
+     *            the cp5
+     */
     public Mapper(PApplet parent, ControlP5 cp5) {
         this.parent = parent;
 
@@ -88,6 +118,9 @@ public class Mapper implements PConstants {
 
     }
 
+    /**
+     * Help.
+     */
     void help() {
         PApplet.println("You'll need a 3-button mouse. Points are created by clicking with the middle mouse button in point selection mode. "
                 + "Edges are created by selecting two Points with the middle button in point mode, faces are created by"
@@ -96,6 +129,9 @@ public class Mapper implements PConstants {
                 + "Every form can be deleted by selecting it in its selection mode");
     }
 
+    /**
+     * Draw.
+     */
     public void draw() {
         if (setupMode) {
             formContainer.display(setupMode);
@@ -106,6 +142,12 @@ public class Mapper implements PConstants {
         }
     }
 
+    /**
+     * Mouse event.
+     * 
+     * @param event
+     *            the event
+     */
     public void mouseEvent(MouseEvent event) {
         int x = event.getX();
         int y = event.getY();
@@ -142,6 +184,12 @@ public class Mapper implements PConstants {
         }
     }
 
+    /**
+     * Key event.
+     * 
+     * @param event
+     *            the event
+     */
     public void keyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.PRESS) {
             if (event.getKey() == CODED) {
@@ -176,33 +224,77 @@ public class Mapper implements PConstants {
         }
     }
 
+    /**
+     * Dispose.
+     */
     public void dispose() {
         // Anything in here will be called automatically when
         // the parent sketch shuts down. For instance, this might
         // shut down a thread used by this library.
     }
 
+    /**
+     * Post.
+     */
     public void post() {
         fileChooser.post();
     }
 
+    /**
+     * Gets the points.
+     * 
+     * @return the points
+     */
     public HashMap<Integer, Point> getPoints() {
         return formContainer.getPoints();
     }
 
+    /**
+     * Gets the edges.
+     * 
+     * @return the edges
+     */
     public HashMap<Integer, Edge> getEdges() {
         return formContainer.getEdges();
     }
 
+    /**
+     * Gets the faces.
+     * 
+     * @return the faces
+     */
     public HashMap<Integer, Face> getFaces() {
         return formContainer.getFaces();
     }
 
+    /**
+     * Adds the effect controllers.
+     * 
+     * @param effect
+     *            the effect
+     */
     public void addEffectControllers(AbstractEffect effect) {
         effect.addEffectControllersToGui(gui);
     }
 
+    /**
+     * The listener interface for receiving mapperControl events. The class that
+     * is interested in processing a mapperControl event implements this
+     * interface, and the object created with that class is registered with a
+     * component using the component's
+     * <code>addMapperControlListener<code> method. When
+     * the mapperControl event occurs, that object's appropriate
+     * method is invoked.
+     * 
+     * @see MapperControlEvent
+     */
     class MapperControlListener implements ControlListener {
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see controlP5.ControlListener#controlEvent(controlP5.ControlEvent)
+         */
         public void controlEvent(ControlEvent theEvent) {
             if (theEvent.isGroup()) {
                 PApplet.println("got an event from group "

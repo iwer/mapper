@@ -43,44 +43,96 @@ import de.hawilux.mapper.shapes.Point;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FormContainer.
+ */
 public class FormContainer {
+    
+    /** The parent. */
     PApplet parent;
 
+    /** The edges. */
     HashMap<Integer, Edge> edges;
+    
+    /** The points. */
     HashMap<Integer, Point> points;
+    
+    /** The faces. */
     HashMap<Integer, Face> faces;
 
+    /** The file handler. */
     FileHandler fileHandler;
 
+    /** The face to build. */
     Face faceToBuild;
 
+    /** The selected point. */
     int selectedPoint;
+    
+    /** The selected edge. */
     int selectedEdge;
+    
+    /** The selected face. */
     int selectedFace;
 
+    /** The select mode. */
     int selectMode;
+    
+    /** The select points. */
     public final int SELECT_POINTS = 0;
+    
+    /** The select edges. */
     public final int SELECT_EDGES = 1;
+    
+    /** The select faces. */
     public final int SELECT_FACES = 2;
 
+    /** The max point id. */
     int maxPointId = -1;
+    
+    /** The max edge id. */
     int maxEdgeId = -1;
+    
+    /** The max face id. */
     int maxFaceId = -1;
 
+    /** The show helper. */
     boolean showHelper = true;
 
     // gui elements
+    /** The btn new config. */
     Button btnNewConfig;
+    
+    /** The btn load config. */
     Button btnLoadConfig;
+    
+    /** The btn save config. */
     Button btnSaveConfig;
+    
+    /** The tgl helper. */
     Toggle tglHelper;
+    
+    /** The rdb select mode. */
     RadioButton rdbSelectMode;
+    
+    /** The btn delete selected. */
     Button btnDeleteSelected;
+    
+    /** The btn switch dir. */
     Button btnSwitchDir;
+    
+    /** The btn subdivide. */
     Button btnSubdivide;
 
+    /** The file chooser. */
     FileChooser fileChooser;
 
+    /**
+     * Instantiates a new form container.
+     *
+     * @param parent_ the parent_
+     */
     public FormContainer(PApplet parent_) {
         parent = parent_;
         edges = new HashMap<Integer, Edge>();
@@ -98,6 +150,9 @@ public class FormContainer {
         selectMode = SELECT_POINTS;
     }
 
+    /**
+     * Adds the edge to face.
+     */
     public void addEdgeToFace() {
         if (selectMode == SELECT_EDGES) {
             if (faceToBuild == null) {
@@ -120,6 +175,11 @@ public class FormContainer {
     }
 
     // ###### GUI ###########################################################
+    /**
+     * Adds the file gui.
+     *
+     * @param gui the gui
+     */
     public void addFileGui(Gui gui) {
         btnNewConfig = gui.getCp5().addButton("newConfig").setPosition(10, 10)
                 .setColor(gui.getC()).moveTo(gui.getFileGroup());
@@ -178,6 +238,9 @@ public class FormContainer {
         addSetupGui(gui);
     }
 
+    /**
+     * Adds the point.
+     */
     public void addPoint() {
         Point a = null;
         Point p = null;
@@ -220,6 +283,11 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Adds the setup gui.
+     *
+     * @param gui the gui
+     */
     public void addSetupGui(Gui gui) {
         tglHelper = gui.getCp5().addToggle("showHelper").setPosition(10, 10)
                 .setColor(gui.getC()).setMode(ControlP5.SWITCH).setValue(true)
@@ -270,6 +338,9 @@ public class FormContainer {
         });
     }
 
+    /**
+     * Clear.
+     */
     public void clear() {
         points.clear();
         edges.clear();
@@ -279,6 +350,9 @@ public class FormContainer {
         maxFaceId = -1;
     }
 
+    /**
+     * Delete selected.
+     */
     public void deleteSelected() {
         if (selectMode == SELECT_POINTS) {
             PApplet.println("Delete Point " + selectedPoint);
@@ -333,10 +407,18 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Deselect points.
+     */
     public void deselectPoints() {
         selectedPoint = -1;
     }
 
+    /**
+     * Display.
+     *
+     * @param config the config
+     */
     public void display(boolean config) {
         boolean selected;
         if (faceToBuild != null) {
@@ -376,46 +458,99 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Gets the edges.
+     *
+     * @return the edges
+     */
     public HashMap<Integer, Edge> getEdges() {
         return edges;
     }
 
+    /**
+     * Gets the faces.
+     *
+     * @return the faces
+     */
     public HashMap<Integer, Face> getFaces() {
         return faces;
     }
 
+    /**
+     * Gets the select mode.
+     *
+     * @return the select mode
+     */
     public int getSelectMode() {
         return selectMode;
     }
 
+    /**
+     * Gets the max edge id.
+     *
+     * @return the max edge id
+     */
     public int getMaxEdgeId() {
         return maxEdgeId;
     }
 
+    /**
+     * Gets the max face id.
+     *
+     * @return the max face id
+     */
     public int getMaxFaceId() {
         return maxFaceId;
     }
 
+    /**
+     * Gets the max point id.
+     *
+     * @return the max point id
+     */
     public int getMaxPointId() {
         return maxPointId;
     }
 
+    /**
+     * Gets the parent.
+     *
+     * @return the parent
+     */
     public PApplet getParent() {
         return parent;
     }
 
+    /**
+     * Gets the points.
+     *
+     * @return the points
+     */
     public HashMap<Integer, Point> getPoints() {
         return points;
     }
 
+    /**
+     * Gets the rdb select mode.
+     *
+     * @return the rdb select mode
+     */
     public RadioButton getRdbSelectMode() {
         return rdbSelectMode;
     }
 
+    /**
+     * Checks if is show helper.
+     *
+     * @return true, if is show helper
+     */
     public boolean isShowHelper() {
         return showHelper;
     }
 
+    /**
+     * Move point.
+     */
     public void movePoint() {
         if (selectedPoint != -1) {
             Point p = points.get(selectedPoint);
@@ -434,6 +569,12 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Move point.
+     *
+     * @param dx the dx
+     * @param dy the dy
+     */
     public void movePoint(int dx, int dy) {
         if (selectedPoint != -1) {
             Point p = points.get(selectedPoint);
@@ -452,6 +593,9 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Select.
+     */
     public void select() {
         int sel = -1;
         if (selectMode == SELECT_POINTS) {
@@ -484,14 +628,29 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Sets the file chooser.
+     *
+     * @param fileChooser_ the new file chooser
+     */
     public void setFileChooser(FileChooser fileChooser_) {
         fileChooser = fileChooser_;
     }
 
+    /**
+     * Sets the helper.
+     *
+     * @param theValue the new helper
+     */
     public void setHelper(boolean theValue) {
         showHelper = theValue;
     }
 
+    /**
+     * Sets the line editor enabled.
+     *
+     * @param state the new line editor enabled
+     */
     public void setLineEditorEnabled(boolean state) {
         if (state == true) {
             btnSubdivide.show();
@@ -502,18 +661,38 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Sets the max edge id.
+     *
+     * @param maxEdgeId the new max edge id
+     */
     public void setMaxEdgeId(int maxEdgeId) {
         this.maxEdgeId = maxEdgeId;
     }
 
+    /**
+     * Sets the max face id.
+     *
+     * @param maxFaceId the new max face id
+     */
     public void setMaxFaceId(int maxFaceId) {
         this.maxFaceId = maxFaceId;
     }
 
+    /**
+     * Sets the max point id.
+     *
+     * @param maxPointId the new max point id
+     */
     public void setMaxPointId(int maxPointId) {
         this.maxPointId = maxPointId;
     }
 
+    /**
+     * Sets the select mode.
+     *
+     * @param mode_ the new select mode
+     */
     public void setSelectMode(int mode_) {
         if (mode_ == SELECT_POINTS || mode_ == SELECT_EDGES
                 || mode_ == SELECT_FACES) {
@@ -535,10 +714,18 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Sets the show helper.
+     *
+     * @param showHelper the new show helper
+     */
     public void setShowHelper(boolean showHelper) {
         this.showHelper = showHelper;
     }
 
+    /**
+     * Subdivide edge.
+     */
     public void subdivideEdge() {
         if (selectedEdge != -1) {
             Edge toDivide = edges.get(selectedEdge);
@@ -577,6 +764,9 @@ public class FormContainer {
         }
     }
 
+    /**
+     * Switch edge direction.
+     */
     public void switchEdgeDirection() {
         if (selectedEdge != -1) {
             Edge toSwitch = edges.get(selectedEdge);
