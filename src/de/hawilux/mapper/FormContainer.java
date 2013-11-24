@@ -43,7 +43,6 @@ import de.hawilux.mapper.shapes.Point;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
 
-
 public class FormContainer {
     PApplet parent;
 
@@ -60,9 +59,9 @@ public class FormContainer {
     int selectedFace;
 
     int selectMode;
-    final int SELECT_POINTS = 0;
-    final int SELECT_EDGES = 1;
-    final int SELECT_FACES = 2;
+    public final int SELECT_POINTS = 0;
+    public final int SELECT_EDGES = 1;
+    public final int SELECT_FACES = 2;
 
     int maxPointId = -1;
     int maxEdgeId = -1;
@@ -82,7 +81,7 @@ public class FormContainer {
 
     FileChooser fileChooser;
 
-    FormContainer(PApplet parent_) {
+    public FormContainer(PApplet parent_) {
         parent = parent_;
         edges = new HashMap<Integer, Edge>();
         points = new HashMap<Integer, Point>();
@@ -131,8 +130,9 @@ public class FormContainer {
                 }
             }
         });
-        btnLoadConfig = gui.getCp5().addButton("loadConfig").setPosition(10, 35)
-                .setColor(gui.getC()).moveTo(gui.getFileGroup());
+        btnLoadConfig = gui.getCp5().addButton("loadConfig")
+                .setPosition(10, 35).setColor(gui.getC())
+                .moveTo(gui.getFileGroup());
         // callback to open filechooser
         btnLoadConfig.addCallback(new CallbackListener() {
             public void controlEvent(CallbackEvent theEvent) {
@@ -140,34 +140,35 @@ public class FormContainer {
                     PApplet.println("LOAD");
                     fileChooser.addFileChooser("load");
                     // add action callback
-                    fileChooser.getActionButton()
-                            .addCallback(new CallbackListener() {
+                    fileChooser.getActionButton().addCallback(
+                            new CallbackListener() {
                                 public void controlEvent(
                                         CallbackEvent theActionEvent) {
                                     if (theActionEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                                        fileHandler
-                                                .loadXML(fileChooser.getFilename());
+                                        fileHandler.loadXML(fileChooser
+                                                .getFilename());
                                     }
                                 }
                             });
                 }
             }
         });
-        btnSaveConfig = gui.getCp5().addButton("saveConfig").setPosition(10, 60)
-                .setColor(gui.getC()).moveTo(gui.getFileGroup());
+        btnSaveConfig = gui.getCp5().addButton("saveConfig")
+                .setPosition(10, 60).setColor(gui.getC())
+                .moveTo(gui.getFileGroup());
         btnSaveConfig.addCallback(new CallbackListener() {
             public void controlEvent(CallbackEvent theEvent) {
                 if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
                     PApplet.println("SAVE");
                     fileChooser.addFileChooser("save");
                     // add action callback
-                    fileChooser.getActionButton()
-                            .addCallback(new CallbackListener() {
+                    fileChooser.getActionButton().addCallback(
+                            new CallbackListener() {
                                 public void controlEvent(
                                         CallbackEvent theActionEvent) {
                                     if (theActionEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                                        fileHandler
-                                                .saveXML(fileChooser.getFilename());
+                                        fileHandler.saveXML(fileChooser
+                                                .getFilename());
                                     }
                                 }
                             });
@@ -234,12 +235,14 @@ public class FormContainer {
                 }
             }
         });
-        rdbSelectMode = gui.getCp5().addRadioButton("selectmode").setPosition(10, 2)
-                .setColor(gui.getC()).setNoneSelectedAllowed(false)
-                .addItem("points", 1).addItem("edges", 2).addItem("faces", 3)
+        rdbSelectMode = gui.getCp5().addRadioButton("selectmode")
+                .setPosition(10, 2).setColor(gui.getC())
+                .setNoneSelectedAllowed(false).addItem("points", 1)
+                .addItem("edges", 2).addItem("faces", 3)
                 .moveTo(gui.getSetupSelectModeGroup()).activate("points");
         btnDeleteSelected = gui.getCp5().addButton("deleteSelected")
-                .setPosition(10, 2).setColor(gui.getC()).moveTo(gui.getSetupEditGroup());
+                .setPosition(10, 2).setColor(gui.getC())
+                .moveTo(gui.getSetupEditGroup());
         btnDeleteSelected.addCallback(new CallbackListener() {
             public void controlEvent(CallbackEvent theEvent) {
                 if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
@@ -381,6 +384,10 @@ public class FormContainer {
         return faces;
     }
 
+    public int getSelectMode() {
+        return selectMode;
+    }
+
     public int getMaxEdgeId() {
         return maxEdgeId;
     }
@@ -399,6 +406,10 @@ public class FormContainer {
 
     public HashMap<Integer, Point> getPoints() {
         return points;
+    }
+
+    public RadioButton getRdbSelectMode() {
+        return rdbSelectMode;
     }
 
     public boolean isShowHelper() {
@@ -481,7 +492,7 @@ public class FormContainer {
         showHelper = theValue;
     }
 
-    void setLineEditorEnabled(boolean state) {
+    public void setLineEditorEnabled(boolean state) {
         if (state == true) {
             btnSubdivide.show();
             btnSwitchDir.show();

@@ -30,7 +30,7 @@ import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
 
-public class Point {
+public class Point implements PConstants {
     private int RADIUS = 15;
     private int RADIUS2 = RADIUS * 2;
     private PApplet parent;
@@ -59,7 +59,6 @@ public class Point {
         return id;
     }
 
-    
     int getColor(boolean config, boolean selected, boolean mouseOverColor) {
         int c = 0;
         if (!config) {
@@ -85,7 +84,7 @@ public class Point {
 
         int c = getColor(config, selected, mouseOverColor);
         circle.setStroke(c);
-        parent.shapeMode(PConstants.CENTER);
+        parent.shapeMode(CENTER);
         parent.shape(circle);
         dot.setStroke(c);
         parent.shape(dot);
@@ -100,7 +99,7 @@ public class Point {
         parent.text(id, location.x - 20, location.y - 20);
         parent.popMatrix();
     }
-
+   
     boolean mouseOver(PVector v) {
         PVector dist = new PVector(parent.mouseX, parent.mouseY);
         dist.sub(v);
@@ -136,10 +135,12 @@ public class Point {
     }
 
     public void update() {
-        circle = parent.createShape(PConstants.ELLIPSE, location.x, location.y, RADIUS, RADIUS);
+        circle = parent.createShape(ELLIPSE, location.x, location.y,
+                RADIUS, RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
-        dot = parent.createShape(PConstants.ELLIPSE, location.x, location.y, 2, 2);
+        dot = parent.createShape(ELLIPSE, location.x, location.y, 2,
+                2);
         dot.setFill(false);
         dot.setStrokeWeight(3);
     }

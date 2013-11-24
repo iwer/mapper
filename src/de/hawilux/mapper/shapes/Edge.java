@@ -30,9 +30,9 @@ import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
 
-public class Edge {
+public class Edge implements PConstants{
     private PApplet parent;
-    private PShape s;
+    private PShape shape;
     private PShape arrow;
     private PShape grabber;
     private int id;
@@ -83,6 +83,10 @@ public class Edge {
         return grabberPos;
     }
 
+    public PShape getShape() {
+        return shape;
+    }
+
     public void prepareDelete() {
         a.removeConnectedEdge(id);
         b.removeConnectedEdge(id);
@@ -126,17 +130,17 @@ public class Edge {
         parent.pushMatrix();
         int c = getColor(config, selected, mouseOverColor);
 
-        s.setStrokeWeight(3);
-        s.setStroke(c);
-        s.setFill(false);
-        parent.shapeMode(PConstants.CORNERS);
-        parent.shape(s);
+        shape.setStrokeWeight(3);
+        shape.setStroke(c);
+        shape.setFill(false);
+        parent.shapeMode(CORNERS);
+        parent.shape(shape);
 
         if (config && showHelper) {
             grabber.setFill(true);
             grabber.setFill(c);
             grabber.setStroke(c);
-            parent.shapeMode(PConstants.CENTER);
+            parent.shapeMode(CENTER);
             parent.shape(grabber);
         }
         parent.popMatrix();
@@ -148,7 +152,7 @@ public class Edge {
         parent.fill(c);
         parent.text(id, labelpos.x, labelpos.y);
         arrow.setStroke(c);
-        parent.shapeMode(PConstants.CORNERS);
+        parent.shapeMode(CORNERS);
         parent.shape(arrow);
         parent.popMatrix();
     }
@@ -165,7 +169,7 @@ public class Edge {
         labelpos.x = grabberPos.x + normal.x;
         labelpos.y = grabberPos.y + normal.y;
 
-        grabber = parent.createShape(PConstants.RECT, grabberPos.x,
+        grabber = parent.createShape(RECT, grabberPos.x,
                 grabberPos.y, 5, 5);
         grabber.setStrokeWeight(1);
 
@@ -177,18 +181,18 @@ public class Edge {
         arrowend2.x = PApplet.lerp(a.getX(), b.getX(), (float) .4) - normal.x;
         arrowend2.y = PApplet.lerp(a.getY(), b.getY(), (float) .4) - normal.y;
 
-        s = parent.createShape();
-        s.beginShape(PConstants.LINES);
-        s.stroke(255);
-        s.strokeCap(PConstants.ROUND);
-        s.vertex(a.getLocation().x, a.getLocation().y);
-        s.vertex(b.getLocation().x, b.getLocation().y);
-        s.endShape();
+        shape = parent.createShape();
+        shape.beginShape(LINES);
+        shape.stroke(255);
+        shape.strokeCap(ROUND);
+        shape.vertex(a.getLocation().x, a.getLocation().y);
+        shape.vertex(b.getLocation().x, b.getLocation().y);
+        shape.endShape();
 
         arrow = parent.createShape();
-        arrow.beginShape(PConstants.LINES);
+        arrow.beginShape(LINES);
         arrow.stroke(255);
-        arrow.strokeCap(PConstants.ROUND);
+        arrow.strokeCap(ROUND);
         arrow.vertex(arrowstart.x, arrowstart.y);
         arrow.vertex(arrowend1.x, arrowend1.y);
         arrow.vertex(arrowstart.x, arrowstart.y);

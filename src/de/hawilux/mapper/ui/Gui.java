@@ -40,13 +40,12 @@ public class Gui {
 
     CallbackListener cb;
 
-    int cActive = parent.color(203, 70, 144);
-    int cBackground = parent.color(112, 70, 203);
-    int cCaptionLabel = parent.color(0, 0, 0);
-    int cForeground = parent.color(156, 70, 203);
-    int cValueLabel = parent.color(0, 0, 0);
-    CColor c = new CColor();// (cForeground, cBackground, cActive,
-                            // cCaptionLabel, cValueLabel);
+    int cActive;
+    int cBackground;
+    int cCaptionLabel;
+    int cForeground;
+    int cValueLabel;
+    CColor c;
 
     Println console;
     Textarea consoleTextArea;
@@ -64,12 +63,26 @@ public class Gui {
 
     String filename;
 
-    Gui(PApplet parent_) {
-        parent = parent_;
-        cp5 = new ControlP5(parent);
+    public Gui(PApplet parent_) {
+        this(parent_, new ControlP5(parent_));
+    }
+
+    public Gui(PApplet parent_, ControlP5 cp5_) {
+        this.parent = parent_;
+
+        cActive = parent.color(203, 70, 144);
+        cBackground = parent.color(112, 70, 203);
+        cCaptionLabel = parent.color(0, 0, 0);
+        cForeground = parent.color(156, 70, 203);
+        cValueLabel = parent.color(0, 0, 0);
+
+        c = new CColor();// (cForeground, cBackground, cActive,
+        // cCaptionLabel, cValueLabel);
+        cp5 = cp5_;
 
         // frameRate at top
         cp5.addFrameRate().setInterval(10).setPosition(10, 10);
+        cp5.addTextlabel("fps").setPosition(25, 10).setText("FPS");
 
         // file group
         fileGroup = cp5.addGroup("file").setColor(c);
@@ -128,7 +141,7 @@ public class Gui {
     public Group getSetupEditGroup() {
         return setupEditGroup;
     }
-    
+
     public Group getFileGroup() {
         return fileGroup;
     }
@@ -136,7 +149,15 @@ public class Gui {
     public Group getSetupGroup() {
         return setupGroup;
     }
-    
+
+    public Accordion getEffectAccordion() {
+        return effectAccordion;
+    }
+
+    public RadioButton getRdbEffects() {
+        return rdbEffects;
+    }
+
     // change gui functions
     public void show(boolean state) {
         if (state == true) {
@@ -146,7 +167,7 @@ public class Gui {
         }
     }
 
-    void setConsoleEnabled(boolean state) {
+    public void setConsoleEnabled(boolean state) {
         if (state == true) {
             consoleTextArea.show();
         } else {
@@ -154,13 +175,13 @@ public class Gui {
         }
     }
 
-    void saveGuiProperties() {
+    public void saveGuiProperties() {
         console.clear();
         System.out.flush();
         cp5.saveProperties(("gui.properties"));
     }
 
-    void loadGuiProperties() {
+    public void loadGuiProperties() {
         System.out.flush();
         cp5.loadProperties(("gui.properties"));
     }

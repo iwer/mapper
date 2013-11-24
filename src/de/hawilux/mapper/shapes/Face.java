@@ -32,7 +32,7 @@ import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
 
-public class Face {
+public class Face implements PConstants {
     PApplet parent;
     int id;
 
@@ -44,7 +44,8 @@ public class Face {
     HashSet<Point> points;
     ArrayList<PVector> vertices;
 
-    PShape s;
+    PShape shape;
+
     PShape grabber;
     PVector centroid;
 
@@ -75,8 +76,16 @@ public class Face {
         return centroid;
     }
 
+    public PShape getShape() {
+        return shape;
+    }
+
     public HashSet<Point> getPoints() {
         return points;
+    }
+
+    public ArrayList<PVector> getVertices() {
+        return vertices;
     }
 
     public void addEdge(Edge e_) {
@@ -119,17 +128,17 @@ public class Face {
         parent.pushMatrix();
         int c = getColor(config, selected, mouseOverColor);
 
-        s.setFill(true);
-        s.setFill(c);
-        s.setStroke(parent.color(255, 255, 255));
-        parent.shapeMode(PConstants.CORNERS);
-        parent.shape(s);
+        shape.setFill(true);
+        shape.setFill(c);
+        shape.setStroke(parent.color(255, 255, 255));
+        parent.shapeMode(CORNERS);
+        parent.shape(shape);
 
         if (config) {
             grabber.setFill(true);
             grabber.setFill(parent.color(0, 255, 255));
             grabber.setStroke(c);
-            parent.shapeMode(PConstants.CENTER);
+            parent.shapeMode(CENTER);
             parent.shape(grabber);
             parent.fill(parent.color(0, 255, 255));
             parent.text(id, centroid.x + 10, centroid.y - 10);
@@ -140,15 +149,15 @@ public class Face {
     public void update() {
         updateCentroid();
         sortVertices();
-        s = parent.createShape();
-        s.beginShape();
-        s.strokeWeight((float) .5);
-        s.fill(255);
+        shape = parent.createShape();
+        shape.beginShape();
+        shape.strokeWeight((float) .5);
+        shape.fill(255);
         for (PVector v : vertices) {
-            s.vertex(v.x, v.y);
+            shape.vertex(v.x, v.y);
         }
-        s.endShape(PConstants.CLOSE);
-        grabber = parent.createShape(PConstants.RECT, centroid.x, centroid.y,
+        shape.endShape(CLOSE);
+        grabber = parent.createShape(RECT, centroid.x, centroid.y,
                 5, 5);
         grabber.setStrokeWeight(1);
     }
@@ -186,7 +195,7 @@ public class Face {
                 // What is it's heading
                 // The heading function will give us values between -PI and PI
                 // easier to sort if we have from 0 to TWO_PI
-                float a = dir.heading() + PConstants.PI;
+                float a = dir.heading() + PI;
                 // Did we find it
                 if (a > biggestAngle) {
                     biggestAngle = a;

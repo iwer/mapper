@@ -61,7 +61,11 @@ public class FileChooser {
         return actionButton;
     }
 
-    void setGui(Gui gui_) {
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setGui(Gui gui_) {
         gui = gui_;
     }
 
@@ -144,7 +148,8 @@ public class FileChooser {
                 lb.clear();
                 lb.setColor(gui.c);
                 int n = 0;
-                lb.addItem(f.getName(), n++).setColorBackground(parent.color(80));
+                lb.addItem(f.getName(), n++).setColorBackground(
+                        parent.color(80));
                 lb.addItem("..", n++);
                 for (String s1 : strs) {
                     ListBoxItem item = lb.addItem(s1, n++);
