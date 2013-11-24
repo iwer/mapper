@@ -31,6 +31,7 @@ import processing.event.MouseEvent;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.shapes.Point;
@@ -99,6 +100,7 @@ public class Mapper implements PConstants {
         if (setupMode) {
             formContainer.display(setupMode);
             cursor.display();
+        } else if (effectMode) {
         } else {
             formContainer.display(setupMode);
         }
@@ -194,6 +196,10 @@ public class Mapper implements PConstants {
 
     public HashMap<Integer, Face> getFaces() {
         return formContainer.getFaces();
+    }
+
+    public void addEffectControllers(AbstractEffect effect) {
+        effect.addEffectControllersToGui(gui);
     }
 
     class MapperControlListener implements ControlListener {
