@@ -37,38 +37,82 @@ import controlP5.ListBox;
 import controlP5.ListBoxItem;
 import controlP5.Textfield;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FileChooser.
+ */
 public class FileChooser {
+    
+    /** The parent. */
     PApplet parent;
+    
+    /** The gui. */
     Gui gui;
+    
+    /** The runs. */
     final ArrayList<Runnable> runs = new ArrayList<Runnable>();
 
+    /** The enabled. */
     boolean enabled;
 
+    /** The filename. */
     String filename;
+    
+    /** The action button. */
     Button actionButton;
 
+    /**
+     * Instantiates a new file chooser.
+     *
+     * @param parent_ the parent_
+     */
     public FileChooser(PApplet parent_) {
         parent = parent_;
         filename = new String();
         enabled = false;
     }
 
+    /**
+     * Gets the filename.
+     *
+     * @return the filename
+     */
     public String getFilename() {
         return filename;
     }
 
+    /**
+     * Gets the action button.
+     *
+     * @return the action button
+     */
     public Button getActionButton() {
         return actionButton;
     }
 
+    /**
+     * Checks if is enabled.
+     *
+     * @return true, if is enabled
+     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Sets the gui.
+     *
+     * @param gui_ the new gui
+     */
     public void setGui(Gui gui_) {
         gui = gui_;
     }
 
+    /**
+     * Adds the file chooser.
+     *
+     * @param action the action
+     */
     public void addFileChooser(String action) {
         enabled = true;
         final Group fc = gui.cp5.addGroup("filechooser").setPosition(10, 250)
@@ -129,6 +173,13 @@ public class FileChooser {
         updateFileChooser(lb, tf, 0);
     }
 
+    /**
+     * Update file chooser.
+     *
+     * @param lb the lb
+     * @param tf the tf
+     * @param theValue the the value
+     */
     final void updateFileChooser(ListBox lb, Textfield tf, int theValue) {
 
         String s = (lb.getListBoxItems().length == 0) ? "" : lb
@@ -177,6 +228,9 @@ public class FileChooser {
     // anonymous class oftype Runnable will be added to List 'runs', executed
     // once in post() and is then removed.
 
+    /**
+     * Post.
+     */
     public void post() {
         Iterator<Runnable> it = runs.iterator();
         while (it.hasNext()) {

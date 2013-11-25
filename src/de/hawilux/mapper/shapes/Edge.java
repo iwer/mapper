@@ -30,31 +30,52 @@ import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
 
-public class Edge implements PConstants{
-    private PApplet parent;
-    private PShape shape;
-    private PShape arrow;
-    private PShape grabber;
-    private int id;
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Edge.
+ */
+public class Edge extends Shape implements PConstants {
 
+    /** The arrow. */
+    private PShape arrow;
+
+    /** The grabber. */
+    private PShape grabber;
+
+    /** The b. */
     Point a, b;
 
+    /** The connected faces. */
     private ArrayList<Integer> connectedFaces;
 
+    /** The labelpos. */
     private PVector labelpos;
-    private PVector grabberPos;
 
+    /** The show helper. */
     private boolean showHelper;
 
+    /**
+     * Instantiates a new edge.
+     * 
+     * @param parent_
+     *            the parent_
+     * @param id_
+     *            the id_
+     * @param a_
+     *            the a_
+     * @param b_
+     *            the b_
+     * @param helper_
+     *            the helper_
+     */
     public Edge(PApplet parent_, int id_, Point a_, Point b_, boolean helper_) {
-        parent = parent_;
-        id = id_;
+        super(parent_, id_);
         a = a_;
         b = b_;
         connectedFaces = new ArrayList<Integer>();
 
         labelpos = new PVector();
-        grabberPos = new PVector();
+        centroid = new PVector();
         showHelper = helper_;
 
         a.addConnectedEdge(id);
@@ -63,40 +84,77 @@ public class Edge implements PConstants{
         update();
     }
 
-    public int getId() {
-        return id;
-    }
-
+    /**
+     * Gets the a.
+     * 
+     * @return the a
+     */
     public Point getA() {
         return a;
     }
 
+    /**
+     * Gets the b.
+     * 
+     * @return the b
+     */
     public Point getB() {
         return b;
     }
 
+    /**
+     * Gets the connected faces.
+     * 
+     * @return the connected faces
+     */
     public ArrayList<Integer> getConnectedFaces() {
         return connectedFaces;
     }
 
+    /**
+     * Gets the grabber pos.
+     * 
+     * @return the grabber pos
+     * @deprecated use getCentroid()
+     */
     public PVector getGrabberPos() {
-        return grabberPos;
+        return centroid;
     }
 
+    /**
+     * Gets the shape.
+     * 
+     * @return the shape
+     */
     public PShape getShape() {
         return shape;
     }
 
+    /**
+     * Prepare delete.
+     */
     public void prepareDelete() {
         a.removeConnectedEdge(id);
         b.removeConnectedEdge(id);
     }
 
+    /**
+     * Adds the connected face.
+     * 
+     * @param id_
+     *            the id_
+     */
     public void addConnectedFace(int id_) {
         connectedFaces.add(id_);
         // println("Connected Faces at edge " + id + ":" + connectedFaces);
     }
 
+    /**
+     * Removes the connected face.
+     * 
+     * @param id_
+     *            the id_
+     */
     public void removeConnectedFace(int id_) {
         Integer toRemove = new Integer(id_);
         if (connectedFaces.contains(toRemove)) {
@@ -105,6 +163,17 @@ public class Edge implements PConstants{
         // println("Connected Faces at edge " + id + ":" + connectedFaces);
     }
 
+    /**
+     * Gets the color.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     * @return the color
+     */
     private int getColor(boolean config, boolean selected,
             boolean mouseOverColor) {
         int c;
@@ -126,6 +195,16 @@ public class Edge implements PConstants{
         return c;
     }
 
+    /**
+     * Display.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
         parent.pushMatrix();
         int c = getColor(config, selected, mouseOverColor);
@@ -146,6 +225,14 @@ public class Edge implements PConstants{
         parent.popMatrix();
     }
 
+    /**
+     * Display helper.
+     * 
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
     public void displayHelper(boolean selected, boolean mouseOverColor) {
         int c = getColor(true, selected, mouseOverColor);
         parent.pushMatrix();
@@ -157,6 +244,9 @@ public class Edge implements PConstants{
         parent.popMatrix();
     }
 
+    /**
+     * Update.
+     */
     public void update() {
         PVector normal = new PVector(a.getLocation().x, a.getLocation().y);
         normal.sub(b.getLocation());
@@ -164,13 +254,12 @@ public class Edge implements PConstants{
         normal.rotate(PApplet.radians(90));
         normal.mult(10);
 
-        grabberPos.x = PApplet.lerp(a.getX(), b.getX(), (float) .5);
-        grabberPos.y = PApplet.lerp(a.getY(), b.getY(), (float) .5);
-        labelpos.x = grabberPos.x + normal.x;
-        labelpos.y = grabberPos.y + normal.y;
+        centroid.x = PApplet.lerp(a.getX(), b.getX(), (float) .5);
+        centroid.y = PApplet.lerp(a.getY(), b.getY(), (float) .5);
+        labelpos.x = centroid.x + normal.x;
+        labelpos.y = centroid.y + normal.y;
 
-        grabber = parent.createShape(RECT, grabberPos.x,
-                grabberPos.y, 5, 5);
+        grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
 
         PVector arrowstart = new PVector(), arrowend1 = new PVector(), arrowend2 = new PVector();
@@ -200,11 +289,16 @@ public class Edge implements PConstants{
         arrow.endShape();
     }
 
+    /**
+     * Mouse over.
+     * 
+     * @return true, if successful
+     */
     private boolean mouseOver() {
         PVector dist = new PVector();
 
-        dist.x = grabberPos.x - parent.mouseX;
-        dist.y = grabberPos.y - parent.mouseY;
+        dist.x = centroid.x - parent.mouseX;
+        dist.y = centroid.y - parent.mouseY;
 
         float len2 = dist.magSq();
         if (len2 < 100) {
@@ -214,6 +308,11 @@ public class Edge implements PConstants{
         }
     }
 
+    /**
+     * Select.
+     * 
+     * @return the int
+     */
     public int select() {
         if (mouseOver()) {
             return id;

@@ -34,7 +34,7 @@ import processing.core.PVector;
 /**
  * The Class Point.
  */
-public class Point implements PConstants {
+public class Point extends Shape implements PConstants {
 
     /** The radius. */
     private int RADIUS = 15;
@@ -42,23 +42,17 @@ public class Point implements PConstants {
     /** The RADIUS to the power of 2. */
     private int RADIUS2 = RADIUS * 2;
 
-    /** The parent. */
-    private PApplet parent;
-
     /** The show helper. */
     private boolean showHelper;
 
-    /** The id. */
-    public int id;
-
     /** The location. */
-    private PVector location;
+    private PVector centroid;
 
     /** The connected edges. */
     private ArrayList<Integer> connectedEdges;
 
     /** The dot. */
-    private PShape circle, dot;
+    private PShape circle;
 
     /**
      * Instantiates a new point.
@@ -75,22 +69,12 @@ public class Point implements PConstants {
      *            the helper_
      */
     public Point(PApplet parent_, int id_, int x_, int y_, boolean helper_) {
-        parent = parent_;
-        id = id_;
-        location = new PVector(x_, y_);
+        super(parent_, id_);
+        centroid = new PVector(x_, y_);
         // selected = false;
         showHelper = helper_;
         connectedEdges = new ArrayList<Integer>();
         update();
-    }
-
-    /**
-     * Gets the id.
-     * 
-     * @return the id
-     */
-    public int getId() {
-        return id;
     }
 
     /**
@@ -108,7 +92,7 @@ public class Point implements PConstants {
         int c = 0;
         if (!config) {
             c = parent.color(255, 0, 0);
-        } else if (mouseOver(location) && mouseOverColor) {
+        } else if (mouseOver(centroid) && mouseOverColor) {
             if (selected) {
                 c = parent.color(0, 255, 255);
             } else {
@@ -141,8 +125,8 @@ public class Point implements PConstants {
         circle.setStroke(c);
         parent.shapeMode(CENTER);
         parent.shape(circle);
-        dot.setStroke(c);
-        parent.shape(dot);
+        shape.setStroke(c);
+        parent.shape(shape);
 
         parent.popMatrix();
     }
@@ -159,7 +143,7 @@ public class Point implements PConstants {
         int c = getColor(true, selected, mouseOverColor);
         parent.pushMatrix();
         parent.fill(c);
-        parent.text(id, location.x - 20, location.y - 20);
+        parent.text(id, centroid.x - 20, centroid.y - 20);
         parent.popMatrix();
     }
 
@@ -186,7 +170,7 @@ public class Point implements PConstants {
      * @return the int
      */
     public int select() {
-        if (mouseOver(location)) {
+        if (mouseOver(centroid)) {
             return id;
         } else {
             return -1;
@@ -198,8 +182,8 @@ public class Point implements PConstants {
      */
     public void move() {
         // if (selected) {
-        location.x = parent.mouseX;
-        location.y = parent.mouseY;
+        centroid.x = parent.mouseX;
+        centroid.y = parent.mouseY;
         update();
         // }
     }
@@ -214,8 +198,8 @@ public class Point implements PConstants {
      */
     public void move(int dx, int dy) {
         // if (selected) {
-        location.x += dx;
-        location.y += dy;
+        centroid.x += dx;
+        centroid.y += dy;
         update();
         // }
     }
@@ -224,13 +208,13 @@ public class Point implements PConstants {
      * Update.
      */
     public void update() {
-        circle = parent.createShape(ELLIPSE, location.x, location.y, RADIUS,
+        circle = parent.createShape(ELLIPSE, centroid.x, centroid.y, RADIUS,
                 RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
-        dot = parent.createShape(ELLIPSE, location.x, location.y, 2, 2);
-        dot.setFill(false);
-        dot.setStrokeWeight(3);
+        shape = parent.createShape(ELLIPSE, centroid.x, centroid.y, 2, 2);
+        shape.setFill(false);
+        shape.setStrokeWeight(3);
     }
 
     /**
@@ -270,9 +254,10 @@ public class Point implements PConstants {
      * Gets the location.
      * 
      * @return the location
+     * @deprecated use getCentroid()
      */
     public PVector getLocation() {
-        return location;
+        return centroid;
     }
 
     /**
@@ -281,7 +266,7 @@ public class Point implements PConstants {
      * @return the x
      */
     public float getX() {
-        return location.x;
+        return centroid.x;
     }
 
     /**
@@ -290,7 +275,7 @@ public class Point implements PConstants {
      * @return the y
      */
     public float getY() {
-        return location.y;
+        return centroid.y;
     }
 
     /**
@@ -302,7 +287,7 @@ public class Point implements PConstants {
      */
     public boolean equals(Point other) {
         return (this.parent.equals(other.parent)
-                && this.showHelper == other.showHelper && this.id == other.id && this.location
-                    .equals(other.location));
+                && this.showHelper == other.showHelper && this.id == other.id && this.centroid
+                    .equals(other.centroid));
     }
 }

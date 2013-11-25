@@ -30,13 +30,31 @@ import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.shapes.Point;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FileHandler.
+ */
 public class FileHandler {
+
+    /** The data. */
     FormContainer data;
 
+    /**
+     * Instantiates a new file handler.
+     * 
+     * @param data_
+     *            the data_
+     */
     public FileHandler(FormContainer data_) {
         data = data_;
     }
 
+    /**
+     * Load xml.
+     * 
+     * @param filename
+     *            the filename
+     */
     public void loadXML(String filename) {
         XML xml;
 
@@ -97,6 +115,12 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Save xml.
+     * 
+     * @param filename
+     *            the filename
+     */
     public void saveXML(String filename) {
         XML xml = new XML("data");
 

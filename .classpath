@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-openjdk-i386"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/processing2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/controlP5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>

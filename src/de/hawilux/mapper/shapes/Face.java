@@ -32,62 +32,92 @@ import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
 
-public class Face implements PConstants {
-    PApplet parent;
-    int id;
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Face.
+ */
+public class Face extends Shape implements PConstants {
 
     // this should be edges rather than id's
+    /** The connected edges. */
     ArrayList<Edge> connectedEdges;
 
     // this also could be an ArrayList with contains() check in addEdge,
     // then we can get rid of the cast in sortVertices
+    /** The points. */
     HashSet<Point> points;
+
+    /** The vertices. */
     ArrayList<PVector> vertices;
 
-    PShape shape;
-
+    /** The grabber. */
     PShape grabber;
-    PVector centroid;
 
+    /** The helper. */
     boolean helper;
 
+    /**
+     * Instantiates a new face.
+     * 
+     * @param parent_
+     *            the parent_
+     * @param id_
+     *            the id_
+     * @param helper_
+     *            the helper_
+     */
     public Face(PApplet parent_, int id_, boolean helper_) {
-        parent = parent_;
-        id = id_;
+        super(parent_, id_);
         helper = helper_;
         connectedEdges = new ArrayList<Edge>();
         points = new HashSet<Point>();
         vertices = new ArrayList<PVector>();
 
-        centroid = new PVector();
-
         update();
     }
 
-    public int getId() {
-        return id;
-    }
-
+    /**
+     * Gets the connected edges.
+     * 
+     * @return the connected edges
+     */
     public ArrayList<Edge> getConnectedEdges() {
         return connectedEdges;
     }
 
-    public PVector getCentroid() {
-        return centroid;
-    }
-
+    /**
+     * Gets the shape.
+     * 
+     * @return the shape
+     */
     public PShape getShape() {
         return shape;
     }
 
+    /**
+     * Gets the points.
+     * 
+     * @return the points
+     */
     public HashSet<Point> getPoints() {
         return points;
     }
 
+    /**
+     * Gets the vertices.
+     * 
+     * @return the vertices
+     */
     public ArrayList<PVector> getVertices() {
         return vertices;
     }
 
+    /**
+     * Adds the edge.
+     * 
+     * @param e_
+     *            the e_
+     */
     public void addEdge(Edge e_) {
         e_.addConnectedFace(id);
         connectedEdges.add(e_);
@@ -97,6 +127,9 @@ public class Face implements PConstants {
         update();
     }
 
+    /**
+     * Prepare delete.
+     */
     public void prepareDelete() {
         // remove this face from all connected Edges
         for (Edge e : connectedEdges) {
@@ -104,6 +137,17 @@ public class Face implements PConstants {
         }
     }
 
+    /**
+     * Gets the color.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     * @return the color
+     */
     int getColor(boolean config, boolean selected, boolean mouseOverColor) {
         int c;
         if (!config) {
@@ -124,6 +168,16 @@ public class Face implements PConstants {
         return c;
     }
 
+    /**
+     * Display.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
         parent.pushMatrix();
         int c = getColor(config, selected, mouseOverColor);
@@ -146,6 +200,9 @@ public class Face implements PConstants {
         parent.popMatrix();
     }
 
+    /**
+     * Update.
+     */
     public void update() {
         updateCentroid();
         sortVertices();
@@ -157,11 +214,13 @@ public class Face implements PConstants {
             shape.vertex(v.x, v.y);
         }
         shape.endShape(CLOSE);
-        grabber = parent.createShape(RECT, centroid.x, centroid.y,
-                5, 5);
+        grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
     }
 
+    /**
+     * Update centroid.
+     */
     void updateCentroid() {
         centroid = new PVector();
         for (Point p : points) {
@@ -174,6 +233,9 @@ public class Face implements PConstants {
     // taken from
     // http://shiffman.net/2011/12/23/night-4-sorting-the-vertices-of-a-polygon/
     // there may be a faster sorting method (merge-sort?)
+    /**
+     * Sort vertices.
+     */
     void sortVertices() {
         // make a local ArrayList from HashSet
         ArrayList<Point> tmpPoints = new ArrayList<Point>(points);
@@ -212,6 +274,11 @@ public class Face implements PConstants {
         vertices = newVertices;
     }
 
+    /**
+     * Mouse over.
+     * 
+     * @return true, if successful
+     */
     boolean mouseOver() {
         PVector dist = new PVector();
 
@@ -226,6 +293,11 @@ public class Face implements PConstants {
         }
     }
 
+    /**
+     * Select.
+     * 
+     * @return the int
+     */
     public int select() {
         if (mouseOver()) {
             return id;

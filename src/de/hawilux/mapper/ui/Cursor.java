@@ -24,15 +24,34 @@ package de.hawilux.mapper.ui;
 
 import processing.core.PApplet;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Cursor.
+ */
 public class Cursor {
+
+    /** The parent. */
     private PApplet parent;
+
+    /** The line width. */
     private int lineWidth = 1;
+
+    /** The circle size. */
     private int circleSize = 50;
 
+    /**
+     * Instantiates a new cursor.
+     * 
+     * @param parent_
+     *            the parent_
+     */
     public Cursor(PApplet parent_) {
         parent = parent_;
     }
 
+    /**
+     * Display.
+     */
     public void display() {
         parent.stroke(255, 255, 0);
         parent.noFill();

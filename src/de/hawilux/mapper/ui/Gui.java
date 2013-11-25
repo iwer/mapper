@@ -34,39 +34,90 @@ import controlP5.RadioButton;
 import controlP5.Textarea;
 import controlP5.Textlabel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Gui.
+ */
 public class Gui {
+    
+    /** The parent. */
     PApplet parent;
+    
+    /** The cp5. */
     ControlP5 cp5;
 
+    /** The cb. */
     CallbackListener cb;
 
+    /** The c active. */
     int cActive;
+    
+    /** The c background. */
     int cBackground;
+    
+    /** The c caption label. */
     int cCaptionLabel;
+    
+    /** The c foreground. */
     int cForeground;
+    
+    /** The c value label. */
     int cValueLabel;
+    
+    /** The c. */
     CColor c;
 
+    /** The console. */
     Println console;
+    
+    /** The console text area. */
     Textarea consoleTextArea;
+    
+    /** The fps label. */
     Textlabel fpsLabel;
+    
+    /** The main accordion. */
     Accordion mainAccordion;
+    
+    /** The effect accordion. */
     Accordion effectAccordion;
 
+    /** The rdb effects. */
     RadioButton rdbEffects;
 
+    /** The effect group. */
     Group effectGroup;
+    
+    /** The file group. */
     Group fileGroup;
+    
+    /** The setup group. */
     Group setupGroup;
+    
+    /** The setup select mode group. */
     Group setupSelectModeGroup;
+    
+    /** The setup edit group. */
     Group setupEditGroup;
 
+    /** The filename. */
     String filename;
 
+    /**
+     * Instantiates a new gui.
+     *
+     * @param parent_ the parent_
+     */
     public Gui(PApplet parent_) {
         this(parent_, new ControlP5(parent_));
     }
 
+    /**
+     * Instantiates a new gui.
+     *
+     * @param parent_ the parent_
+     * @param cp5_ the cp5_
+     */
     public Gui(PApplet parent_, ControlP5 cp5_) {
         this.parent = parent_;
 
@@ -126,39 +177,84 @@ public class Gui {
         console = cp5.addConsole(consoleTextArea);//
     }
 
+    /**
+     * Gets the cp5.
+     *
+     * @return the cp5
+     */
     public ControlP5 getCp5() {
         return cp5;
     }
 
+    /**
+     * Gets the c.
+     *
+     * @return the c
+     */
     public CColor getC() {
         return c;
     }
 
+    /**
+     * Gets the setup select mode group.
+     *
+     * @return the setup select mode group
+     */
     public Group getSetupSelectModeGroup() {
         return setupSelectModeGroup;
     }
 
+    /**
+     * Gets the setup edit group.
+     *
+     * @return the setup edit group
+     */
     public Group getSetupEditGroup() {
         return setupEditGroup;
     }
 
+    /**
+     * Gets the file group.
+     *
+     * @return the file group
+     */
     public Group getFileGroup() {
         return fileGroup;
     }
 
+    /**
+     * Gets the setup group.
+     *
+     * @return the setup group
+     */
     public Group getSetupGroup() {
         return setupGroup;
     }
 
+    /**
+     * Gets the effect accordion.
+     *
+     * @return the effect accordion
+     */
     public Accordion getEffectAccordion() {
         return effectAccordion;
     }
 
+    /**
+     * Gets the rdb effects.
+     *
+     * @return the rdb effects
+     */
     public RadioButton getRdbEffects() {
         return rdbEffects;
     }
 
     // change gui functions
+    /**
+     * Show.
+     *
+     * @param state the state
+     */
     public void show(boolean state) {
         if (state == true) {
             cp5.show();
@@ -167,6 +263,11 @@ public class Gui {
         }
     }
 
+    /**
+     * Sets the console enabled.
+     *
+     * @param state the new console enabled
+     */
     public void setConsoleEnabled(boolean state) {
         if (state == true) {
             consoleTextArea.show();
@@ -175,12 +276,18 @@ public class Gui {
         }
     }
 
+    /**
+     * Save gui properties.
+     */
     public void saveGuiProperties() {
         console.clear();
         System.out.flush();
         cp5.saveProperties(("gui.properties"));
     }
 
+    /**
+     * Load gui properties.
+     */
     public void loadGuiProperties() {
         System.out.flush();
         cp5.loadProperties(("gui.properties"));

@@ -26,12 +26,30 @@ package de.hawilux.mapper.effects;
 import processing.core.PApplet;
 import de.hawilux.mapper.ui.Gui;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AbstractEffect.
+ */
 public abstract class AbstractEffect {
+
+    /** The parent. */
     protected PApplet parent;
 
+    /**
+     * Adds the effect controllers to gui.
+     * 
+     * @param gui
+     *            the gui
+     */
     public abstract void addEffectControllersToGui(Gui gui);
 
+    /**
+     * Update.
+     */
     public abstract void update();
 
+    /**
+     * Display.
+     */
     public abstract void display();
 }
