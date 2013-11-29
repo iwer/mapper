@@ -117,17 +117,9 @@ public class Edge extends Shape implements PConstants {
      * @return the grabber pos
      * @deprecated use getCentroid()
      */
+    @Deprecated
     public PVector getGrabberPos() {
         return centroid;
-    }
-
-    /**
-     * Gets the shape.
-     * 
-     * @return the shape
-     */
-    public PShape getShape() {
-        return shape;
     }
 
     /**
@@ -248,8 +240,8 @@ public class Edge extends Shape implements PConstants {
      * Update.
      */
     public void update() {
-        PVector normal = new PVector(a.getLocation().x, a.getLocation().y);
-        normal.sub(b.getLocation());
+        PVector normal = new PVector(a.getCentroid().x, a.getCentroid().y);
+        normal.sub(b.getCentroid());
         normal.normalize();
         normal.rotate(PApplet.radians(90));
         normal.mult(10);
@@ -274,8 +266,8 @@ public class Edge extends Shape implements PConstants {
         shape.beginShape(LINES);
         shape.stroke(255);
         shape.strokeCap(ROUND);
-        shape.vertex(a.getLocation().x, a.getLocation().y);
-        shape.vertex(b.getLocation().x, b.getLocation().y);
+        shape.vertex(a.getCentroid().x, a.getCentroid().y);
+        shape.vertex(b.getCentroid().x, b.getCentroid().y);
         shape.endShape();
 
         arrow = parent.createShape();

@@ -65,6 +65,7 @@
 
 	<path id="classpath">
 		<fileset dir="${classpath.local.location}" includes="${classpath.local.include}" />
+		<fileset dir="${classpath.localaddon.location}" includes="**/*.jar" />
 		<fileset dir="${classpath.libraries.location}" includes="**/*.jar" />
 		<fileset dir="${project.lib}" includes="**/*.jar" />
 	</path>		
@@ -211,7 +212,7 @@ ${line}
 	<target name="generate.javadoc" if="is.normal">
 	  	<!-- create the java reference of the library -->
 		<javadoc bottom="Processing library ${project.name} by ${author.name}. ${library.copyright}" 
-				classpath="${classpath.local.location}/core.jar;{project.bin};${sketchbook.location}/libraries/controlP5/library/controlP5.jar" 
+				classpath="${classpath.local.location}/core.jar;{project.bin};${sketchbook.location}/libraries/controlP5/library/controlP5.jar;${classpath.localaddon.location}/minim/library/minim.jar" 
 				destdir="${project.tmp}/${project.name}/reference" 
 				verbose="false" 
 				stylesheetfile="resources/stylesheet.css" 
@@ -222,6 +223,7 @@ ${line}
  			<link href="${javadoc.java.href}" />
 			<link href="${javadoc.processing.href}" />
 			<link href="${javadoc.controlP5.href}" />
+			<link href="${javadoc.minim.href}" />
 			<taglet name="ExampleTaglet" path="resources/code" />
  			<fileset dir="${project.tmp}/${project.name}/src" defaultexcludes="yes">
 			<!-- add packages to be added to reference. -->

@@ -44,6 +44,14 @@ public abstract class AbstractEffect {
     public abstract void addEffectControllersToGui(Gui gui);
 
     /**
+     * TODO: Removes the effect controllers from gui.
+     * 
+     * @param gui
+     *            the gui
+     */
+    // public abstract void removeEffectControllersFromGui(Gui gui);
+
+    /**
      * Update.
      */
     public abstract void update();

@@ -224,7 +224,7 @@ public class Face extends Shape implements PConstants {
     void updateCentroid() {
         centroid = new PVector();
         for (Point p : points) {
-            centroid.add(p.getLocation());
+            centroid.add(p.getCentroid());
         }
         centroid.div(points.size());
     }
@@ -253,7 +253,7 @@ public class Face extends Shape implements PConstants {
             // Look through all of them
             for (Point p : tmpPoints) {
                 // Make a vector that points from center
-                PVector dir = PVector.sub(p.getLocation(), centroid);
+                PVector dir = PVector.sub(p.getCentroid(), centroid);
                 // What is it's heading
                 // The heading function will give us values between -PI and PI
                 // easier to sort if we have from 0 to TWO_PI
@@ -265,7 +265,7 @@ public class Face extends Shape implements PConstants {
                 }
             }
             // Put the one we found in the new arraylist
-            newVertices.add(biggestVertex.getLocation());
+            newVertices.add(biggestVertex.getCentroid());
             // Delete it so that the next biggest one
             // will be found the next time
             tmpPoints.remove(biggestVertex);

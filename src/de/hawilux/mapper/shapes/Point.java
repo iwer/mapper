@@ -256,6 +256,7 @@ public class Point extends Shape implements PConstants {
      * @return the location
      * @deprecated use getCentroid()
      */
+    @Deprecated
     public PVector getLocation() {
         return centroid;
     }

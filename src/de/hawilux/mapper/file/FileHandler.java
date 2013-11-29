@@ -127,18 +127,18 @@ public class FileHandler {
         for (Point p : data.getPoints().values()) {
             XML pointElement = xml.addChild("point");
             XML idElement = pointElement.addChild("id");
-            idElement.setInt("id", p.id);
+            idElement.setInt("id", p.getId());
             XML positionElement = pointElement.addChild("position");
-            positionElement.setInt("x", (int) p.getLocation().x);
-            positionElement.setInt("y", (int) p.getLocation().y);
+            positionElement.setInt("x", (int) p.getCentroid().x);
+            positionElement.setInt("y", (int) p.getCentroid().y);
         }
         for (Edge e : data.getEdges().values()) {
             XML edgeElement = xml.addChild("edge");
             XML idElement = edgeElement.addChild("id");
             idElement.setInt("id", e.getId());
             XML pointsElement = edgeElement.addChild("points");
-            pointsElement.setInt("a", e.getA().id);
-            pointsElement.setInt("b", e.getB().id);
+            pointsElement.setInt("a", e.getA().getId());
+            pointsElement.setInt("b", e.getB().getId());
         }
         for (Face f : data.getFaces().values()) {
             XML faceElement = xml.addChild("face");

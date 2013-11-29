@@ -48,16 +48,16 @@ import de.hawilux.mapper.ui.Gui;
  * The Class FormContainer.
  */
 public class FormContainer {
-    
+
     /** The parent. */
     PApplet parent;
 
     /** The edges. */
     HashMap<Integer, Edge> edges;
-    
+
     /** The points. */
     HashMap<Integer, Point> points;
-    
+
     /** The faces. */
     HashMap<Integer, Face> faces;
 
@@ -69,31 +69,31 @@ public class FormContainer {
 
     /** The selected point. */
     int selectedPoint;
-    
+
     /** The selected edge. */
     int selectedEdge;
-    
+
     /** The selected face. */
     int selectedFace;
 
     /** The select mode. */
     int selectMode;
-    
+
     /** The select points. */
     public final int SELECT_POINTS = 0;
-    
+
     /** The select edges. */
     public final int SELECT_EDGES = 1;
-    
+
     /** The select faces. */
     public final int SELECT_FACES = 2;
 
     /** The max point id. */
     int maxPointId = -1;
-    
+
     /** The max edge id. */
     int maxEdgeId = -1;
-    
+
     /** The max face id. */
     int maxFaceId = -1;
 
@@ -103,25 +103,25 @@ public class FormContainer {
     // gui elements
     /** The btn new config. */
     Button btnNewConfig;
-    
+
     /** The btn load config. */
     Button btnLoadConfig;
-    
+
     /** The btn save config. */
     Button btnSaveConfig;
-    
+
     /** The tgl helper. */
     Toggle tglHelper;
-    
+
     /** The rdb select mode. */
     RadioButton rdbSelectMode;
-    
+
     /** The btn delete selected. */
     Button btnDeleteSelected;
-    
+
     /** The btn switch dir. */
     Button btnSwitchDir;
-    
+
     /** The btn subdivide. */
     Button btnSubdivide;
 
@@ -130,8 +130,9 @@ public class FormContainer {
 
     /**
      * Instantiates a new form container.
-     *
-     * @param parent_ the parent_
+     * 
+     * @param parent_
+     *            the parent_
      */
     public FormContainer(PApplet parent_) {
         parent = parent_;
@@ -177,8 +178,9 @@ public class FormContainer {
     // ###### GUI ###########################################################
     /**
      * Adds the file gui.
-     *
-     * @param gui the gui
+     * 
+     * @param gui
+     *            the gui
      */
     public void addFileGui(Gui gui) {
         btnNewConfig = gui.getCp5().addButton("newConfig").setPosition(10, 10)
@@ -266,7 +268,7 @@ public class FormContainer {
                 p = new Point(parent, maxPointId, parent.mouseX, parent.mouseY,
                         showHelper);
                 selectedPoint = p.select();
-                points.put(p.id, p);
+                points.put(p.getId(), p);
             }
             // select as second point when hovering over it
             else {
@@ -285,8 +287,9 @@ public class FormContainer {
 
     /**
      * Adds the setup gui.
-     *
-     * @param gui the gui
+     * 
+     * @param gui
+     *            the gui
      */
     public void addSetupGui(Gui gui) {
         tglHelper = gui.getCp5().addToggle("showHelper").setPosition(10, 10)
@@ -416,8 +419,9 @@ public class FormContainer {
 
     /**
      * Display.
-     *
-     * @param config the config
+     * 
+     * @param config
+     *            the config
      */
     public void display(boolean config) {
         boolean selected;
@@ -445,7 +449,7 @@ public class FormContainer {
         }
         if (config) {
             for (Point p : points.values()) {
-                if (selectedPoint == p.id) {
+                if (selectedPoint == p.getId()) {
                     selected = true;
                 } else {
                     selected = false;
@@ -460,7 +464,7 @@ public class FormContainer {
 
     /**
      * Gets the edges.
-     *
+     * 
      * @return the edges
      */
     public HashMap<Integer, Edge> getEdges() {
@@ -469,7 +473,7 @@ public class FormContainer {
 
     /**
      * Gets the faces.
-     *
+     * 
      * @return the faces
      */
     public HashMap<Integer, Face> getFaces() {
@@ -478,7 +482,7 @@ public class FormContainer {
 
     /**
      * Gets the select mode.
-     *
+     * 
      * @return the select mode
      */
     public int getSelectMode() {
@@ -487,7 +491,7 @@ public class FormContainer {
 
     /**
      * Gets the max edge id.
-     *
+     * 
      * @return the max edge id
      */
     public int getMaxEdgeId() {
@@ -496,7 +500,7 @@ public class FormContainer {
 
     /**
      * Gets the max face id.
-     *
+     * 
      * @return the max face id
      */
     public int getMaxFaceId() {
@@ -505,7 +509,7 @@ public class FormContainer {
 
     /**
      * Gets the max point id.
-     *
+     * 
      * @return the max point id
      */
     public int getMaxPointId() {
@@ -514,7 +518,7 @@ public class FormContainer {
 
     /**
      * Gets the parent.
-     *
+     * 
      * @return the parent
      */
     public PApplet getParent() {
@@ -523,7 +527,7 @@ public class FormContainer {
 
     /**
      * Gets the points.
-     *
+     * 
      * @return the points
      */
     public HashMap<Integer, Point> getPoints() {
@@ -532,7 +536,7 @@ public class FormContainer {
 
     /**
      * Gets the rdb select mode.
-     *
+     * 
      * @return the rdb select mode
      */
     public RadioButton getRdbSelectMode() {
@@ -541,7 +545,7 @@ public class FormContainer {
 
     /**
      * Checks if is show helper.
-     *
+     * 
      * @return true, if is show helper
      */
     public boolean isShowHelper() {
@@ -571,9 +575,11 @@ public class FormContainer {
 
     /**
      * Move point.
-     *
-     * @param dx the dx
-     * @param dy the dy
+     * 
+     * @param dx
+     *            the dx
+     * @param dy
+     *            the dy
      */
     public void movePoint(int dx, int dy) {
         if (selectedPoint != -1) {
@@ -630,8 +636,9 @@ public class FormContainer {
 
     /**
      * Sets the file chooser.
-     *
-     * @param fileChooser_ the new file chooser
+     * 
+     * @param fileChooser_
+     *            the new file chooser
      */
     public void setFileChooser(FileChooser fileChooser_) {
         fileChooser = fileChooser_;
@@ -639,8 +646,9 @@ public class FormContainer {
 
     /**
      * Sets the helper.
-     *
-     * @param theValue the new helper
+     * 
+     * @param theValue
+     *            the new helper
      */
     public void setHelper(boolean theValue) {
         showHelper = theValue;
@@ -648,8 +656,9 @@ public class FormContainer {
 
     /**
      * Sets the line editor enabled.
-     *
-     * @param state the new line editor enabled
+     * 
+     * @param state
+     *            the new line editor enabled
      */
     public void setLineEditorEnabled(boolean state) {
         if (state == true) {
@@ -663,8 +672,9 @@ public class FormContainer {
 
     /**
      * Sets the max edge id.
-     *
-     * @param maxEdgeId the new max edge id
+     * 
+     * @param maxEdgeId
+     *            the new max edge id
      */
     public void setMaxEdgeId(int maxEdgeId) {
         this.maxEdgeId = maxEdgeId;
@@ -672,8 +682,9 @@ public class FormContainer {
 
     /**
      * Sets the max face id.
-     *
-     * @param maxFaceId the new max face id
+     * 
+     * @param maxFaceId
+     *            the new max face id
      */
     public void setMaxFaceId(int maxFaceId) {
         this.maxFaceId = maxFaceId;
@@ -681,8 +692,9 @@ public class FormContainer {
 
     /**
      * Sets the max point id.
-     *
-     * @param maxPointId the new max point id
+     * 
+     * @param maxPointId
+     *            the new max point id
      */
     public void setMaxPointId(int maxPointId) {
         this.maxPointId = maxPointId;
@@ -690,8 +702,9 @@ public class FormContainer {
 
     /**
      * Sets the select mode.
-     *
-     * @param mode_ the new select mode
+     * 
+     * @param mode_
+     *            the new select mode
      */
     public void setSelectMode(int mode_) {
         if (mode_ == SELECT_POINTS || mode_ == SELECT_EDGES
@@ -716,8 +729,9 @@ public class FormContainer {
 
     /**
      * Sets the show helper.
-     *
-     * @param showHelper the new show helper
+     * 
+     * @param showHelper
+     *            the new show helper
      */
     public void setShowHelper(boolean showHelper) {
         this.showHelper = showHelper;
@@ -731,7 +745,7 @@ public class FormContainer {
             Edge toDivide = edges.get(selectedEdge);
             Point start = toDivide.getA();
             Point end = toDivide.getB();
-            PVector newPointPos = toDivide.getGrabberPos();
+            PVector newPointPos = toDivide.getCentroid();
             ArrayList<Integer> connectedFaces = toDivide.getConnectedFaces();
 
             // create new Point
@@ -739,7 +753,7 @@ public class FormContainer {
             Point newPoint = new Point(parent, maxPointId, (int) newPointPos.x,
                     (int) newPointPos.y, showHelper);
             selectedPoint = newPoint.select();
-            points.put(newPoint.id, newPoint);
+            points.put(newPoint.getId(), newPoint);
 
             // add new edges
             maxEdgeId++;

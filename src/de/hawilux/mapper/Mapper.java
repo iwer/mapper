@@ -131,6 +131,8 @@ public class Mapper implements PConstants {
 
     /**
      * Draw.
+     * 
+     * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void draw() {
         if (setupMode) {
@@ -145,12 +147,14 @@ public class Mapper implements PConstants {
     /**
      * Mouse event.
      * 
+     * Gets called by processing, DO NOT CALL YOURSELF!
+     * 
      * @param event
      *            the event
      */
     public void mouseEvent(MouseEvent event) {
-        int x = event.getX();
-        int y = event.getY();
+        // int x = event.getX();
+        // int y = event.getY();
 
         switch (event.getAction()) {
         case MouseEvent.PRESS:
@@ -181,11 +185,17 @@ public class Mapper implements PConstants {
         case MouseEvent.MOVE:
             // umm... forgot
             break;
+        case MouseEvent.WHEEL:
+            // umm... forgot
+            gui.getCp5().setMouseWheelRotation(event.getCount());
+            break;
         }
     }
 
     /**
      * Key event.
+     * 
+     * Gets called by processing, DO NOT CALL YOURSELF!
      * 
      * @param event
      *            the event
@@ -226,6 +236,8 @@ public class Mapper implements PConstants {
 
     /**
      * Dispose.
+     * 
+     * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void dispose() {
         // Anything in here will be called automatically when
@@ -235,6 +247,8 @@ public class Mapper implements PConstants {
 
     /**
      * Post.
+     * 
+     * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void post() {
         fileChooser.post();
@@ -331,9 +345,9 @@ public class Mapper implements PConstants {
                     }
                 }
             } else if (theEvent.isController()) {
-                PApplet.println("got something from a controller "
-                        + theEvent.getController().getName() + " "
-                        + theEvent.getController().getValue());
+                // PApplet.println("got something from a controller "
+                // + theEvent.getController().getName() + " "
+                // + theEvent.getController().getValue());
             }
 
         }
