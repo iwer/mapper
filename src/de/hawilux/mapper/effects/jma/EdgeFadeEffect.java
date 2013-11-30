@@ -18,24 +18,22 @@ import processing.core.PConstants;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.ui.Gui;
 
-class EdgeFadeEffect extends AbstractEffect implements PConstants {
+public class EdgeFadeEffect extends AbstractEffect implements PConstants {
     HashMap<Integer, Edge> edges;
     HashMap<Integer, Integer> fadeInterval;
 
     int currentTime;
     float fadetime = 1;
 
-    Group grpEffectParams;
     Slider slFadetime;
 
-    EdgeFadeEffect(PApplet parent_, HashMap<Integer, Edge> edges_) {
-        parent = parent_;
+    public EdgeFadeEffect(PApplet parent_, HashMap<Integer, Edge> edges_) {
+        super(parent_, "edgefade");
         edges = edges_;
         fadeInterval = new HashMap<Integer, Integer>();
         for (Edge f : edges.values()) {
@@ -44,9 +42,6 @@ class EdgeFadeEffect extends AbstractEffect implements PConstants {
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("edgefade")
-                .setColor(gui.getC());
-        gui.getEffectAccordion().addItem(grpEffectParams);
         slFadetime = gui.getCp5().addSlider("edgeFadeFadeTime")
                 .setCaptionLabel("fadetime").setPosition(10, 10)
                 .setColor(gui.getC()).setRange(.001f, 50).setValue(fadetime)
@@ -58,8 +53,6 @@ class EdgeFadeEffect extends AbstractEffect implements PConstants {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("EdgeFadeEffect",
-        // AbstractEffect.EDGE_FADE);
     }
 
     public void update() {

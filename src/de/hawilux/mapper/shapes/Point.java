@@ -45,8 +45,8 @@ public class Point extends Shape implements PConstants {
     /** The show helper. */
     private boolean showHelper;
 
-    /** The location. */
-    private PVector centroid;
+    // /** The location. */
+    // private PVector centroid;
 
     /** The connected edges. */
     private ArrayList<Integer> connectedEdges;

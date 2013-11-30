@@ -1,4 +1,4 @@
-<project name="ProcessingLibs" default="clean" basedir="../">
+<project name="mapperLib" default="clean" basedir="../">
 
     
 <!--	

@@ -18,24 +18,22 @@ import processing.core.PConstants;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.ui.Gui;
 
-class FaceFadeEffect extends AbstractEffect implements PConstants {
+public class FaceFadeEffect extends AbstractEffect implements PConstants {
     HashMap<Integer, Face> faces;
     HashMap<Integer, Integer> fadeInterval;
 
     int currentTime;
     float fadetime = 1;
 
-    Group grpEffectParams;
     Slider slFadetime;
 
-    FaceFadeEffect(PApplet parent_, HashMap<Integer, Face> faces_) {
-        parent = parent_;
+    public FaceFadeEffect(PApplet parent_, HashMap<Integer, Face> faces_) {
+        super(parent_, "facefade");
         faces = faces_;
         fadeInterval = new HashMap<Integer, Integer>();
         for (Face f : faces.values()) {
@@ -44,10 +42,9 @@ class FaceFadeEffect extends AbstractEffect implements PConstants {
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("facefade")
-                .setColor(gui.getC());
-        gui.getEffectAccordion().addItem(grpEffectParams);
-        slFadetime = gui.getCp5().addSlider("faceFadeFadeTime")
+        super.gui = gui;
+
+        slFadetime = gui.getCp5().addSlider(name + "FadeTime")
                 .setCaptionLabel("fadetime").setPosition(10, 10)
                 .setColor(gui.getC()).setRange(.001f, 50f).setValue(fadetime)
                 .moveTo(grpEffectParams);
@@ -58,8 +55,7 @@ class FaceFadeEffect extends AbstractEffect implements PConstants {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("FaceFadeEffect",
-        // AbstractEffect.FACE_FADE);
+
     }
 
     public void update() {

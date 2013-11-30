@@ -22,6 +22,7 @@
 package de.hawilux.mapper;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import processing.core.PApplet;
 import de.hawilux.mapper.effects.AbstractEffect;
@@ -30,7 +31,7 @@ import de.hawilux.mapper.effects.AbstractEffect;
 /**
  * The Class EffectManager.
  */
-public class EffectManager {
+class EffectManager {
 
     /** The mapper. */
     Mapper mapper;
@@ -61,9 +62,10 @@ public class EffectManager {
      * @param effect
      *            the effect
      */
-    public void registerEffect(String effectName, AbstractEffect effect) {
-        PApplet.println("Registering effect - " + effectName);
-        effectsAvailable.put(effectName, effect);
+    public void registerEffect(AbstractEffect effect) {
+        PApplet.println("Registering effect - " + effect.getName());
+        effectsAvailable.put(effect.getName(), effect);
+        mapper.addEffectControllers(effect);
     }
 
     /**
@@ -77,7 +79,7 @@ public class EffectManager {
         if (effect != null) {
             PApplet.println("Enabling effect - " + effectName);
             effectsEnabled.put(effectName, effect);
-            mapper.addEffectControllers(effect);
+            effect.enable();
         }
     }
 
@@ -88,8 +90,12 @@ public class EffectManager {
      *            the effect name
      */
     public void disableEffect(String effectName) {
-        PApplet.println("Disabling effect - " + effectName);
-        effectsEnabled.remove(effectName);
+        AbstractEffect effect = effectsEnabled.get(effectName);
+        if (effect != null) {
+            PApplet.println("Disabling effect - " + effectName);
+            effectsEnabled.remove(effectName);
+            effect.disable();
+        }
     }
 
     /**
@@ -97,8 +103,8 @@ public class EffectManager {
      * 
      * @return the effects available
      */
-    public String[] getEffectsAvailable() {
-        return (String[]) effectsAvailable.keySet().toArray();
+    public Set<String> getEffectsAvailable() {
+        return effectsAvailable.keySet();
     }
 
     /**
@@ -106,7 +112,7 @@ public class EffectManager {
      * 
      * @return the effects enabled
      */
-    public String[] getEffectsEnabled() {
-        return (String[]) effectsEnabled.keySet().toArray();
+    public Set<String> getEffectsEnabled() {
+        return effectsEnabled.keySet();
     }
 }

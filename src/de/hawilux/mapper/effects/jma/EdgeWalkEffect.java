@@ -30,30 +30,25 @@ import processing.core.PApplet;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.ui.Gui;
 
-class EdgeWalkEffect extends AbstractEffect {
+public class EdgeWalkEffect extends AbstractEffect {
     float start;
     float end;
     protected float time = 1.f;
     HashMap<Integer, Edge> edges;
 
     Slider timeSlider;
-    Group grpEffectParams;
 
-    EdgeWalkEffect(PApplet parent_, HashMap<Integer, Edge> edges_) {
-        parent = parent_;
+    public EdgeWalkEffect(PApplet parent_, HashMap<Integer, Edge> edges_) {
+        super(parent_, "edgewalk");
         edges = edges_;
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("edgewalk")
-                .setColor(gui.getC());
-        gui.getEffectAccordion().addItem(grpEffectParams);
         timeSlider = gui.getCp5().addSlider("effectTime").setPosition(10, 10)
                 .setColor(gui.getC()).setRange(1, 10).setNumberOfTickMarks(10)
                 .moveTo(grpEffectParams);
@@ -64,8 +59,6 @@ class EdgeWalkEffect extends AbstractEffect {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("edgeWalkEffect",
-        // AbstractEffect.EDGE_WALK);
     }
 
     public void setTime(float time_) {

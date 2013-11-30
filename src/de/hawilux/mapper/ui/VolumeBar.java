@@ -52,12 +52,13 @@ public class VolumeBar {
      * @param sizeY
      *            the size y
      */
-    public VolumeBar(ControlP5 cp5, AudioInput in, int posX, int posY,
-            int sizeX, int sizeY) {
+    public VolumeBar(ControlP5 cp5, AudioInput in, String name, int posX,
+            int posY, int sizeX, int sizeY) {
         this.cp5 = cp5;
         this.in = in;
-        rmsbarSlider = cp5.addSlider("Volume").setPosition(posX, posY)
-                .setSize(sizeX, sizeY).setRange(0, 1).setValue(0);
+        rmsbarSlider = cp5.addSlider("volume" + name).setCaptionLabel("Volume")
+                .setPosition(posX, posY).setSize(sizeX, sizeY).setRange(0, 1)
+                .setValue(0);
     }
 
     /**

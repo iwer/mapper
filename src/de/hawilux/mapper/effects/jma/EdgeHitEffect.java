@@ -30,13 +30,12 @@ import processing.core.PApplet;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.ui.Gui;
 
-class EdgeHitEffect extends AbstractEffect {
+public class EdgeHitEffect extends AbstractEffect {
     // float start;
     // float end;
     protected float hitRadius = 50.f;
@@ -50,10 +49,9 @@ class EdgeHitEffect extends AbstractEffect {
 
     Slider hitRadiusSlider;
     Slider fadeTimeSlider;
-    Group grpEffectParams;
 
-    EdgeHitEffect(PApplet parent_, HashMap<Integer, Edge> edges_) {
-        parent = parent_;
+    public EdgeHitEffect(PApplet parent_, HashMap<Integer, Edge> edges_) {
+        super(parent_, "edgehit");
         edges = edges_;
         hitTime = new HashMap<Integer, Integer>();
         for (Edge e : edges.values()) {
@@ -62,8 +60,6 @@ class EdgeHitEffect extends AbstractEffect {
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("edgehit").setColor(gui.getC());
-        gui.getEffectAccordion().addItem(grpEffectParams);
         hitRadiusSlider = gui.getCp5().addSlider("edgeHitRadius")
                 .setCaptionLabel("hitRadius").setPosition(10, 10)
                 .setColor(gui.getC()).setRange(10, 100)
@@ -86,8 +82,6 @@ class EdgeHitEffect extends AbstractEffect {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("edgeHitEffect",
-        // AbstractEffect.EDGE_HIT);
     }
 
     public void setHitRadius(float r_) {

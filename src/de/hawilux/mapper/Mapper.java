@@ -31,7 +31,15 @@ import processing.event.MouseEvent;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import ddf.minim.AudioInput;
 import de.hawilux.mapper.effects.AbstractEffect;
+import de.hawilux.mapper.effects.jma.EdgeAudioEffect;
+import de.hawilux.mapper.effects.jma.EdgeFadeEffect;
+import de.hawilux.mapper.effects.jma.EdgeHitEffect;
+import de.hawilux.mapper.effects.jma.EdgeWalkEffect;
+import de.hawilux.mapper.effects.jma.FaceAudioEffect;
+import de.hawilux.mapper.effects.jma.FaceFadeEffect;
+import de.hawilux.mapper.effects.jma.FaceHitEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.shapes.Point;
@@ -57,6 +65,8 @@ public class Mapper implements PConstants {
     /** The file chooser. */
     FileChooser fileChooser;
 
+    EffectManager effectManager;
+
     /** The cursor. */
     Cursor cursor;
 
@@ -78,6 +88,24 @@ public class Mapper implements PConstants {
     /** The version. */
     String version = "0.1.0";
 
+    static Mapper theInstance;
+
+    public static Mapper getInstance(PApplet parent, ControlP5 cp5) {
+        if (theInstance == null) {
+            theInstance = new Mapper(parent, cp5);
+        }
+        return theInstance;
+    }
+
+    public static Mapper getExistingInstance() throws IllegalAccessException {
+        if (theInstance != null) {
+            return theInstance;
+        } else {
+            throw new IllegalAccessException(
+                    "Can only be called after getInstance");
+        }
+    }
+
     /**
      * Instantiates a new mapper.
      * 
@@ -86,7 +114,7 @@ public class Mapper implements PConstants {
      * @param cp5
      *            the cp5
      */
-    public Mapper(PApplet parent, ControlP5 cp5) {
+    private Mapper(PApplet parent, ControlP5 cp5) {
         this.parent = parent;
 
         fileChooser = new FileChooser(parent);
@@ -97,6 +125,8 @@ public class Mapper implements PConstants {
         fileChooser.setGui(gui);
         formContainer.setFileChooser(fileChooser);
         formContainer.addFileGui(gui);
+
+        effectManager = new EffectManager(this);
 
         parent.registerMethod("draw", this);
         // parent.registerMethod("dispose", this);
@@ -129,16 +159,34 @@ public class Mapper implements PConstants {
                 + "Every form can be deleted by selecting it in its selection mode");
     }
 
+    public void registerBuiltinEffects() {
+        registerEffect(new EdgeWalkEffect(parent, getEdges()));
+        registerEffect(new EdgeFadeEffect(parent, getEdges()));
+        registerEffect(new EdgeHitEffect(parent, getEdges()));
+        registerEffect(new FaceFadeEffect(parent, getFaces()));
+        registerEffect(new FaceHitEffect(parent, getFaces()));
+    }
+
+    public void registerBuiltinAudioEffects(AudioInput in) {
+        registerEffect(new EdgeAudioEffect(parent, getEdges(), in));
+        registerEffect(new FaceAudioEffect(parent, getFaces(), in));
+    }
+
     /**
      * Draw.
      * 
      * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void draw() {
+        parent.blendMode(ADD);
         if (setupMode) {
             formContainer.display(setupMode);
             cursor.display();
         } else if (effectMode) {
+            for (AbstractEffect ae : effectManager.effectsEnabled.values()) {
+                ae.update();
+                ae.display();
+            }
         } else {
             formContainer.display(setupMode);
         }
@@ -201,7 +249,7 @@ public class Mapper implements PConstants {
      *            the event
      */
     public void keyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.PRESS) {
+        if (event.getAction() == KeyEvent.PRESS && !fileChooser.isEnabled()) {
             if (event.getKey() == CODED) {
                 if (event.getKeyCode() == UP) {
                     formContainer.movePoint(0, -1);
@@ -281,6 +329,24 @@ public class Mapper implements PConstants {
         return formContainer.getFaces();
     }
 
+    public void registerEffect(AbstractEffect effect) {
+        effectManager.registerEffect(effect);
+    }
+
+    public void listEffectsAvailable() {
+        for (String s : effectManager.getEffectsAvailable()) {
+            PApplet.println(s);
+        }
+    }
+
+    public void enableEffect(String effectName) {
+        effectManager.enableEffect(effectName);
+    }
+
+    public void disableEffect(String effectName) {
+        effectManager.disableEffect(effectName);
+    }
+
     /**
      * Adds the effect controllers.
      * 
@@ -288,7 +354,11 @@ public class Mapper implements PConstants {
      *            the effect
      */
     public void addEffectControllers(AbstractEffect effect) {
-        effect.addEffectControllersToGui(gui);
+        effect.addControllersToGui(gui);
+    }
+
+    public void removeEffectControllers(AbstractEffect effect) {
+        effect.removeEffectControllersFromGui(gui);
     }
 
     /**
@@ -339,6 +409,27 @@ public class Mapper implements PConstants {
                     case 1:
                         effectMode = false;
                         break;
+                    // case AbstractEffect.EDGE_WALK:
+                    // effectMode = true;
+                    // break;
+                    // case AbstractEffect.EDGE_HIT:
+                    // effectMode = true;
+                    // break;
+                    // case AbstractEffect.FACE_HIT:
+                    // effectMode = true;
+                    // break;
+                    // case AbstractEffect.FACE_AUDIO:
+                    // effectMode = true;
+                    // break;
+                    // case AbstractEffect.EDGE_AUDIO:
+                    // effectMode = true;
+                    // break;
+                    // case AbstractEffect.FACE_FADE:
+                    // effectMode = true;
+                    // break;
+                    // case AbstractEffect.EDGE_FADE:
+                    // effectMode = true;
+                    // break;
                     default:
                         setupMode = false;
                         break;

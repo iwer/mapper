@@ -23,7 +23,6 @@ import processing.core.PVector;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import controlP5.Slider2D;
 import controlP5.Toggle;
@@ -31,8 +30,9 @@ import ddf.minim.AudioInput;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.ui.Gui;
+import de.hawilux.mapper.ui.VolumeBar;
 
-class FaceAudioEffect extends AbstractEffect implements PConstants {
+public class FaceAudioEffect extends AbstractEffect implements PConstants {
     HashMap<Integer, Face> faces;
 
     AudioInput in;
@@ -41,9 +41,9 @@ class FaceAudioEffect extends AbstractEffect implements PConstants {
     ArrayList<ExpandingCircle> circlesToRemove;
     PGraphics buffer;
 
-    int cBlack = parent.color(0);
-    int cWhite = parent.color(255);
-    int cRed = parent.color(255, 0, 0);
+    int cBlack;
+    int cWhite;
+    int cRed;
 
     float threshold = .45f;
     float speed = 70;
@@ -51,20 +51,24 @@ class FaceAudioEffect extends AbstractEffect implements PConstants {
     PVector position;
     boolean debug = false;
 
-    Group grpEffectParams;
     Slider slThreshold;
     Slider slSpeed;
     Slider slDuration;
     Slider2D slPosition;
     Toggle tglDebug;
 
-    FaceAudioEffect(PApplet parent_, HashMap<Integer, Face> faces_,
+    private VolumeBar volumeBar;
+
+    public FaceAudioEffect(PApplet parent_, HashMap<Integer, Face> faces_,
             AudioInput in_) {
-        parent = parent_;
+        super(parent_, "faceaudio");
         faces = faces_;
 
-        buffer = parent.createGraphics(parent.displayWidth,
-                parent.displayHeight, JAVA2D);
+        cBlack = parent.color(0);
+        cWhite = parent.color(255);
+        cRed = parent.color(255, 0, 0);
+
+        buffer = parent.createGraphics(parent.width, parent.height, JAVA2D);
         circles = new ArrayDeque<ExpandingCircle>();
         circlesToRemove = new ArrayList<ExpandingCircle>();
         position = new PVector(parent.width / 2, parent.height / 2);
@@ -73,9 +77,8 @@ class FaceAudioEffect extends AbstractEffect implements PConstants {
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("faceaudio")
-                .setColor(gui.getC()).setBackgroundHeight(235);
-        gui.getEffectAccordion().addItem(grpEffectParams);
+        volumeBar = new VolumeBar(gui.getCp5(), in, name, 10, 10, 100, 10);
+        volumeBar.getRmsbarSlider().moveTo(grpEffectParams);
         slThreshold = gui.getCp5().addSlider("faceAudioThreshold")
                 .setCaptionLabel("threshold").setPosition(10, 10)
                 .setValue(threshold).setColor(gui.getC())
@@ -139,13 +142,11 @@ class FaceAudioEffect extends AbstractEffect implements PConstants {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("FaceAudioEffect",
-        // AbstractEffect.FACE_AUDIO);
     }
 
     public void update() {
         for (int i = 0; i < 1; i++) {
-            float value = in.mix.get(i);
+            float value = in.mix.level();
             if (value > threshold) {
                 circles.add(new ExpandingCircle(parent.frameCount, position,
                         value));
@@ -174,6 +175,7 @@ class FaceAudioEffect extends AbstractEffect implements PConstants {
     public void display() {
         // for debug
         if (debug) {
+            parent.blendMode(ADD);
             parent.image(buffer, 0, 0);
         }
         for (Face f : faces.values()) {
@@ -206,7 +208,7 @@ class FaceAudioEffect extends AbstractEffect implements PConstants {
             circle = parent.createShape(ELLIPSE, pos.x - (r / 2), pos.y
                     - (r / 2), r, r);
             circle.setFill(false);
-            circle.setStroke(parent.color(255, 0, 0));
+            circle.setStroke(cRed);
             circle.setStrokeWeight(duration);
             buffer.shape(circle);
         }

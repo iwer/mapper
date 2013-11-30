@@ -33,16 +33,17 @@ import controlP5.Println;
 import controlP5.RadioButton;
 import controlP5.Textarea;
 import controlP5.Textlabel;
+import controlP5.Toggle;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Gui.
  */
 public class Gui {
-    
+
     /** The parent. */
     PApplet parent;
-    
+
     /** The cp5. */
     ControlP5 cp5;
 
@@ -51,34 +52,34 @@ public class Gui {
 
     /** The c active. */
     int cActive;
-    
+
     /** The c background. */
     int cBackground;
-    
+
     /** The c caption label. */
     int cCaptionLabel;
-    
+
     /** The c foreground. */
     int cForeground;
-    
+
     /** The c value label. */
     int cValueLabel;
-    
+
     /** The c. */
     CColor c;
 
     /** The console. */
     Println console;
-    
+
     /** The console text area. */
     Textarea consoleTextArea;
-    
+
     /** The fps label. */
     Textlabel fpsLabel;
-    
+
     /** The main accordion. */
     Accordion mainAccordion;
-    
+
     /** The effect accordion. */
     Accordion effectAccordion;
 
@@ -87,26 +88,29 @@ public class Gui {
 
     /** The effect group. */
     Group effectGroup;
-    
+
     /** The file group. */
     Group fileGroup;
-    
+
     /** The setup group. */
     Group setupGroup;
-    
+
     /** The setup select mode group. */
     Group setupSelectModeGroup;
-    
+
     /** The setup edit group. */
     Group setupEditGroup;
 
     /** The filename. */
     String filename;
 
+    private int nextEffectTogglePos = 10;
+
     /**
      * Instantiates a new gui.
-     *
-     * @param parent_ the parent_
+     * 
+     * @param parent_
+     *            the parent_
      */
     public Gui(PApplet parent_) {
         this(parent_, new ControlP5(parent_));
@@ -114,9 +118,11 @@ public class Gui {
 
     /**
      * Instantiates a new gui.
-     *
-     * @param parent_ the parent_
-     * @param cp5_ the cp5_
+     * 
+     * @param parent_
+     *            the parent_
+     * @param cp5_
+     *            the cp5_
      */
     public Gui(PApplet parent_, ControlP5 cp5_) {
         this.parent = parent_;
@@ -153,9 +159,9 @@ public class Gui {
 
         // effect group
         effectGroup = cp5.addGroup("effect").setColor(c);
-        rdbEffects = cp5.addRadioButton("chooseneffect").setPosition(10, 10)
-                .setColor(c).setNoneSelectedAllowed(false).addItem("none", 1)
-                .activate("none").moveTo(effectGroup);
+        // rdbEffects = cp5.addRadioButton("chooseneffect").setPosition(10, 10)
+        // .setColor(c).setNoneSelectedAllowed(false).addItem("none", 1)
+        // .activate("none").moveTo(effectGroup);
 
         // accordion
         mainAccordion = cp5.addAccordion("acc").setPosition(10, 40)
@@ -177,9 +183,23 @@ public class Gui {
         console = cp5.addConsole(consoleTextArea);//
     }
 
+    public Toggle addEffectEnableToggle(String effectPrefix,
+            CallbackListener callback) {
+        Toggle ret = cp5.addToggle(effectPrefix + "enable")
+                .setCaptionLabel(effectPrefix).setSize(50, 10)
+                .setPosition(10, nextEffectTogglePos).setValue(false)
+                .moveTo(effectGroup).addCallback(callback);
+        nextEffectTogglePos += 30;
+        return ret;
+    }
+
+    public Group getEffectGroup() {
+        return effectGroup;
+    }
+
     /**
      * Gets the cp5.
-     *
+     * 
      * @return the cp5
      */
     public ControlP5 getCp5() {
@@ -188,7 +208,7 @@ public class Gui {
 
     /**
      * Gets the c.
-     *
+     * 
      * @return the c
      */
     public CColor getC() {
@@ -197,7 +217,7 @@ public class Gui {
 
     /**
      * Gets the setup select mode group.
-     *
+     * 
      * @return the setup select mode group
      */
     public Group getSetupSelectModeGroup() {
@@ -206,7 +226,7 @@ public class Gui {
 
     /**
      * Gets the setup edit group.
-     *
+     * 
      * @return the setup edit group
      */
     public Group getSetupEditGroup() {
@@ -215,7 +235,7 @@ public class Gui {
 
     /**
      * Gets the file group.
-     *
+     * 
      * @return the file group
      */
     public Group getFileGroup() {
@@ -224,7 +244,7 @@ public class Gui {
 
     /**
      * Gets the setup group.
-     *
+     * 
      * @return the setup group
      */
     public Group getSetupGroup() {
@@ -233,7 +253,7 @@ public class Gui {
 
     /**
      * Gets the effect accordion.
-     *
+     * 
      * @return the effect accordion
      */
     public Accordion getEffectAccordion() {
@@ -242,7 +262,7 @@ public class Gui {
 
     /**
      * Gets the rdb effects.
-     *
+     * 
      * @return the rdb effects
      */
     public RadioButton getRdbEffects() {
@@ -252,8 +272,9 @@ public class Gui {
     // change gui functions
     /**
      * Show.
-     *
-     * @param state the state
+     * 
+     * @param state
+     *            the state
      */
     public void show(boolean state) {
         if (state == true) {
@@ -265,8 +286,9 @@ public class Gui {
 
     /**
      * Sets the console enabled.
-     *
-     * @param state the new console enabled
+     * 
+     * @param state
+     *            the new console enabled
      */
     public void setConsoleEnabled(boolean state) {
         if (state == true) {

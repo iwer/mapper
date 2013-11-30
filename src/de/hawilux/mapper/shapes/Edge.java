@@ -246,8 +246,8 @@ public class Edge extends Shape implements PConstants {
         normal.rotate(PApplet.radians(90));
         normal.mult(10);
 
-        centroid.x = PApplet.lerp(a.getX(), b.getX(), (float) .5);
-        centroid.y = PApplet.lerp(a.getY(), b.getY(), (float) .5);
+        centroid.x = PApplet.lerp(a.getX(), b.getX(), .5f);
+        centroid.y = PApplet.lerp(a.getY(), b.getY(), .5f);
         labelpos.x = centroid.x + normal.x;
         labelpos.y = centroid.y + normal.y;
 
@@ -255,12 +255,12 @@ public class Edge extends Shape implements PConstants {
         grabber.setStrokeWeight(1);
 
         PVector arrowstart = new PVector(), arrowend1 = new PVector(), arrowend2 = new PVector();
-        arrowstart.x = PApplet.lerp(a.getX(), b.getX(), (float) .6);
-        arrowstart.y = PApplet.lerp(a.getY(), b.getY(), (float) .6);
-        arrowend1.x = PApplet.lerp(a.getX(), b.getX(), (float) .4) + normal.x;
-        arrowend1.y = PApplet.lerp(a.getY(), b.getY(), (float) .4) + normal.y;
-        arrowend2.x = PApplet.lerp(a.getX(), b.getX(), (float) .4) - normal.x;
-        arrowend2.y = PApplet.lerp(a.getY(), b.getY(), (float) .4) - normal.y;
+        arrowstart.x = PApplet.lerp(a.getX(), b.getX(), .6f);
+        arrowstart.y = PApplet.lerp(a.getY(), b.getY(), .6f);
+        arrowend1.x = PApplet.lerp(a.getX(), b.getX(), .4f) + normal.x;
+        arrowend1.y = PApplet.lerp(a.getY(), b.getY(), .4f) + normal.y;
+        arrowend2.x = PApplet.lerp(a.getX(), b.getX(), .4f) - normal.x;
+        arrowend2.y = PApplet.lerp(a.getY(), b.getY(), .4f) - normal.y;
 
         shape = parent.createShape();
         shape.beginShape(LINES);

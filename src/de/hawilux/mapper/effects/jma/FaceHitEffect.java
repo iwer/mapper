@@ -33,13 +33,12 @@ import processing.core.PVector;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.ui.Gui;
 
-class FaceHitEffect extends AbstractEffect implements PConstants {
+public class FaceHitEffect extends AbstractEffect implements PConstants {
     protected float hitRadius = 50.f;
 
     Slider fadeTimeSlider;
@@ -49,10 +48,8 @@ class FaceHitEffect extends AbstractEffect implements PConstants {
     private int currentTime = 1;
     private int fadeTime = 10;
 
-    Group grpEffectParams;
-
-    FaceHitEffect(PApplet parent_, HashMap<Integer, Face> faces_) {
-        parent = parent_;
+    public FaceHitEffect(PApplet parent_, HashMap<Integer, Face> faces_) {
+        super(parent_, "facehit");
         faces = faces_;
         hitTime = new HashMap<Integer, Integer>();
         for (Face f : faces.values()) {
@@ -61,8 +58,6 @@ class FaceHitEffect extends AbstractEffect implements PConstants {
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("facehit").setColor(gui.getC());
-        gui.getEffectAccordion().addItem(grpEffectParams);
         fadeTimeSlider = gui.getCp5().addSlider("faceHitFadeTime")
                 .setCaptionLabel("fadetime").setPosition(10, 10)
                 .setColor(gui.getC()).setRange(10, 100)
@@ -74,8 +69,6 @@ class FaceHitEffect extends AbstractEffect implements PConstants {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("FaceHitEffect",
-        // AbstractEffect.FACE_HIT);
     }
 
     public void setHitRadius(float r_) {

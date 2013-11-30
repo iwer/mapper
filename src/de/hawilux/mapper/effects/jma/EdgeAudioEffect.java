@@ -23,7 +23,6 @@ import processing.core.PVector;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
-import controlP5.Group;
 import controlP5.Slider;
 import controlP5.Slider2D;
 import controlP5.Toggle;
@@ -31,8 +30,9 @@ import ddf.minim.AudioInput;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.ui.Gui;
+import de.hawilux.mapper.ui.VolumeBar;
 
-class EdgeAudioEffect extends AbstractEffect implements PConstants {
+public class EdgeAudioEffect extends AbstractEffect implements PConstants {
     HashMap<Integer, Edge> edges;
 
     AudioInput in;
@@ -41,9 +41,9 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
     ArrayList<ExpandingCircle> circlesToRemove;
     PGraphics buffer;
 
-    int cBlack = parent.color(0);
-    int cWhite = parent.color(255);
-    int cRed = parent.color(255, 0, 0);
+    int cBlack;
+    int cWhite;
+    int cRed;
 
     float threshold = .45f;
     float speed = 70;
@@ -51,20 +51,23 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
     PVector position;
     boolean debug = false;
 
-    Group grpEffectParams;
     Slider slThreshold;
     Slider slSpeed;
     Slider slDuration;
     Slider2D slPosition;
     Toggle tglDebug;
+    VolumeBar volumeBar;
 
-    EdgeAudioEffect(PApplet parent_, HashMap<Integer, Edge> edges_,
+    public EdgeAudioEffect(PApplet parent_, HashMap<Integer, Edge> edges_,
             AudioInput in_) {
-        parent = parent_;
+        super(parent_, "edgeaudio");
         edges = edges_;
 
-        buffer = parent.createGraphics(parent.displayWidth,
-                parent.displayHeight, JAVA2D);
+        cBlack = parent.color(0);
+        cWhite = parent.color(255);
+        cRed = parent.color(255, 0, 0);
+
+        buffer = parent.createGraphics(parent.width, parent.height, JAVA2D);
         circles = new ArrayDeque<ExpandingCircle>();
         circlesToRemove = new ArrayList<ExpandingCircle>();
         position = new PVector(parent.width / 2, parent.height / 2);
@@ -73,11 +76,10 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
     }
 
     public void addEffectControllersToGui(Gui gui) {
-        grpEffectParams = gui.getCp5().addGroup("edgeaudio")
-                .setColor(gui.getC()).setBackgroundHeight(235);
-        gui.getEffectAccordion().addItem(grpEffectParams);
+        volumeBar = new VolumeBar(gui.getCp5(), in, name, 10, 10, 100, 10);
+        volumeBar.getRmsbarSlider().moveTo(grpEffectParams);
         slThreshold = gui.getCp5().addSlider("edgeAudioThreshold")
-                .setCaptionLabel("threshold").setPosition(10, 10)
+                .setCaptionLabel("threshold").setPosition(10, 35)
                 .setValue(threshold).setColor(gui.getC())
                 .setRange(0.001f, .999f).moveTo(grpEffectParams);
         slThreshold.addCallback(new CallbackListener() {
@@ -88,7 +90,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
             }
         });
         slSpeed = gui.getCp5().addSlider("edgeAudioSpeed")
-                .setCaptionLabel("speed").setPosition(10, 35).setValue(speed)
+                .setCaptionLabel("speed").setPosition(10, 60).setValue(speed)
                 .setColor(gui.getC()).setRange(10, 200).moveTo(grpEffectParams);
         slSpeed.addCallback(new CallbackListener() {
             public void controlEvent(CallbackEvent theEvent) {
@@ -98,7 +100,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
             }
         });
         slDuration = gui.getCp5().addSlider("edgeAudioDuration")
-                .setCaptionLabel("duration").setPosition(10, 60)
+                .setCaptionLabel("duration").setPosition(10, 85)
                 .setValue(duration).setColor(gui.getC()).setRange(10, 200)
                 .moveTo(grpEffectParams);
         slDuration.addCallback(new CallbackListener() {
@@ -112,7 +114,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
                 .getCp5()
                 .addSlider2D("edgeAudioPosition")
                 .setCaptionLabel("position")
-                .setPosition(10, 85)
+                .setPosition(10, 110)
                 .setColor(gui.getC())
                 .setSize(100, 100)
                 .setMinX(0)
@@ -132,7 +134,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
         });
 
         tglDebug = gui.getCp5().addToggle("edgeAudioDebug")
-                .setCaptionLabel("debug").setPosition(10, 200).setValue(debug)
+                .setCaptionLabel("debug").setPosition(10, 225).setValue(debug)
                 .setColor(gui.getC()).moveTo(grpEffectParams);
         tglDebug.addCallback(new CallbackListener() {
             public void controlEvent(CallbackEvent theEvent) {
@@ -141,17 +143,14 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
                 }
             }
         });
-        // gui.getRdbEffects().addItem("EdgeAudioEffect",
-        // AbstractEffect.EDGE_AUDIO);
+
     }
 
     public void update() {
-        for (int i = 0; i < 1; i++) {
-            float value = in.mix.get(i);
-            if (value > threshold) {
-                circles.add(new ExpandingCircle(parent.frameCount, position,
-                        value));
-            }
+        volumeBar.update();
+        float value = in.mix.level();
+        if (value > threshold) {
+            circles.add(new ExpandingCircle(parent.frameCount, position, value));
         }
 
         buffer.beginDraw();
@@ -160,7 +159,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
         int count = 0;
         for (ExpandingCircle ec : circles) {
             ec.display();
-            if (ec.r > parent.width * 1 || count > 4) {
+            if (ec.r > parent.width * 2 || count > 4) {
                 circlesToRemove.add(ec);
             } else {
                 count++;
@@ -176,6 +175,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
     public void display() {
         // for debug
         if (debug) {
+            parent.blendMode(ADD);
             parent.image(buffer, 0, 0);
         }
         for (Edge e : edges.values()) {
@@ -208,7 +208,7 @@ class EdgeAudioEffect extends AbstractEffect implements PConstants {
             circle = parent.createShape(ELLIPSE, pos.x - (r / 2), pos.y
                     - (r / 2), r, r);
             circle.setFill(false);
-            circle.setStroke(parent.color(255, 0, 0));
+            circle.setStroke(cRed);
             circle.setStrokeWeight(duration);
             buffer.shape(circle);
         }
