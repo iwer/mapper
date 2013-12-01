@@ -31,15 +31,7 @@ import processing.event.MouseEvent;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
-import ddf.minim.AudioInput;
 import de.hawilux.mapper.effects.AbstractEffect;
-import de.hawilux.mapper.effects.jma.EdgeAudioEffect;
-import de.hawilux.mapper.effects.jma.EdgeFadeEffect;
-import de.hawilux.mapper.effects.jma.EdgeHitEffect;
-import de.hawilux.mapper.effects.jma.EdgeWalkEffect;
-import de.hawilux.mapper.effects.jma.FaceAudioEffect;
-import de.hawilux.mapper.effects.jma.FaceFadeEffect;
-import de.hawilux.mapper.effects.jma.FaceHitEffect;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.shapes.Point;
@@ -53,43 +45,66 @@ import de.hawilux.mapper.ui.Gui;
  */
 public class Mapper implements PConstants {
 
-    /** The parent. */
+    /** The parent PApplet. */
     PApplet parent;
 
     /** The gui. */
     Gui gui;
 
-    /** The form container. */
+    /**
+     * The form container. Contains the points, edges and faces and provides
+     * methods to manipulate them
+     */
     FormContainer formContainer;
 
-    /** The file chooser. */
+    /**
+     * The file chooser. A gui element to choose files for loading and saving
+     */
     FileChooser fileChooser;
 
+    /**
+     * The effect manager. Contains Available Effects and tracks active Effects
+     */
     EffectManager effectManager;
 
-    /** The cursor. */
+    /**
+     * The cursor. To find your mouse on the projection
+     */
     Cursor cursor;
 
-    /** The my listener. */
+    /**
+     * The Mapper Control listener. hooks to ControlP5 to catch events from our
+     * gui parts
+     */
     MapperControlListener myListener;
 
-    /** The show gui. */
+    /** The show gui flag. */
     boolean showGUI = false;
 
-    /** The show console. */
+    /** The show console flag. */
     boolean showConsole = false;
 
-    /** The setup mode. */
+    /** The setup mode flag. */
     boolean setupMode = false;
 
-    /** The effect mode. */
+    /** The effect mode flag. */
     boolean effectMode = false;
 
-    /** The version. */
+    /** The version string. */
     String version = "0.1.0";
 
+    /** The Mapper instance. */
     static Mapper theInstance;
 
+    /**
+     * Gets the single instance of Mapper.
+     * 
+     * @param parent
+     *            the parent PApplet
+     * @param cp5
+     *            the ControlP5 object
+     * @return single instance of Mapper
+     */
     public static Mapper getInstance(PApplet parent, ControlP5 cp5) {
         if (theInstance == null) {
             theInstance = new Mapper(parent, cp5);
@@ -97,6 +112,16 @@ public class Mapper implements PConstants {
         return theInstance;
     }
 
+    /**
+     * Gets the existing instance AFTER getInstance has been called at least
+     * once.
+     * 
+     * Does not need to know the PApplet or ControlP5 object
+     * 
+     * @return the existing instance
+     * @throws IllegalAccessException
+     *             the illegal access exception
+     */
     public static Mapper getExistingInstance() throws IllegalAccessException {
         if (theInstance != null) {
             return theInstance;
@@ -110,9 +135,9 @@ public class Mapper implements PConstants {
      * Instantiates a new mapper.
      * 
      * @param parent
-     *            the parent
+     *            the parent PApplet
      * @param cp5
-     *            the cp5
+     *            the ControlP5 object
      */
     private Mapper(PApplet parent, ControlP5 cp5) {
         this.parent = parent;
@@ -124,7 +149,7 @@ public class Mapper implements PConstants {
         gui = new Gui(parent, cp5);
         fileChooser.setGui(gui);
         formContainer.setFileChooser(fileChooser);
-        formContainer.addFileGui(gui);
+        formContainer.addGui(gui);
 
         effectManager = new EffectManager(this);
 
@@ -157,19 +182,6 @@ public class Mapper implements PConstants {
                 + "selecting a loop of edges with the middle button in edge mode."
                 + "In points selection mode, points can be moved with the right mouse button. "
                 + "Every form can be deleted by selecting it in its selection mode");
-    }
-
-    public void registerBuiltinEffects() {
-        registerEffect(new EdgeWalkEffect(parent, getEdges()));
-        registerEffect(new EdgeFadeEffect(parent, getEdges()));
-        registerEffect(new EdgeHitEffect(parent, getEdges()));
-        registerEffect(new FaceFadeEffect(parent, getFaces()));
-        registerEffect(new FaceHitEffect(parent, getFaces()));
-    }
-
-    public void registerBuiltinAudioEffects(AudioInput in) {
-        registerEffect(new EdgeAudioEffect(parent, getEdges(), in));
-        registerEffect(new FaceAudioEffect(parent, getFaces(), in));
     }
 
     /**
@@ -329,20 +341,41 @@ public class Mapper implements PConstants {
         return formContainer.getFaces();
     }
 
+    /**
+     * Register effect.
+     * 
+     * @param effect
+     *            an Extension of an AbstractEffect
+     */
     public void registerEffect(AbstractEffect effect) {
         effectManager.registerEffect(effect);
     }
 
+    /**
+     * List effects available.
+     */
     public void listEffectsAvailable() {
         for (String s : effectManager.getEffectsAvailable()) {
             PApplet.println(s);
         }
     }
 
+    /**
+     * Enable effect.
+     * 
+     * @param effectName
+     *            the effect name
+     */
     public void enableEffect(String effectName) {
         effectManager.enableEffect(effectName);
     }
 
+    /**
+     * Disable effect.
+     * 
+     * @param effectName
+     *            the effect name
+     */
     public void disableEffect(String effectName) {
         effectManager.disableEffect(effectName);
     }
@@ -357,9 +390,15 @@ public class Mapper implements PConstants {
         effect.addControllersToGui(gui);
     }
 
-    public void removeEffectControllers(AbstractEffect effect) {
-        effect.removeEffectControllersFromGui(gui);
-    }
+    // /**
+    // * Removes the effect controllers.
+    // *
+    // * @param effect
+    // * the effect
+    // */
+    // public void removeEffectControllers(AbstractEffect effect) {
+    // effect.removeEffectControllersFromGui(gui);
+    // }
 
     /**
      * The listener interface for receiving mapperControl events. The class that
@@ -403,38 +442,8 @@ public class Mapper implements PConstants {
                 } else if (theEvent.getGroup().getName() == "effect") {
                     effectMode = theEvent.getGroup().isOpen();
                     setupMode = false;
-                } else if (theEvent.getGroup().getName() == "chooseneffect") {
-                    int effectNr = (int) (theEvent.getGroup().getValue());
-                    switch (effectNr) {
-                    case 1:
-                        effectMode = false;
-                        break;
-                    // case AbstractEffect.EDGE_WALK:
-                    // effectMode = true;
-                    // break;
-                    // case AbstractEffect.EDGE_HIT:
-                    // effectMode = true;
-                    // break;
-                    // case AbstractEffect.FACE_HIT:
-                    // effectMode = true;
-                    // break;
-                    // case AbstractEffect.FACE_AUDIO:
-                    // effectMode = true;
-                    // break;
-                    // case AbstractEffect.EDGE_AUDIO:
-                    // effectMode = true;
-                    // break;
-                    // case AbstractEffect.FACE_FADE:
-                    // effectMode = true;
-                    // break;
-                    // case AbstractEffect.EDGE_FADE:
-                    // effectMode = true;
-                    // break;
-                    default:
-                        setupMode = false;
-                        break;
-                    }
                 }
+
             } else if (theEvent.isController()) {
                 // PApplet.println("got something from a controller "
                 // + theEvent.getController().getName() + " "

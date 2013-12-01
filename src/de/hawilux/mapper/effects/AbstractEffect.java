@@ -40,16 +40,41 @@ public abstract class AbstractEffect {
 
     /** The parent. */
     protected PApplet parent;
+
+    /** The grp effect params. */
     protected Group grpEffectParams;
+
+    /** The gui. */
     protected Gui gui;
+
+    /** The name. */
     protected String name;
+
+    /** The tgl enabled. */
     private Toggle tglEnabled;
 
-    public AbstractEffect(PApplet parent, String effectPrefix) {
+    /**
+     * Instantiates a new abstract effect.
+     * 
+     * @param parent
+     *            the parent
+     * @param effectPrefix
+     *            the effect name
+     */
+    public AbstractEffect(PApplet parent, String effectName) {
         this.parent = parent;
-        this.name = effectPrefix;
+        this.name = effectName;
     }
 
+    /**
+     * Adds the controllers to gui.
+     * 
+     * calls the addEffectControllersToGui method where custom gui elements can
+     * be added.
+     * 
+     * @param gui
+     *            the gui
+     */
     public void addControllersToGui(Gui gui) {
         this.gui = gui;
         grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC())
@@ -71,38 +96,17 @@ public abstract class AbstractEffect {
     public abstract void addEffectControllersToGui(Gui gui);
 
     /**
-     * Removes the effect controllers from gui.
+     * Adds the enable toggle.
      * 
-     * @param gui
-     *            the gui
+     * @param effectPrefix
+     *            the effect prefix
      */
-    public void removeEffectControllersFromGui(Gui gui) {
-        gui.getEffectAccordion().removeItem(grpEffectParams);
-    }
-
-    public void disable() {
-        gui.getEffectAccordion().removeItem(grpEffectParams);
-        grpEffectParams.hide();
-        if (tglEnabled.getState()) {
-            tglEnabled.setState(false);
-        }
-    }
-
-    public void enable() {
-        gui.getEffectAccordion().addItem(grpEffectParams);
-        grpEffectParams.show();
-        if (!tglEnabled.getState()) {
-            tglEnabled.setState(true);
-        }
-    }
-
     protected void addEnableToggle(String effectPrefix) {
         tglEnabled = gui.addEffectEnableToggle(name, new CallbackListener() {
             public void controlEvent(CallbackEvent theEvent) {
                 if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
                     float value = theEvent.getController().getValue();
                     if (value == 0) {
-                        // disable();
                         try {
                             Mapper.getExistingInstance().disableEffect(name);
                         } catch (IllegalAccessException e) {
@@ -122,16 +126,54 @@ public abstract class AbstractEffect {
     }
 
     /**
-     * Update.
+     * Disables the effect.
      */
-    public abstract void update();
+    public void disable() {
+        gui.getEffectAccordion().removeItem(grpEffectParams);
+        grpEffectParams.hide();
+        if (tglEnabled.getState()) {
+            tglEnabled.setState(false);
+        }
+    }
 
     /**
-     * Display.
+     * Displays the effect.
      */
     public abstract void display();
 
+    /**
+     * Enables the effect.
+     */
+    public void enable() {
+        gui.getEffectAccordion().addItem(grpEffectParams);
+        grpEffectParams.show();
+        if (!tglEnabled.getState()) {
+            tglEnabled.setState(true);
+        }
+    }
+
+    /**
+     * Gets the effects name.
+     * 
+     * @return the name
+     */
     public String getName() {
         return name;
     }
+
+    /**
+     * Removes the effect controllers from gui.
+     * 
+     * @param gui
+     *            the gui
+     */
+    @Deprecated
+    public void removeEffectControllersFromGui(Gui gui) {
+        gui.getEffectAccordion().removeItem(grpEffectParams);
+    }
+
+    /**
+     * Update.
+     */
+    public abstract void update();
 }

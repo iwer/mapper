@@ -159,9 +159,6 @@ public class Gui {
 
         // effect group
         effectGroup = cp5.addGroup("effect").setColor(c);
-        // rdbEffects = cp5.addRadioButton("chooseneffect").setPosition(10, 10)
-        // .setColor(c).setNoneSelectedAllowed(false).addItem("none", 1)
-        // .activate("none").moveTo(effectGroup);
 
         // accordion
         mainAccordion = cp5.addAccordion("acc").setPosition(10, 40)
@@ -183,6 +180,15 @@ public class Gui {
         console = cp5.addConsole(consoleTextArea);//
     }
 
+    /**
+     * Adds the effect enable toggle.
+     * 
+     * @param effectPrefix
+     *            the effect prefix
+     * @param callback
+     *            the callback
+     * @return the toggle
+     */
     public Toggle addEffectEnableToggle(String effectPrefix,
             CallbackListener callback) {
         Toggle ret = cp5.addToggle(effectPrefix + "enable")

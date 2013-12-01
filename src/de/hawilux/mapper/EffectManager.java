@@ -57,8 +57,9 @@ class EffectManager {
     /**
      * Register effect.
      * 
-     * @param effectName
-     *            the effect name
+     * Registers the effect as available and creates visible and hidden gui
+     * elements that appear when effect is activated.
+     * 
      * @param effect
      *            the effect
      */
@@ -70,6 +71,9 @@ class EffectManager {
 
     /**
      * Enable effect.
+     * 
+     * Adds the effect to the enabled effects and unhides the effect specific
+     * gui elements.
      * 
      * @param effectName
      *            the effect name
@@ -85,6 +89,9 @@ class EffectManager {
 
     /**
      * Disable effect.
+     * 
+     * Removes effect from enabled effects, and hides effect specific gui
+     * elements.
      * 
      * @param effectName
      *            the effect name

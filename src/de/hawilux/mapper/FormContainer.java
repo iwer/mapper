@@ -152,7 +152,8 @@ public class FormContainer {
     }
 
     /**
-     * Adds the edge to face.
+     * Adds the edge to new face. Considers Face complete when point count does
+     * not increase with aa added line. This needs to be improved!
      */
     public void addEdgeToFace() {
         if (selectMode == SELECT_EDGES) {
@@ -166,7 +167,7 @@ public class FormContainer {
                 int nBefore = faceToBuild.getPoints().size();
                 faceToBuild.addEdge(toAdd);
                 int nAfter = faceToBuild.getPoints().size();
-                // this needs a better check (line-loop?)
+                // TODO: this needs a better check (line-loop?)
                 if (nBefore == nAfter) {
                     faces.put(faceToBuild.getId(), faceToBuild);
                     faceToBuild = null;
@@ -177,12 +178,12 @@ public class FormContainer {
 
     // ###### GUI ###########################################################
     /**
-     * Adds the file gui.
+     * Adds the gui elements.
      * 
      * @param gui
      *            the gui
      */
-    public void addFileGui(Gui gui) {
+    public void addGui(Gui gui) {
         btnNewConfig = gui.getCp5().addButton("newConfig").setPosition(10, 10)
                 .setColor(gui.getC()).moveTo(gui.getFileGroup());
         btnNewConfig.addCallback(new CallbackListener() {
@@ -241,7 +242,7 @@ public class FormContainer {
     }
 
     /**
-     * Adds the point.
+     * Adds a point at mouse position.
      */
     public void addPoint() {
         Point a = null;
