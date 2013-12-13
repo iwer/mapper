@@ -22,7 +22,9 @@
  */
 package de.hawilux.mapper.ui;
 
+import controlP5.Chart;
 import controlP5.ControlP5;
+import controlP5.Group;
 import controlP5.Slider;
 import ddf.minim.AudioInput;
 
@@ -31,49 +33,67 @@ import ddf.minim.AudioInput;
  */
 public class VolumeBar {
 
-    /** The rmsbar. */
-    Slider rmsbarSlider;
-    AudioInput in;
-    ControlP5 cp5;
+	/** The rmsbar. */
+	Slider rmsbarSlider;
+	Chart rmsHistory;
 
-    /**
-     * Instantiates a new volume bar.
-     * 
-     * @param cp5
-     *            the cp5
-     * @param in
-     *            the in
-     * @param posX
-     *            the pos x
-     * @param posY
-     *            the pos y
-     * @param sizeX
-     *            the size x
-     * @param sizeY
-     *            the size y
-     */
-    public VolumeBar(ControlP5 cp5, AudioInput in, String name, int posX,
-            int posY, int sizeX, int sizeY) {
-        this.cp5 = cp5;
-        this.in = in;
-        rmsbarSlider = cp5.addSlider("volume" + name).setCaptionLabel("Volume")
-                .setPosition(posX, posY).setSize(sizeX, sizeY).setRange(0, 1)
-                .setValue(0);
-    }
+	AudioInput in;
+	ControlP5 cp5;
 
-    /**
-     * Gets the rmsbar slider.
-     * 
-     * @return the rmsbar slider
-     */
-    public Slider getRmsbarSlider() {
-        return rmsbarSlider;
-    }
+	/**
+	 * Instantiates a new volume bar.
+	 * 
+	 * @param cp5
+	 *            the cp5
+	 * @param in
+	 *            the in
+	 * @param posX
+	 *            the pos x
+	 * @param posY
+	 *            the pos y
+	 * @param sizeX
+	 *            the size x
+	 * @param sizeY
+	 *            the size y
+	 */
+	public VolumeBar(ControlP5 cp5, AudioInput in, String name, int posX,
+			int posY, int sizeX, int sizeY) {
+		this.cp5 = cp5;
+		this.in = in;
 
-    /**
-     * Update.
-     */
-    public void update() {
-        rmsbarSlider.setValue(in.mix.level());
-    }
+		rmsHistory = cp5.addChart("volhist" + name).setPosition(posX, posY)
+				.setSize(sizeX, sizeY * 2 / 5).setRange(0, 1)
+				.setView(Chart.BAR);
+		rmsHistory.addDataSet("volume");
+		rmsHistory.setData("volume", new float[64]);
+		rmsHistory.setStrokeWeight(1.5f);
+		rmsbarSlider = cp5.addSlider("volume" + name).setCaptionLabel("Volume")
+				.setPosition(posX, posY + sizeY * 3 / 5)
+				.setSize(sizeX, sizeY * 2 / 5).setRange(0, 1).setValue(0);
+	}
+
+	/**
+	 * Gets the rmsbar slider.
+	 * 
+	 * @return the rmsbar slider
+	 * @deprecated Use moveTogroup()
+	 */
+	@Deprecated
+	public Slider getRmsbarSlider() {
+		return rmsbarSlider;
+	}
+
+	public void moveToGroup(Group group) {
+		rmsHistory.moveTo(group);
+		rmsbarSlider.moveTo(group);
+	}
+
+	/**
+	 * Update.
+	 */
+	public void update() {
+		float level = in.mix.level();
+		rmsbarSlider.setValue(level);
+		rmsHistory.push("volume", level);
+	}
 }
