@@ -36,264 +36,267 @@ import processing.core.PVector;
  */
 public class Point extends Shape implements PConstants {
 
-	/** The radius. */
-	private int RADIUS = 15;
+    /** The radius. */
+    private int RADIUS = 15;
 
-	/** The RADIUS to the power of 2. */
-	private int RADIUS2 = RADIUS * 2;
+    /** The RADIUS to the power of 2. */
+    private int RADIUS2 = RADIUS * 2;
 
-	/** The show helper. */
-	private boolean showHelper;
+    /** The show helper. */
+    private boolean showHelper;
 
-	// /** The location. */
-	// private PVector centroid;
+    private boolean updated;
 
-	/** The connected edges. */
-	private ArrayList<Integer> connectedEdges;
+    /** The connected edges. */
+    private ArrayList<Integer> connectedEdges;
 
-	/** The dot. */
-	private PShape circle;
+    /** The dot. */
+    private PShape circle;
 
-	/**
-	 * Instantiates a new point.
-	 * 
-	 * @param parent_
-	 *            the parent_
-	 * @param id_
-	 *            the id_
-	 * @param x_
-	 *            the x_
-	 * @param y_
-	 *            the y_
-	 * @param helper_
-	 *            the helper_
-	 */
-	public Point(PApplet parent_, int id_, int x_, int y_, boolean helper_) {
-		super(parent_, id_);
-		centroid = new PVector(x_, y_);
-		// selected = false;
-		showHelper = helper_;
-		connectedEdges = new ArrayList<Integer>();
-		update();
-	}
+    /**
+     * Instantiates a new point.
+     * 
+     * @param parent_
+     *            the parent_
+     * @param id_
+     *            the id_
+     * @param x_
+     *            the x_
+     * @param y_
+     *            the y_
+     * @param helper_
+     *            the helper_
+     */
+    public Point(PApplet parent_, int id_, int x_, int y_, boolean helper_) {
+        super(parent_, id_);
+        centroid = new PVector(x_, y_);
+        // selected = false;
+        showHelper = helper_;
+        connectedEdges = new ArrayList<Integer>();
+        update();
+    }
 
-	/**
-	 * Gets the color.
-	 * 
-	 * @param config
-	 *            the config
-	 * @param selected
-	 *            the selected
-	 * @param mouseOverColor
-	 *            the mouse over color
-	 * @return the color
-	 */
-	int getColor(boolean config, boolean selected, boolean mouseOverColor) {
-		int c = 0;
-		if (!config) {
-			c = parent.color(255, 0, 0);
-		} else if (mouseOver(centroid) && mouseOverColor) {
-			if (selected) {
-				c = parent.color(0, 255, 255);
-			} else {
-				c = parent.color(255, 255, 0);
-			}
-		} else {
-			if (selected) {
-				c = parent.color(0, 255, 0);
-			} else {
-				c = parent.color(255, 0, 0);
-			}
-		}
-		return c;
-	}
+    public boolean isUpdated() {
+        return updated;
+    }
 
-	/**
-	 * Display.
-	 * 
-	 * @param config
-	 *            the config
-	 * @param selected
-	 *            the selected
-	 * @param mouseOverColor
-	 *            the mouse over color
-	 */
-	public void display(boolean config, boolean selected, boolean mouseOverColor) {
-		parent.pushMatrix();
+    public void setUpdated(boolean updated) {
+        this.updated = updated;
+    }
 
-		int c = getColor(config, selected, mouseOverColor);
-		circle.setStroke(c);
-		parent.shapeMode(CENTER);
-		circle.resetMatrix();
-		circle.translate(centroid.x, centroid.y);
-		parent.shape(circle);
-		shape.setStroke(c);
-		shape.resetMatrix();
-		shape.translate(centroid.x, centroid.y);
-		parent.shape(shape);
+    /**
+     * Gets the color.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     * @return the color
+     */
+    int getColor(boolean config, boolean selected, boolean mouseOverColor) {
+        int c = 0;
+        if (!config) {
+            c = parent.color(255, 0, 0);
+        } else if (mouseOver(centroid) && mouseOverColor) {
+            if (selected) {
+                c = parent.color(0, 255, 255);
+            } else {
+                c = parent.color(255, 255, 0);
+            }
+        } else {
+            if (selected) {
+                c = parent.color(0, 255, 0);
+            } else {
+                c = parent.color(255, 0, 0);
+            }
+        }
+        return c;
+    }
 
-		parent.popMatrix();
-	}
+    /**
+     * Display.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
+    public void display(boolean config, boolean selected, boolean mouseOverColor) {
+        parent.pushMatrix();
 
-	/**
-	 * Display helper.
-	 * 
-	 * @param selected
-	 *            the selected
-	 * @param mouseOverColor
-	 *            the mouse over color
-	 */
-	public void displayHelper(boolean selected, boolean mouseOverColor) {
-		int c = getColor(true, selected, mouseOverColor);
-		parent.pushMatrix();
-		parent.fill(c);
-		parent.text(id, centroid.x - 20, centroid.y - 20);
-		parent.popMatrix();
-	}
+        int c = getColor(config, selected, mouseOverColor);
+        circle.setStroke(c);
+        parent.shapeMode(CENTER);
+        circle.resetMatrix();
+        circle.translate(centroid.x, centroid.y);
+        parent.shape(circle);
+        shape.setStroke(c);
+        shape.resetMatrix();
+        shape.translate(centroid.x, centroid.y);
+        parent.shape(shape);
 
-	/**
-	 * Mouse over.
-	 * 
-	 * @param v
-	 *            the v
-	 * @return true, if successful
-	 */
-	boolean mouseOver(PVector v) {
-		PVector dist = new PVector(parent.mouseX, parent.mouseY);
-		dist.sub(v);
-		if (dist.magSq() > RADIUS2) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+        parent.popMatrix();
+    }
 
-	/**
-	 * Select.
-	 * 
-	 * @return the int
-	 */
-	public int select() {
-		if (mouseOver(centroid)) {
-			return id;
-		} else {
-			return -1;
-		}
-	}
+    /**
+     * Display helper.
+     * 
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
+    public void displayHelper(boolean selected, boolean mouseOverColor) {
+        int c = getColor(true, selected, mouseOverColor);
+        parent.pushMatrix();
+        parent.fill(c);
+        parent.text(id, centroid.x - 20, centroid.y - 20);
+        parent.popMatrix();
+    }
 
-	/**
-	 * Move.
-	 */
-	public void move() {
-		// if (selected) {
-		centroid.x = parent.mouseX;
-		centroid.y = parent.mouseY;
-		//update();
-		// }
-	}
+    /**
+     * Mouse over.
+     * 
+     * @param v
+     *            the v
+     * @return true, if successful
+     */
+    boolean mouseOver(PVector v) {
+        PVector dist = new PVector(parent.mouseX, parent.mouseY);
+        dist.sub(v);
+        if (dist.magSq() > RADIUS2) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-	/**
-	 * Move.
-	 * 
-	 * @param dx
-	 *            the dx
-	 * @param dy
-	 *            the dy
-	 */
-	public void move(int dx, int dy) {
-		// if (selected) {
-		centroid.x += dx;
-		centroid.y += dy;
-		//update();
-		// }
-	}
+    /**
+     * Select.
+     * 
+     * @return the int
+     */
+    public int select() {
+        if (mouseOver(centroid)) {
+            return id;
+        } else {
+            return -1;
+        }
+    }
 
-	/**
-	 * Update.
-	 */
-	public void update() {
-		// circle = parent.createShape(ELLIPSE, centroid.x, centroid.y, RADIUS,
-		// RADIUS);
-		circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
-		circle.setFill(false);
-		circle.setStrokeWeight(3);
-		shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
-		shape.setFill(false);
-		shape.setStrokeWeight(3);
-	}
+    /**
+     * Move.
+     */
+    public void move() {
+        centroid.x = parent.mouseX;
+        centroid.y = parent.mouseY;
+        updated = true;
+    }
 
-	/**
-	 * Adds the connected edge.
-	 * 
-	 * @param id_
-	 *            the id_
-	 */
-	public void addConnectedEdge(int id_) {
-		connectedEdges.add(id_);
-	}
+    /**
+     * Move.
+     * 
+     * @param dx
+     *            the dx
+     * @param dy
+     *            the dy
+     */
+    public void move(int dx, int dy) {
+        centroid.x += dx;
+        centroid.y += dy;
+        updated = true;
+    }
 
-	/**
-	 * Removes the connected edge.
-	 * 
-	 * @param id_
-	 *            the id_
-	 */
-	public void removeConnectedEdge(int id_) {
-		Integer toRemove = new Integer(id_);
-		if (connectedEdges.contains(toRemove)) {
-			connectedEdges.remove(toRemove);
-		}
-		// println("Connected Edges at point " + id + ":" + connectedEdges);
-	}
+    /**
+     * Update.
+     */
+    public void update() {
+        // circle = parent.createShape(ELLIPSE, centroid.x, centroid.y, RADIUS,
+        // RADIUS);
+        circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
+        circle.setFill(false);
+        circle.setStrokeWeight(3);
+        shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
+        shape.setFill(false);
+        shape.setStrokeWeight(3);
+    }
 
-	/**
-	 * Gets the connected edges.
-	 * 
-	 * @return the connected edges
-	 */
-	public ArrayList<Integer> getConnectedEdges() {
-		return connectedEdges;
-	}
+    /**
+     * Adds the connected edge.
+     * 
+     * @param id_
+     *            the id_
+     */
+    public void addConnectedEdge(int id_) {
+        connectedEdges.add(id_);
+    }
 
-	/**
-	 * Gets the location.
-	 * 
-	 * @return the location
-	 * @deprecated use getCentroid()
-	 */
-	@Deprecated
-	public PVector getLocation() {
-		return centroid;
-	}
+    /**
+     * Removes the connected edge.
+     * 
+     * @param id_
+     *            the id_
+     */
+    public void removeConnectedEdge(int id_) {
+        Integer toRemove = new Integer(id_);
+        if (connectedEdges.contains(toRemove)) {
+            connectedEdges.remove(toRemove);
+        }
+        // println("Connected Edges at point " + id + ":" + connectedEdges);
+    }
 
-	/**
-	 * Gets the x.
-	 * 
-	 * @return the x
-	 */
-	public float getX() {
-		return centroid.x;
-	}
+    /**
+     * Gets the connected edges.
+     * 
+     * @return the connected edges
+     */
+    public ArrayList<Integer> getConnectedEdges() {
+        return connectedEdges;
+    }
 
-	/**
-	 * Gets the y.
-	 * 
-	 * @return the y
-	 */
-	public float getY() {
-		return centroid.y;
-	}
+    /**
+     * Gets the location.
+     * 
+     * @return the location
+     * @deprecated use getCentroid()
+     */
+    @Deprecated
+    public PVector getLocation() {
+        return centroid;
+    }
 
-	/**
-	 * Equals.
-	 * 
-	 * @param other
-	 *            the other
-	 * @return true, if successful
-	 */
-	public boolean equals(Point other) {
-		return (this.parent.equals(other.parent)
-				&& this.showHelper == other.showHelper && this.id == other.id && this.centroid
-					.equals(other.centroid));
-	}
+    /**
+     * Gets the x.
+     * 
+     * @return the x
+     */
+    public float getX() {
+        return centroid.x;
+    }
+
+    /**
+     * Gets the y.
+     * 
+     * @return the y
+     */
+    public float getY() {
+        return centroid.y;
+    }
+
+    /**
+     * Equals.
+     * 
+     * @param other
+     *            the other
+     * @return true, if successful
+     */
+    public boolean equals(Point other) {
+        return (this.parent.equals(other.parent)
+                && this.showHelper == other.showHelper && this.id == other.id && this.centroid
+                    .equals(other.centroid));
+    }
 }

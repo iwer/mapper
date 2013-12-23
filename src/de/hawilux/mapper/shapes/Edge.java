@@ -198,6 +198,9 @@ public class Edge extends Shape implements PConstants {
      *            the mouse over color
      */
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
+        if (a.isUpdated() || b.isUpdated()) {
+            update();
+        }
         parent.pushMatrix();
         int c = getColor(config, selected, mouseOverColor);
 

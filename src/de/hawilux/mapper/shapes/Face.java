@@ -179,6 +179,15 @@ public class Face extends Shape implements PConstants {
      *            the mouse over color
      */
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
+        boolean update = false;
+        for (Point p : points) {
+            if (p.isUpdated()) {
+                update = true;
+            }
+        }
+        if (update) {
+            update();
+        }
         parent.pushMatrix();
         int c = getColor(config, selected, mouseOverColor);
 
