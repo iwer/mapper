@@ -26,6 +26,7 @@ import java.util.Set;
 
 import processing.core.PApplet;
 import de.hawilux.mapper.effects.AbstractEffect;
+import de.hawilux.mapper.net.OscMessagePaths;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -67,6 +68,7 @@ class EffectManager {
         PApplet.println("Registering effect - " + effect.getName());
         effectsAvailable.put(effect.getName(), effect);
         mapper.addEffectControllers(effect);
+        OscMessagePaths.addEffectPath(effect.getName());
     }
 
     /**
