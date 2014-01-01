@@ -19,11 +19,11 @@ void setup() {
 
   minim = new Minim(this);
   in = minim.getLineIn();
-  
-  volume = new VolumeBar(cp5, in, 10,10,100,10);
+
+  volume = new VolumeBar(cp5, in, "main", 10, 10, 100, 25);
 }
 
 void draw() {
-    background(0);
-    volume.update();
+  background(0);
+  volume.update();
 }
