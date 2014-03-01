@@ -4,10 +4,14 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import controlP5.Accordion;
 import controlP5.CColor;
+import controlP5.CallbackEvent;
+import controlP5.CallbackListener;
 import controlP5.ControlFont;
 import controlP5.ControlP5;
 import controlP5.Group;
 import controlP5.Textlabel;
+import controlP5.Toggle;
+import de.hawilux.mapper.net.OscStack;
 import de.hawilux.mapper.ui.cp5view.ArrowButton;
 
 public class AndroidRemoteGui {
@@ -20,7 +24,7 @@ public class AndroidRemoteGui {
     Accordion mainAccordion;
     Group effectGroup;
     Group setupGroup;
-    Textlabel selectedPointsLabel;
+    private Textlabel selectedPointsLabel;
     CColor colorScheme;
 
     public AndroidRemoteGui(PApplet parent) {
@@ -54,8 +58,8 @@ public class AndroidRemoteGui {
         cp5.addButton("next").setSize(parent.width / 2 - 20, 50)
                 .setPosition(parent.width / 2, 10).moveTo(setupGroup);
 
-        selectedPointsLabel = cp5.addTextlabel("selected").setPosition(0, 80)
-                .setText("Nr: ").moveTo(setupGroup);
+        setSelectedPointsLabel(cp5.addTextlabel("selected").setPosition(0, 80)
+                .setText("Nr: ").moveTo(setupGroup));
 
         cp5.addButton("up").setCaptionLabel("")
                 .setPosition(parent.width / 2 - 60, 80).setSize(100, 100)
@@ -84,5 +88,46 @@ public class AndroidRemoteGui {
                 .addItem(effectGroup);
         mainAccordion.setCollapseMode(Accordion.SINGLE);
 
+    }
+
+    int effectCnt = 0;
+    int yPos = 10;
+
+    public void addEffectToggle(String effectname, final OscStack oscStack) {
+        Toggle t;
+        if (effectCnt % 2 == 0) {
+            t = cp5.addToggle(effectname.toLowerCase())
+                    .setSize(parent.width / 2 - 20, 50).setPosition(0, yPos)
+                    .moveTo(effectGroup);
+        } else {
+            t = cp5.addToggle(effectname.toLowerCase())
+                    .setSize(parent.width / 2 - 20, 50)
+                    .setPosition(parent.width / 2, yPos).moveTo(effectGroup);
+            yPos += 100;
+        }
+
+        t.addCallback(new CallbackListener() {
+            @Override
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    oscStack.sendOscMessage("/mapper/effect/"
+                            + theEvent.getController().getName(),
+                            (int) theEvent.getController().getValue());
+                }
+            }
+        });
+        effectCnt++;
+    }
+
+    public Textlabel getSelectedPointsLabel() {
+        return selectedPointsLabel;
+    }
+
+    public void setSelectedPointsLabel(Textlabel selectedPointsLabel) {
+        this.selectedPointsLabel = selectedPointsLabel;
+    }
+
+    public void setSelectedPointsLabelText(String text) {
+        this.selectedPointsLabel.setText(text);
     }
 }

@@ -38,142 +38,152 @@ import de.hawilux.mapper.ui.Gui;
  */
 public abstract class AbstractEffect {
 
-    /** The parent. */
-    protected PApplet parent;
+	/** The parent. */
+	protected PApplet parent;
 
-    /** The grp effect params. */
-    protected Group grpEffectParams;
+	/** The grp effect params. */
+	protected Group grpEffectParams;
 
-    /** The gui. */
-    protected Gui gui;
+	/** The gui. */
+	protected Gui gui;
 
-    /** The name. */
-    protected String name;
+	/** The name. */
+	protected String name;
 
-    /** The tgl enabled. */
-    private Toggle tglEnabled;
+	/** The tgl enabled. */
+	private Toggle tglEnabled;
 
-    /**
-     * Instantiates a new abstract effect.
-     * 
-     * @param parent
-     *            the parent
-     * @param effectPrefix
-     *            the effect name
-     */
-    public AbstractEffect(PApplet parent, String effectName) {
-        this.parent = parent;
-        this.name = effectName;
-    }
+	/**
+	 * Instantiates a new abstract effect.
+	 * 
+	 * @param parent
+	 *            the parent
+	 * @param effectPrefix
+	 *            the effect name
+	 */
+	public AbstractEffect(PApplet parent, String effectName) {
+		this.parent = parent;
+		this.name = effectName;
+		this.gui = null;
+	}
 
-    /**
-     * Adds the controllers to gui.
-     * 
-     * calls the addEffectControllersToGui method where custom gui elements can
-     * be added.
-     * 
-     * @param gui
-     *            the gui
-     */
-    public void addControllersToGui(Gui gui) {
-        this.gui = gui;
-        grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC())
-                .hide();
-        gui.getEffectAccordion().addItem(grpEffectParams);
+	/**
+	 * Adds the controllers to gui.
+	 * 
+	 * calls the addEffectControllersToGui method where custom gui elements can
+	 * be added.
+	 * 
+	 * @param gui
+	 *            the gui
+	 */
+	public void addControllersToGui(Gui gui) {
+		this.gui = gui;
+		grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC())
+				.hide();
+		gui.getEffectAccordion().addItem(grpEffectParams);
 
-        addEffectControllersToGui(gui);
+		addEffectControllersToGui(gui);
 
-        addEnableToggle(name);
+		addEnableToggle(name);
 
-    }
+	}
 
-    /**
-     * Adds the effect controllers to gui.
-     * 
-     * @param gui
-     *            the gui
-     */
-    public abstract void addEffectControllersToGui(Gui gui);
+	/**
+	 * Adds the effect controllers to gui.
+	 * 
+	 * @param gui
+	 *            the gui
+	 */
+	public abstract void addEffectControllersToGui(Gui gui);
 
-    /**
-     * Adds the enable toggle.
-     * 
-     * @param effectPrefix
-     *            the effect prefix
-     */
-    protected void addEnableToggle(String effectPrefix) {
-        tglEnabled = gui.addEffectEnableToggle(name, new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    float value = theEvent.getController().getValue();
-                    if (value == 0) {
-                        try {
-                            Mapper.getExistingInstance().disableEffect(name);
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            Mapper.getExistingInstance().enableEffect(name);
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
+	/**
+	 * Adds the enable toggle.
+	 * 
+	 * @param effectPrefix
+	 *            the effect prefix
+	 */
+	protected void addEnableToggle(String effectPrefix) {
+		if (gui != null) {
+			tglEnabled = gui.addEffectToggle(name, new CallbackListener() {
+				public void controlEvent(CallbackEvent theEvent) {
+					if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+						float value = theEvent.getController().getValue();
+						if (value == 0) {
+							try {
+								Mapper.getExistingInstance()
+										.disableEffect(name);
+							} catch (IllegalAccessException e) {
+								e.printStackTrace();
+							}
+						} else {
+							try {
+								Mapper.getExistingInstance().enableEffect(name);
+							} catch (IllegalAccessException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			});
+		}
 
-    }
+	}
 
-    /**
-     * Disables the effect.
-     */
-    public void disable() {
-        gui.getEffectAccordion().removeItem(grpEffectParams);
-        grpEffectParams.hide();
-        if (tglEnabled.getState()) {
-            tglEnabled.setState(false);
-        }
-    }
+	/**
+	 * Disables the effect.
+	 */
+	public void disable() {
+		if (gui != null) {
+			gui.getEffectAccordion().removeItem(grpEffectParams);
+			grpEffectParams.hide();
+			if (tglEnabled.getState()) {
+				tglEnabled.setState(false);
+			}
+		}
+	}
 
-    /**
-     * Displays the effect.
-     */
-    public abstract void display();
+	/**
+	 * Displays the effect.
+	 */
+	public abstract void display();
 
-    /**
-     * Enables the effect.
-     */
-    public void enable() {
-        gui.getEffectAccordion().addItem(grpEffectParams);
-        grpEffectParams.show();
-        if (!tglEnabled.getState()) {
-            tglEnabled.setState(true);
-        }
-    }
+	/**
+	 * Enables the effect.
+	 */
+	public void enable() {
+		if (gui != null) {
+			gui.getEffectAccordion().addItem(grpEffectParams);
+			grpEffectParams.show();
+			if (!tglEnabled.getState()) {
+				tglEnabled.setState(true);
+			}
+		}
+	}
 
-    /**
-     * Gets the effects name.
-     * 
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
+	/**
+	 * Gets the effects name.
+	 * 
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /**
-     * Removes the effect controllers from gui.
-     * 
-     * @param gui
-     *            the gui
-     */
-    @Deprecated
-    public void removeEffectControllersFromGui(Gui gui) {
-        gui.getEffectAccordion().removeItem(grpEffectParams);
-    }
+	/**
+	 * Removes the effect controllers from gui.
+	 * 
+	 * @param gui
+	 *            the gui
+	 */
+	@Deprecated
+	public void removeEffectControllersFromGui(Gui gui) {
+		if (gui != null) {
+			gui.getEffectAccordion().removeItem(grpEffectParams);
+		}
+	}
 
-    /**
-     * Update.
-     */
-    public abstract void update();
+	/**
+	 * Update.
+	 */
+	public abstract void update();
 }

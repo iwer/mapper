@@ -1,31 +1,9 @@
-/*
- *   A 2D Video Mapping Tool created from experiences in the HAWilux project
- *   Copyright (C) 2013  Iwer Petersen (iwer.petersen@gmail.com)
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License along
- *   with this program; if not, write to the Free Software Foundation, Inc.,
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * GUI class
- *
- * defines the User Interface
- *
- */
 package de.hawilux.mapper.ui;
 
 import processing.core.PApplet;
 import controlP5.Accordion;
 import controlP5.CColor;
+import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
 import controlP5.Group;
@@ -34,12 +12,9 @@ import controlP5.RadioButton;
 import controlP5.Textarea;
 import controlP5.Textlabel;
 import controlP5.Toggle;
+import de.hawilux.mapper.net.OscStack;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Gui.
- */
-public class Gui {
+public class PcRemoteGui {
 
     /** The parent. */
     PApplet parent;
@@ -67,12 +42,6 @@ public class Gui {
 
     /** The c. */
     CColor c;
-
-    /** The console. */
-    Println console;
-
-    /** The console text area. */
-    Textarea consoleTextArea;
 
     /** The fps label. */
     Textlabel fpsLabel;
@@ -102,7 +71,9 @@ public class Gui {
     Group setupEditGroup;
 
     /** The filename. */
-    String filename;
+    String filename = new String();
+
+    Textlabel selectedPointsLabel;
 
     private int nextEffectTogglePos = 10;
 
@@ -112,7 +83,7 @@ public class Gui {
      * @param parent_
      *            the parent_
      */
-    public Gui(PApplet parent_) {
+    public PcRemoteGui(PApplet parent_) {
         this(parent_, new ControlP5(parent_));
     }
 
@@ -124,14 +95,14 @@ public class Gui {
      * @param cp5_
      *            the cp5_
      */
-    public Gui(PApplet parent_, ControlP5 cp5_) {
+    public PcRemoteGui(PApplet parent_, ControlP5 cp5_) {
         this.parent = parent_;
 
-        cActive = parent.color(203, 70, 144);
-        cBackground = parent.color(112, 70, 203);
-        cCaptionLabel = parent.color(0, 0, 0);
-        cForeground = parent.color(156, 70, 203);
-        cValueLabel = parent.color(0, 0, 0);
+        // cActive = parent.color(203, 70, 144);
+        // cBackground = parent.color(112, 70, 203);
+        // cCaptionLabel = parent.color(0, 0, 0);
+        // cForeground = parent.color(156, 70, 203);
+        // cValueLabel = parent.color(0, 0, 0);
 
         c = new CColor();// (cForeground, cBackground, cActive,
         // cCaptionLabel, cValueLabel);
@@ -139,7 +110,10 @@ public class Gui {
 
         // frameRate at top
         cp5.addFrameRate().setInterval(10).setPosition(10, 10);
-        cp5.addTextlabel("fps").setPosition(25, 10).setText("FPS");
+        fpsLabel = cp5.addTextlabel("fps").setPosition(25, 10).setText("FPS");
+
+        selectedPointsLabel = cp5.addTextlabel("selectedPoint")
+                .setPosition(150, 10).setColor(c).setText("Nr:");
 
         // file group
         fileGroup = cp5.addGroup("file").setColor(c);
@@ -169,33 +143,35 @@ public class Gui {
         effectAccordion = cp5.addAccordion("effAcc")
                 .setPosition(parent.width - 210, 40).setWidth(100);
         mainAccordion.setCollapseMode(Accordion.SINGLE);
-
-        // console
-        consoleTextArea = cp5.addTextarea("console")
-                .setPosition(10, parent.height - 230).setSize(500, 200)
-                .setFont(parent.createFont("", 10)).setLineHeight(14)
-                .setColor(c);
-        ;
-
-        console = cp5.addConsole(consoleTextArea);//
     }
 
-    /**
-     * Adds the effect enable toggle.
-     * 
-     * @param effectPrefix
-     *            the effect prefix
-     * @param callback
-     *            the callback
-     * @return the toggle
-     */
-    public Toggle addEffectToggle(String effectPrefix, CallbackListener callback) {
-        Toggle ret = cp5.addToggle(effectPrefix + "enable")
-                .setCaptionLabel(effectPrefix).setSize(50, 10)
-                .setPosition(10, nextEffectTogglePos).setValue(false)
-                .moveTo(effectGroup).addCallback(callback);
-        nextEffectTogglePos += 30;
-        return ret;
+    int effectCnt = 0;
+    int yPos = 10;
+
+    public void addEffectToggle(String effectname, final OscStack oscStack) {
+        Toggle t;
+        if (effectCnt % 2 == 0) {
+            t = cp5.addToggle(effectname.toLowerCase())
+                    .setSize(parent.width / 2 - 20, 50).setPosition(0, yPos)
+                    .moveTo(effectGroup);
+        } else {
+            t = cp5.addToggle(effectname.toLowerCase())
+                    .setSize(parent.width / 2 - 20, 50)
+                    .setPosition(parent.width / 2, yPos).moveTo(effectGroup);
+            yPos += 100;
+        }
+
+        t.addCallback(new CallbackListener() {
+            @Override
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    oscStack.sendOscMessage("/mapper/effect/"
+                            + theEvent.getController().getName(),
+                            (int) theEvent.getController().getValue());
+                }
+            }
+        });
+        effectCnt++;
     }
 
     public Group getEffectGroup() {
@@ -289,34 +265,16 @@ public class Gui {
         }
     }
 
-    /**
-     * Sets the console enabled.
-     * 
-     * @param state
-     *            the new console enabled
-     */
-    public void setConsoleEnabled(boolean state) {
-        if (state == true) {
-            consoleTextArea.show();
-        } else {
-            consoleTextArea.hide();
-        }
+    public Textlabel getSelectedPointsLabel() {
+        return selectedPointsLabel;
     }
 
-    /**
-     * Save gui properties.
-     */
-    public void saveGuiProperties() {
-        console.clear();
-        System.out.flush();
-        cp5.saveProperties(("gui.properties"));
+    public void setSelectedPointsLabel(Textlabel selectedPointsLabel) {
+        this.selectedPointsLabel = selectedPointsLabel;
     }
 
-    /**
-     * Load gui properties.
-     */
-    public void loadGuiProperties() {
-        System.out.flush();
-        cp5.loadProperties(("gui.properties"));
+    public void setSelectedPointsLabelText(String text) {
+        this.selectedPointsLabel.setText(text);
     }
+
 }
