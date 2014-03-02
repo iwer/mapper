@@ -25,6 +25,16 @@ public class OscMessagePaths {
 
     public final static String SELECTMODE = "/mapper/edit/selectmode";
 
+    public final static String NEWCONFIG = "/mapper/file/newconfig";
+
+    public final static String REQFILES = "/mapper/file/requestfilelist";
+
+    public final static String FILELIST = "/mapper/file/filelist";
+
+    public final static String SAVECONFIG = "/mapper/file/saveconfig";
+
+    public final static String LOADCONFIG = "/mapper/file/loadconfig";
+
     private final static ArrayList<String> effectPaths = new ArrayList<String>();
 
     public static void addEffectPath(String effectName) {
