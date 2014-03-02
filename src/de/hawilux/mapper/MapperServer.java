@@ -12,6 +12,7 @@ import processing.event.MouseEvent;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import de.hawilux.mapper.effects.AbstractEffect;
+import de.hawilux.mapper.net.OscMessagePaths;
 import de.hawilux.mapper.net.OscStack;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
@@ -192,6 +193,11 @@ public class MapperServer implements PConstants {
                     formContainer.addEdgeToFace();
                 }
             }
+            // send selected point
+            OscMessage myOscMessage = new OscMessage(
+					"/mapper/info/selectedpoint");
+			myOscMessage.add(formContainer.selectedPoint);
+			oscStack.sendOscMessage(myOscMessage);
             break;
         case MouseEvent.RELEASE:
             // do something for mouse released
@@ -481,6 +487,8 @@ public class MapperServer implements PConstants {
 				formContainer.points.get(formContainer.selectedPoint).move(-1, 0);
 			} else if (theOscMessage.checkAddrPattern("/mapper/edit/right") == true) {
 				formContainer.points.get(formContainer.selectedPoint).move(1, 0);
+			} else if (theOscMessage.checkAddrPattern(OscMessagePaths.SELECTMODE) == true) {
+					formContainer.setSelectMode(theOscMessage.get(0).intValue());
 			} else {
 				for (String s : effectManager.getEffectsAvailable()) {
 					if (theOscMessage.checkAddrPattern("/mapper/effect/"

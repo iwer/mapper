@@ -23,6 +23,8 @@ public class OscMessagePaths {
 
     public final static String HELPER = "/mapper/edit/helper";
 
+    public final static String SELECTMODE = "/mapper/edit/selectmode";
+
     private final static ArrayList<String> effectPaths = new ArrayList<String>();
 
     public static void addEffectPath(String effectName) {

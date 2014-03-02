@@ -2,14 +2,13 @@ package de.hawilux.mapper.ui;
 
 import processing.core.PApplet;
 import controlP5.Accordion;
+import controlP5.Button;
 import controlP5.CColor;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
 import controlP5.Group;
-import controlP5.Println;
 import controlP5.RadioButton;
-import controlP5.Textarea;
 import controlP5.Textlabel;
 import controlP5.Toggle;
 import de.hawilux.mapper.net.OscStack;
@@ -69,6 +68,21 @@ public class PcRemoteGui {
 
     /** The setup edit group. */
     Group setupEditGroup;
+
+    /** The tgl helper. */
+    Toggle tglHelper;
+
+    /** The rdb select mode. */
+    RadioButton rdbSelectMode;
+
+    /** The btn delete selected. */
+    Button btnDeleteSelected;
+
+    /** The btn switch dir. */
+    Button btnSwitchDir;
+
+    /** The btn subdivide. */
+    Button btnSubdivide;
 
     /** The filename. */
     String filename = new String();
@@ -130,6 +144,41 @@ public class PcRemoteGui {
         setupEditGroup = cp5.addGroup("editgroup").setLabel("edit")
                 .setPosition(0, 100).setColor(c).disableCollapse()
                 .moveTo(setupGroup);
+
+        tglHelper = cp5.addToggle("showHelper").setPosition(10, 10).setColor(c)
+                .setMode(ControlP5.SWITCH).setValue(true).moveTo(setupGroup);
+
+        rdbSelectMode = cp5.addRadioButton("selectmode").setPosition(10, 2)
+                .setColor(c).setNoneSelectedAllowed(false).addItem("points", 1)
+                .addItem("edges", 2).addItem("faces", 3)
+                .moveTo(setupSelectModeGroup).activate("points");
+        btnDeleteSelected = cp5.addButton("deleteSelected").setPosition(10, 2)
+                .setColor(c).moveTo(setupEditGroup);
+        btnDeleteSelected.addCallback(new CallbackListener() {
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    // deleteSelected();
+                }
+            }
+        });
+        btnSubdivide = cp5.addButton("subdivide").setPosition(10, 27)
+                .setColor(c).hide().moveTo(setupEditGroup);
+        btnSubdivide.addCallback(new CallbackListener() {
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    // subdivideEdge();
+                }
+            }
+        });
+        btnSwitchDir = cp5.addButton("switchdir").setPosition(10, 52)
+                .setColor(c).hide().moveTo(setupEditGroup);
+        btnSwitchDir.addCallback(new CallbackListener() {
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    // switchEdgeDirection();
+                }
+            }
+        });
 
         // effect group
         effectGroup = cp5.addGroup("effect").setColor(c);
