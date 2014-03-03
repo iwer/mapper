@@ -69,6 +69,15 @@ public class PcRemoteGui {
     /** The setup edit group. */
     Group setupEditGroup;
 
+    /** The btn new config. */
+    Button btnNewConfig;
+
+    /** The btn load config. */
+    Button btnLoadConfig;
+
+    /** The btn save config. */
+    Button btnSaveConfig;
+    
     /** The tgl helper. */
     Toggle tglHelper;
 
@@ -132,6 +141,18 @@ public class PcRemoteGui {
         // file group
         fileGroup = cp5.addGroup("file").setColor(c);
 
+        btnNewConfig = cp5.addButton("newConfig").setPosition(10, 10)
+                .setColor(c).moveTo(fileGroup);
+        
+        btnLoadConfig = cp5.addButton("loadConfig")
+                .setPosition(10, 35).setColor(c)
+                .moveTo(fileGroup);
+        btnSaveConfig = cp5.addButton("saveConfig")
+                .setPosition(10, 60).setColor(c)
+                .moveTo(fileGroup);
+        
+        
+        
         // setup group
         setupGroup = cp5.addGroup("setup").setColor(c).setBackgroundHeight(200);
 
