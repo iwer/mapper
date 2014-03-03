@@ -34,18 +34,18 @@ import processing.core.PVector;
 /**
  * The Class Point.
  */
-public class Point extends Shape implements PConstants {
+public class Point extends Shape implements PConstants, IPoint {
 
     /** The radius. */
     private int RADIUS = 15;
 
     /** The RADIUS to the power of 2. */
-    private int RADIUS2 = RADIUS * 2;
+    protected int RADIUS2 = RADIUS * 2;
 
     /** The show helper. */
     private boolean showHelper;
 
-    private boolean updated;
+    protected boolean updated;
 
     /** The connected edges. */
     private ArrayList<Integer> connectedEdges;
@@ -76,11 +76,19 @@ public class Point extends Shape implements PConstants {
         update();
     }
 
-    public boolean isUpdated() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#isUpdated()
+	 */
+    @Override
+	public boolean isUpdated() {
         return updated;
     }
 
-    public void setUpdated(boolean updated) {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#setUpdated(boolean)
+	 */
+    @Override
+	public void setUpdated(boolean updated) {
         this.updated = updated;
     }
 
@@ -115,17 +123,11 @@ public class Point extends Shape implements PConstants {
         return c;
     }
 
-    /**
-     * Display.
-     * 
-     * @param config
-     *            the config
-     * @param selected
-     *            the selected
-     * @param mouseOverColor
-     *            the mouse over color
-     */
-    public void display(boolean config, boolean selected, boolean mouseOverColor) {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#display(boolean, boolean, boolean)
+	 */
+    @Override
+	public void display(boolean config, boolean selected, boolean mouseOverColor) {
         parent.pushMatrix();
 
         int c = getColor(config, selected, mouseOverColor);
@@ -142,15 +144,11 @@ public class Point extends Shape implements PConstants {
         parent.popMatrix();
     }
 
-    /**
-     * Display helper.
-     * 
-     * @param selected
-     *            the selected
-     * @param mouseOverColor
-     *            the mouse over color
-     */
-    public void displayHelper(boolean selected, boolean mouseOverColor) {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#displayHelper(boolean, boolean)
+	 */
+    @Override
+	public void displayHelper(boolean selected, boolean mouseOverColor) {
         int c = getColor(true, selected, mouseOverColor);
         parent.pushMatrix();
         parent.fill(c);
@@ -175,12 +173,11 @@ public class Point extends Shape implements PConstants {
         }
     }
 
-    /**
-     * Select.
-     * 
-     * @return the int
-     */
-    public int select() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#select()
+	 */
+    @Override
+	public int select() {
         if (mouseOver(centroid)) {
             return id;
         } else {
@@ -188,33 +185,31 @@ public class Point extends Shape implements PConstants {
         }
     }
 
-    /**
-     * Move.
-     */
-    public void move() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#move()
+	 */
+    @Override
+	public void move() {
         centroid.x = parent.mouseX;
         centroid.y = parent.mouseY;
         updated = true;
     }
 
-    /**
-     * Move.
-     * 
-     * @param dx
-     *            the dx
-     * @param dy
-     *            the dy
-     */
-    public void move(int dx, int dy) {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#move(int, int)
+	 */
+    @Override
+	public void move(int dx, int dy) {
         centroid.x += dx;
         centroid.y += dy;
         updated = true;
     }
 
-    /**
-     * Update.
-     */
-    public void update() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#update()
+	 */
+    @Override
+	public void update() {
         // circle = parent.createShape(ELLIPSE, centroid.x, centroid.y, RADIUS,
         // RADIUS);
         circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
@@ -225,23 +220,19 @@ public class Point extends Shape implements PConstants {
         shape.setStrokeWeight(3);
     }
 
-    /**
-     * Adds the connected edge.
-     * 
-     * @param id_
-     *            the id_
-     */
-    public void addConnectedEdge(int id_) {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#addConnectedEdge(int)
+	 */
+    @Override
+	public void addConnectedEdge(int id_) {
         connectedEdges.add(id_);
     }
 
-    /**
-     * Removes the connected edge.
-     * 
-     * @param id_
-     *            the id_
-     */
-    public void removeConnectedEdge(int id_) {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#removeConnectedEdge(int)
+	 */
+    @Override
+	public void removeConnectedEdge(int id_) {
         Integer toRemove = new Integer(id_);
         if (connectedEdges.contains(toRemove)) {
             connectedEdges.remove(toRemove);
@@ -249,12 +240,11 @@ public class Point extends Shape implements PConstants {
         // println("Connected Edges at point " + id + ":" + connectedEdges);
     }
 
-    /**
-     * Gets the connected edges.
-     * 
-     * @return the connected edges
-     */
-    public ArrayList<Integer> getConnectedEdges() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#getConnectedEdges()
+	 */
+    @Override
+	public ArrayList<Integer> getConnectedEdges() {
         return connectedEdges;
     }
 
@@ -269,31 +259,25 @@ public class Point extends Shape implements PConstants {
         return centroid;
     }
 
-    /**
-     * Gets the x.
-     * 
-     * @return the x
-     */
-    public float getX() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#getX()
+	 */
+    @Override
+	public float getX() {
         return centroid.x;
     }
 
-    /**
-     * Gets the y.
-     * 
-     * @return the y
-     */
-    public float getY() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#getY()
+	 */
+    @Override
+	public float getY() {
         return centroid.y;
     }
 
-    /**
-     * Equals.
-     * 
-     * @param other
-     *            the other
-     * @return true, if successful
-     */
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.shapes.IPoint#equals(de.hawilux.mapper.shapes.Point)
+	 */
     public boolean equals(Point other) {
         return (this.parent.equals(other.parent)
                 && this.showHelper == other.showHelper && this.id == other.id && this.centroid

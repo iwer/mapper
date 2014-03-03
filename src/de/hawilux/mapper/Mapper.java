@@ -32,9 +32,9 @@ import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
 import de.hawilux.mapper.effects.AbstractEffect;
-import de.hawilux.mapper.shapes.Edge;
-import de.hawilux.mapper.shapes.Face;
-import de.hawilux.mapper.shapes.Point;
+import de.hawilux.mapper.shapes.IEdge;
+import de.hawilux.mapper.shapes.IFace;
+import de.hawilux.mapper.shapes.IPoint;
 import de.hawilux.mapper.ui.Cursor;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
@@ -319,7 +319,7 @@ public class Mapper implements PConstants {
      * 
      * @return the points
      */
-    public HashMap<Integer, Point> getPoints() {
+    public HashMap<Integer, IPoint> getPoints() {
         return formContainer.getPoints();
     }
 
@@ -328,7 +328,7 @@ public class Mapper implements PConstants {
      * 
      * @return the edges
      */
-    public HashMap<Integer, Edge> getEdges() {
+    public HashMap<Integer, IEdge> getEdges() {
         return formContainer.getEdges();
     }
 
@@ -337,7 +337,7 @@ public class Mapper implements PConstants {
      * 
      * @return the faces
      */
-    public HashMap<Integer, Face> getFaces() {
+    public HashMap<Integer, IFace> getFaces() {
         return formContainer.getFaces();
     }
 

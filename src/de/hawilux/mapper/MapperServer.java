@@ -14,10 +14,10 @@ import controlP5.ControlListener;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.net.OscMessagePaths;
 import de.hawilux.mapper.net.OscStack;
-import de.hawilux.mapper.shapes.Edge;
-import de.hawilux.mapper.shapes.Face;
-import de.hawilux.mapper.shapes.Point;
-import de.hawilux.mapper.ui.Cursor;
+import de.hawilux.mapper.shapes.IEdge;
+import de.hawilux.mapper.shapes.IFace;
+import de.hawilux.mapper.shapes.IPoint;
+import de.hawilux.mapper.ui.ServerCursor;
 
 public class MapperServer implements PConstants {
 
@@ -38,7 +38,7 @@ public class MapperServer implements PConstants {
     /**
      * The cursor. To find your mouse on the projection
      */
-    Cursor cursor;
+    ServerCursor cursor;
 
     /**
      * The Mapper Control listener. hooks to ControlP5 to catch events from our
@@ -46,9 +46,8 @@ public class MapperServer implements PConstants {
      */
     MapperControlListener myListener;
 
-	OscStack oscStack;
+    OscStack oscStack;
 
-    
     /** The show gui flag. */
     boolean showGUI = false;
 
@@ -60,6 +59,13 @@ public class MapperServer implements PConstants {
 
     /** The effect mode flag. */
     boolean effectMode = false;
+
+    public boolean clientJustConnected;
+
+    public int mouseX;
+    public int mouseY;
+    boolean middleButton = false;
+    boolean rightButton = false;
 
     /** The version string. */
     String version = "0.1.0";
@@ -114,8 +120,8 @@ public class MapperServer implements PConstants {
     private MapperServer(PApplet parent) {
         this.parent = parent;
 
-        formContainer = new ServerFormContainer(parent);
-        cursor = new Cursor(parent);
+        formContainer = new ServerFormContainer(parent, this);
+        cursor = new ServerCursor(parent, this);
 
         effectManager = new ServerEffectManager(this);
 
@@ -127,9 +133,9 @@ public class MapperServer implements PConstants {
 
         myListener = new MapperControlListener();
 
-		oscStack = new OscStack(parent, new mapperOscStubProcessor(),
-				"239.0.0.1", 7777);
-        
+        oscStack = new OscStack(parent, new mapperOscStubProcessor(),
+                "239.0.0.1", 7777);
+
         PApplet.println("mapper "
                 + version
                 + ", Copyright (C) 2013 Iwer Petersen.\n\n"
@@ -183,21 +189,7 @@ public class MapperServer implements PConstants {
         switch (event.getAction()) {
         case MouseEvent.PRESS:
             // do something for the mouse being pressed
-            if (setupMode && parent.mouseButton == RIGHT) {
-                formContainer.select();
-            }
-            if (setupMode && parent.mouseButton == CENTER) {
-                if (formContainer.getSelectMode() == formContainer.SELECT_POINTS) {
-                    formContainer.addPoint();
-                } else if (formContainer.getSelectMode() == formContainer.SELECT_EDGES) {
-                    formContainer.addEdgeToFace();
-                }
-            }
-            // send selected point
-            OscMessage myOscMessage = new OscMessage(
-					"/mapper/info/selectedpoint");
-			myOscMessage.add(formContainer.selectedPoint);
-			oscStack.sendOscMessage(myOscMessage);
+            pressMouse();
             break;
         case MouseEvent.RELEASE:
             // do something for mouse released
@@ -207,13 +199,34 @@ public class MapperServer implements PConstants {
             break;
         case MouseEvent.DRAG:
             // do something for mouse dragged
-            if (setupMode && parent.mouseButton == RIGHT) {
-                formContainer.movePoint();
-            }
+            dragMouse();
             break;
         case MouseEvent.MOVE:
             // umm... forgot
             break;
+        }
+    }
+
+    protected void pressMouse() {
+        if (setupMode && parent.mouseButton == RIGHT) {
+            formContainer.select();
+        }
+        if (setupMode && parent.mouseButton == CENTER) {
+            if (formContainer.getSelectMode() == formContainer.SELECT_POINTS) {
+                formContainer.addPoint();
+            } else if (formContainer.getSelectMode() == formContainer.SELECT_EDGES) {
+                formContainer.addEdgeToFace();
+            }
+        }
+        // send selected point
+        OscMessage myOscMessage = new OscMessage("/mapper/info/selectedpoint");
+        myOscMessage.add(formContainer.selectedPoint);
+        oscStack.sendOscMessage(myOscMessage);
+    }
+
+    protected void dragMouse() {
+        if (setupMode && parent.mouseButton == RIGHT) {
+            formContainer.movePoint();
         }
     }
 
@@ -273,7 +286,7 @@ public class MapperServer implements PConstants {
      * 
      * @return the points
      */
-    public HashMap<Integer, Point> getPoints() {
+    public HashMap<Integer, IPoint> getPoints() {
         return formContainer.getPoints();
     }
 
@@ -282,7 +295,7 @@ public class MapperServer implements PConstants {
      * 
      * @return the edges
      */
-    public HashMap<Integer, Edge> getEdges() {
+    public HashMap<Integer, IEdge> getEdges() {
         return formContainer.getEdges();
     }
 
@@ -291,7 +304,7 @@ public class MapperServer implements PConstants {
      * 
      * @return the faces
      */
-    public HashMap<Integer, Face> getFaces() {
+    public HashMap<Integer, IFace> getFaces() {
         return formContainer.getFaces();
     }
 
@@ -387,127 +400,168 @@ public class MapperServer implements PConstants {
         }
     }
 
-	class mapperOscStubProcessor implements OscEventListener {
-		void selectNextPoint() {
-			int currentId = formContainer.selectedPoint + 1;
-			while (!formContainer.points.containsKey(currentId)) {
-				currentId++;
-				if (currentId > formContainer.maxPointId) {
-					currentId = 0;
-				}
-				if (currentId == formContainer.selectedPoint) {
-					return;
-				}
-			}
-			formContainer.selectedPoint = currentId;
-		}
+    class mapperOscStubProcessor implements OscEventListener {
 
-		void selectPreviousPoint() {
-			int currentId = formContainer.selectedPoint - 1;
-			while (!formContainer.points.containsKey(currentId)) {
-				currentId--;
-				if (currentId < 0) {
-					currentId = formContainer.maxPointId;
-				}
-				if (currentId == formContainer.selectedPoint) {
-					return;
-				}
-			}
-			formContainer.selectedPoint = currentId;
-		}
-		/* incoming osc message are forwarded to the oscEvent method. */
-		public void oscEvent(OscMessage theOscMessage) {
-			/*
-			 * print the address pattern and the typetag of the received
-			 * OscMessage
-			 */
-			PApplet.print("### received an osc message.");
-			PApplet.print(" addrpattern: " + theOscMessage.addrPattern());
-			PApplet.println(" typetag: " + theOscMessage.typetag());
-			
-			if (theOscMessage.checkAddrPattern("/mapper/hello") == true) {
-				PApplet.println("Got discovery from "
-						+ theOscMessage.netAddress().toString());
-				if (theOscMessage.get(0).intValue() == 1) {
-					OscMessage effectMessage = new OscMessage(
-							"/mapper/info/effectlist");
-					for (String s : effectManager.getEffectsAvailable()) {
-						effectMessage.add(s);
-					}
-					oscStack.sendOscMessage(effectMessage);
+        void selectNextPoint() {
+            int currentId = formContainer.selectedPoint + 1;
+            while (!formContainer.points.containsKey(currentId)) {
+                currentId++;
+                if (currentId > formContainer.maxPointId) {
+                    currentId = 0;
+                }
+                if (currentId == formContainer.selectedPoint) {
+                    return;
+                }
+            }
+            formContainer.selectedPoint = currentId;
+        }
 
-					OscMessage myOscMessage = new OscMessage(
-							"/mapper/info/selectedpoint");
-					myOscMessage.add(formContainer.selectedPoint);
-					oscStack.sendOscMessage(myOscMessage);
+        void selectPreviousPoint() {
+            int currentId = formContainer.selectedPoint - 1;
+            while (!formContainer.points.containsKey(currentId)) {
+                currentId--;
+                if (currentId < 0) {
+                    currentId = formContainer.maxPointId;
+                }
+                if (currentId == formContainer.selectedPoint) {
+                    return;
+                }
+            }
+            formContainer.selectedPoint = currentId;
+        }
 
-					//clientJustConnected = true;
-				}
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/next") == true) {
-				if (theOscMessage.get(0).intValue() == 1) {
-					OscMessage myOscMessage = new OscMessage(
-							"/mapper/info/selectedpoint");
-					selectNextPoint();
-					myOscMessage.add(formContainer.selectedPoint);
-					oscStack.sendOscMessage(myOscMessage);
-				}
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/previous") == true) {
-				if (theOscMessage.get(0).intValue() == 1) {
-					OscMessage myOscMessage = new OscMessage(
-							"/mapper/info/selectedpoint");
-					selectPreviousPoint();
-					myOscMessage.add(formContainer.selectedPoint);
-					oscStack.sendOscMessage(myOscMessage);
-				}
-			} else if (theOscMessage.checkAddrPattern("/mapper/mode/setup") == true) {
-				if (theOscMessage.get(0).intValue() == 1) {
-					setupMode = true;
-					effectMode = false;
-				} else {
-					setupMode = false;
-				}
-			} else if (theOscMessage.checkAddrPattern("/mapper/mode/effect") == true) {
-				if (theOscMessage.get(0).intValue() == 1) {
-					effectMode = true;
-					setupMode = false;
-				} else {
-					effectMode = false;
-				}
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/helper") == true) {
-				if (theOscMessage.get(0).intValue() == 1) {
-					formContainer.setHelper(true);
-				} else {
-					formContainer.setHelper(false);
-				}
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/up") == true) {
-				formContainer.points.get(formContainer.selectedPoint).move(0, -1);
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/down") == true) {
-				formContainer.points.get(formContainer.selectedPoint).move(0, 1);
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/left") == true) {
-				formContainer.points.get(formContainer.selectedPoint).move(-1, 0);
-			} else if (theOscMessage.checkAddrPattern("/mapper/edit/right") == true) {
-				formContainer.points.get(formContainer.selectedPoint).move(1, 0);
-			} else if (theOscMessage.checkAddrPattern(OscMessagePaths.SELECTMODE) == true) {
-					formContainer.setSelectMode(theOscMessage.get(0).intValue());
-			} else {
-				for (String s : effectManager.getEffectsAvailable()) {
-					if (theOscMessage.checkAddrPattern("/mapper/effect/"
-							+ s.toLowerCase()) == true) {
-						PApplet.println("State of " + s + " is "
-								+ theOscMessage.get(0).intValue());
-						if(theOscMessage.get(0).intValue() == 0) {
-							effectManager.disableEffect(s);
-						} else
-							effectManager.enableEffect(s);
-					}
-				}
-			}
-		}
+        /* incoming osc message are forwarded to the oscEvent method. */
+        public void oscEvent(OscMessage theOscMessage) {
+            /*
+             * print the address pattern and the typetag of the received
+             * OscMessage
+             */
+            PApplet.print("### received an osc message.");
+            PApplet.print(" addrpattern: " + theOscMessage.addrPattern());
+            PApplet.println(" typetag: " + theOscMessage.typetag());
 
-		@Override
-		public void oscStatus(OscStatus theStatus) {
-			PApplet.println("OSC Status: " + theStatus);
+            if (theOscMessage.checkAddrPattern(OscMessagePaths.HELLO) == true) {
+                PApplet.println("Got discovery from "
+                        + theOscMessage.netAddress().toString());
+                if (theOscMessage.get(0).intValue() == 1) {
+                    OscMessage effectMessage = new OscMessage(
+                            OscMessagePaths.EFFECTLIST);
+                    for (String s : effectManager.getEffectsAvailable()) {
+                        effectMessage.add(s);
+                    }
+                    oscStack.sendOscMessage(effectMessage);
 
-		}
-	}
+                    OscMessage myOscMessage = new OscMessage(
+                            OscMessagePaths.SELECTEDPOINT);
+                    myOscMessage.add(formContainer.selectedPoint);
+                    oscStack.sendOscMessage(myOscMessage);
+
+                    clientJustConnected = true;
+                }
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.NEXT) == true) {
+                if (theOscMessage.get(0).intValue() == 1) {
+                    OscMessage myOscMessage = new OscMessage(
+                            OscMessagePaths.SELECTEDPOINT);
+                    selectNextPoint();
+                    myOscMessage.add(formContainer.selectedPoint);
+                    oscStack.sendOscMessage(myOscMessage);
+                }
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.PREVIOUS) == true) {
+                if (theOscMessage.get(0).intValue() == 1) {
+                    OscMessage myOscMessage = new OscMessage(
+                            OscMessagePaths.SELECTEDPOINT);
+                    selectPreviousPoint();
+                    myOscMessage.add(formContainer.selectedPoint);
+                    oscStack.sendOscMessage(myOscMessage);
+                }
+            } else if (theOscMessage.checkAddrPattern("/mapper/mode/setup") == true) {
+                if (theOscMessage.get(0).intValue() == 1) {
+                    setupMode = true;
+                    effectMode = false;
+                } else {
+                    setupMode = false;
+                }
+            } else if (theOscMessage.checkAddrPattern("/mapper/mode/effect") == true) {
+                if (theOscMessage.get(0).intValue() == 1) {
+                    effectMode = true;
+                    setupMode = false;
+                } else {
+                    effectMode = false;
+                }
+            } else if (theOscMessage.checkAddrPattern("/mapper/mode/file") == true) {
+                effectMode = false;
+                setupMode = false;
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.HELPER) == true) {
+                if (theOscMessage.get(0).intValue() == 1) {
+                    formContainer.setHelper(true);
+                } else {
+                    formContainer.setHelper(false);
+                }
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.UP) == true) {
+                formContainer.points.get(formContainer.selectedPoint).move(0,
+                        -1);
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.DOWN) == true) {
+                formContainer.points.get(formContainer.selectedPoint)
+                        .move(0, 1);
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.LEFT) == true) {
+                formContainer.points.get(formContainer.selectedPoint).move(-1,
+                        0);
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.RIGHT) == true) {
+                formContainer.points.get(formContainer.selectedPoint)
+                        .move(1, 0);
+            } else if (theOscMessage
+                    .checkAddrPattern(OscMessagePaths.SELECTMODE) == true) {
+                formContainer.setSelectMode(theOscMessage.get(0).intValue());
+            } else if (theOscMessage
+                    .checkAddrPattern(OscMessagePaths.NEWCONFIG) == true) {
+                formContainer.clear();
+            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.REQFILES) == true) {
+                OscMessage filelist = new OscMessage(OscMessagePaths.FILELIST);
+                String[] files = { "test.xml", "test1.xml" };// get from
+                                                             // filehandler
+                filelist.add(files);
+                oscStack.sendOscMessage(filelist);
+            } else if (theOscMessage
+                    .checkAddrPattern(OscMessagePaths.LOADCONFIG) == true) {
+            } else if (theOscMessage
+                    .checkAddrPattern(OscMessagePaths.SAVECONFIG) == true) {
+            } else if (theOscMessage
+                    .checkAddrPattern(OscMessagePaths.MOUSECOORDS) == true) {
+                mouseX = theOscMessage.get(0).intValue();
+                mouseY = theOscMessage.get(1).intValue();
+                dragMouse();
+            } else if (theOscMessage
+                    .checkAddrPattern(OscMessagePaths.MOUSEBUTTON) == true) {
+                int buttonNr = theOscMessage.get(0).intValue();
+                switch (buttonNr) {
+                case 1:
+                    middleButton = theOscMessage.typetag().equals("iT");
+                    pressMouse();
+                    break;
+                case 2:
+                    rightButton = theOscMessage.typetag().equals("iT");
+                    pressMouse();
+                    break;
+                }
+            } else {
+                for (String s : effectManager.getEffectsAvailable()) {
+                    if (theOscMessage.checkAddrPattern("/mapper/effect/"
+                            + s.toLowerCase()) == true) {
+                        PApplet.println("State of " + s + " is "
+                                + theOscMessage.get(0).intValue());
+                        if (theOscMessage.get(0).intValue() == 0) {
+                            effectManager.disableEffect(s);
+                        } else
+                            effectManager.enableEffect(s);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void oscStatus(OscStatus theStatus) {
+            PApplet.println("OSC Status: " + theStatus);
+
+        }
+    }
 }

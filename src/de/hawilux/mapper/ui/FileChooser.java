@@ -42,13 +42,13 @@ import controlP5.Textfield;
  * The Class FileChooser.
  */
 public class FileChooser {
-    
+
     /** The parent. */
     PApplet parent;
-    
+
     /** The gui. */
     Gui gui;
-    
+
     /** The runs. */
     final ArrayList<Runnable> runs = new ArrayList<Runnable>();
 
@@ -57,14 +57,15 @@ public class FileChooser {
 
     /** The filename. */
     String filename;
-    
+
     /** The action button. */
     Button actionButton;
 
     /**
      * Instantiates a new file chooser.
-     *
-     * @param parent_ the parent_
+     * 
+     * @param parent_
+     *            the parent_
      */
     public FileChooser(PApplet parent_) {
         parent = parent_;
@@ -74,7 +75,7 @@ public class FileChooser {
 
     /**
      * Gets the filename.
-     *
+     * 
      * @return the filename
      */
     public String getFilename() {
@@ -83,7 +84,7 @@ public class FileChooser {
 
     /**
      * Gets the action button.
-     *
+     * 
      * @return the action button
      */
     public Button getActionButton() {
@@ -92,7 +93,7 @@ public class FileChooser {
 
     /**
      * Checks if is enabled.
-     *
+     * 
      * @return true, if is enabled
      */
     public boolean isEnabled() {
@@ -101,8 +102,9 @@ public class FileChooser {
 
     /**
      * Sets the gui.
-     *
-     * @param gui_ the new gui
+     * 
+     * @param gui_
+     *            the new gui
      */
     public void setGui(Gui gui_) {
         gui = gui_;
@@ -110,8 +112,9 @@ public class FileChooser {
 
     /**
      * Adds the file chooser.
-     *
-     * @param action the action
+     * 
+     * @param action
+     *            the action
      */
     public void addFileChooser(String action) {
         enabled = true;
@@ -174,11 +177,81 @@ public class FileChooser {
     }
 
     /**
+     * Adds the remote file chooser.
+     * 
+     * @param action
+     *            the action
+     */
+    public void addRemoteFileChooser(String action) {
+        enabled = true;
+        final Group fc = gui.cp5.addGroup("filechooser").setPosition(10, 250)
+                .setSize(300, 300).setColor(gui.c).hideBar();
+
+        final Textfield tf = gui.cp5.addTextfield("filename")
+                .setPosition(8, 210).setSize(284, 20).setGroup("filechooser")
+                .setColor(gui.c);
+
+        tf.getCaptionLabel().hide();
+
+        final ListBox lb = gui.cp5.addListBox("selectfiles").setSize(300, 200)
+                .setPosition(0, 0).setColor(gui.c).hideBar()
+                // .setStringValue(new File(parent.dataPath("")).toString())
+                .setStringValue("Bla").setGroup("filechooser")
+                // what is this? see bottom of the sketch
+                .addListener(new ControlListener() {
+                    public void controlEvent(final ControlEvent ev) {
+                        runs.add(new Runnable() {
+                            public void run() {
+                                updateFileChooser(((ListBox) ev.getGroup()),
+                                        tf, (int) ev.getValue());
+                            }
+                        });
+                    }
+                });
+
+        actionButton = gui.cp5.addButton(action).setPosition(7, 240)
+                .setSize(120, 20).setGroup("filechooser").setColor(gui.c)
+                .addListener(new ControlListener() {
+                    public void controlEvent(ControlEvent ev) {
+                        filename = "new_file.xml";
+                        // new File(new File(lb.getStringValue()), tf
+                        // .getText()).toString();
+                        runs.add(new Runnable() {
+                            public void run() {
+                                fc.remove();
+                                enabled = false;
+                            }
+                        });
+                    }
+                });
+
+        gui.cp5.addButton("cancel").setPosition(173, 240).setSize(120, 20)
+                .setGroup("filechooser").setColor(gui.c)
+                .addListener(new ControlListener() {
+                    // when cancel is triggered, add a new runnable to
+                    // safely remove the filechooser from controlP5 in
+                    // a post event.
+                    public void controlEvent(ControlEvent ev) {
+                        runs.add(new Runnable() {
+                            public void run() {
+                                fc.remove();
+                                enabled = false;
+                            }
+                        });
+                    }
+                });
+        updateFileChooser(lb, tf, 0);
+    }
+
+    /**
      * Update file chooser.
-     *
-     * @param lb the lb
-     * @param tf the tf
-     * @param theValue the the value
+     * 
+     * @param lb
+     *            the lb
+     * @param tf
+     *            the tf
+     * @param theValue
+     *            the the value
      */
     final void updateFileChooser(ListBox lb, Textfield tf, int theValue) {
 

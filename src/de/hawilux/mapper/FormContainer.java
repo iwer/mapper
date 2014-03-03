@@ -39,6 +39,9 @@ import controlP5.Toggle;
 import de.hawilux.mapper.file.FileHandler;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
+import de.hawilux.mapper.shapes.IEdge;
+import de.hawilux.mapper.shapes.IFace;
+import de.hawilux.mapper.shapes.IPoint;
 import de.hawilux.mapper.shapes.Point;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
@@ -53,19 +56,19 @@ public class FormContainer {
     PApplet parent;
 
     /** The edges. */
-    HashMap<Integer, Edge> edges;
+    HashMap<Integer, IEdge> edges;
 
     /** The points. */
-    HashMap<Integer, Point> points;
+    HashMap<Integer, IPoint> points;
 
     /** The faces. */
-    HashMap<Integer, Face> faces;
+    HashMap<Integer, IFace> faces;
 
     /** The file handler. */
     FileHandler fileHandler;
 
     /** The face to build. */
-    Face faceToBuild;
+    IFace faceToBuild;
 
     /** The selected point. */
     int selectedPoint;
@@ -136,9 +139,9 @@ public class FormContainer {
      */
     public FormContainer(PApplet parent_) {
         parent = parent_;
-        edges = new HashMap<Integer, Edge>();
-        points = new HashMap<Integer, Point>();
-        faces = new HashMap<Integer, Face>();
+        edges = new HashMap<Integer, IEdge>();
+        points = new HashMap<Integer, IPoint>();
+        faces = new HashMap<Integer, IFace>();
 
         fileHandler = new FileHandler(this);
 
@@ -163,7 +166,7 @@ public class FormContainer {
             }
             select();
             if (selectedEdge != -1) {
-                Edge toAdd = edges.get(selectedEdge);
+                IEdge toAdd = edges.get(selectedEdge);
                 int nBefore = faceToBuild.getPoints().size();
                 faceToBuild.addEdge(toAdd);
                 int nAfter = faceToBuild.getPoints().size();
@@ -245,8 +248,8 @@ public class FormContainer {
      * Adds a point at mouse position.
      */
     public void addPoint() {
-        Point a = null;
-        Point p = null;
+        IPoint a = null;
+        IPoint p = null;
         // add points only in point select mode
         if (selectMode == SELECT_POINTS) {
             // when a point is selected take as first point
@@ -257,7 +260,7 @@ public class FormContainer {
 
             // check if mouse is over existing point
             int sel = -1;
-            for (Point exP : points.values()) {
+            for (IPoint exP : points.values()) {
                 int ret = exP.select();
                 if (ret != -1) {
                     sel = ret;
@@ -361,7 +364,7 @@ public class FormContainer {
         if (selectMode == SELECT_POINTS) {
             PApplet.println("Delete Point " + selectedPoint);
             if (selectedPoint != -1) {
-                Point toRemove = points.get(selectedPoint);
+                IPoint toRemove = points.get(selectedPoint);
                 ArrayList<Integer> conEdges = new ArrayList<Integer>(
                         toRemove.getConnectedEdges());
                 PApplet.println("Connected Edges at point " + selectedPoint
@@ -386,7 +389,7 @@ public class FormContainer {
         } else if (selectMode == SELECT_EDGES) {
             PApplet.println("Delete Edge " + selectedEdge);
             if (selectedEdge != -1) {
-                Edge toRemove = edges.get(selectedEdge);
+                IEdge toRemove = edges.get(selectedEdge);
                 toRemove.prepareDelete();
                 ArrayList<Integer> conFaces = new ArrayList<Integer>(
                         toRemove.getConnectedFaces());
@@ -402,7 +405,7 @@ public class FormContainer {
         } else if (selectMode == SELECT_FACES) {
             PApplet.println("Delete Face " + selectedFace);
             if (selectedFace != -1) {
-                Face toRemove = faces.get(selectedFace);
+                IFace toRemove = faces.get(selectedFace);
                 toRemove.prepareDelete();
                 faces.remove(selectedFace);
                 selectedEdge = -1;
@@ -429,7 +432,7 @@ public class FormContainer {
         if (faceToBuild != null) {
             faceToBuild.display(config, true, false);
         }
-        for (Face f : faces.values()) {
+        for (IFace f : faces.values()) {
             if (selectedFace == f.getId()) {
                 selected = true;
             } else {
@@ -437,7 +440,7 @@ public class FormContainer {
             }
             f.display(config, selected, (selectMode == SELECT_FACES));
         }
-        for (Edge e : edges.values()) {
+        for (IEdge e : edges.values()) {
             if (selectedEdge == e.getId()) {
                 selected = true;
             } else {
@@ -449,7 +452,7 @@ public class FormContainer {
             }
         }
         if (config) {
-            for (Point p : points.values()) {
+            for (IPoint p : points.values()) {
                 if (selectedPoint == p.getId()) {
                     selected = true;
                 } else {
@@ -468,7 +471,7 @@ public class FormContainer {
      * 
      * @return the edges
      */
-    public HashMap<Integer, Edge> getEdges() {
+    public HashMap<Integer, IEdge> getEdges() {
         return edges;
     }
 
@@ -477,7 +480,7 @@ public class FormContainer {
      * 
      * @return the faces
      */
-    public HashMap<Integer, Face> getFaces() {
+    public HashMap<Integer, IFace> getFaces() {
         return faces;
     }
 
@@ -531,7 +534,7 @@ public class FormContainer {
      * 
      * @return the points
      */
-    public HashMap<Integer, Point> getPoints() {
+    public HashMap<Integer, IPoint> getPoints() {
         return points;
     }
 
@@ -558,7 +561,7 @@ public class FormContainer {
      */
     public void movePoint() {
         if (selectedPoint != -1) {
-            Point p = points.get(selectedPoint);
+            IPoint p = points.get(selectedPoint);
             if (p != null) {
                 p.move();
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
@@ -584,7 +587,7 @@ public class FormContainer {
      */
     public void movePoint(int dx, int dy) {
         if (selectedPoint != -1) {
-            Point p = points.get(selectedPoint);
+            IPoint p = points.get(selectedPoint);
             if (p != null) {
                 p.move(dx, dy);
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
@@ -606,7 +609,7 @@ public class FormContainer {
     public void select() {
         int sel = -1;
         if (selectMode == SELECT_POINTS) {
-            for (Point p : points.values()) {
+            for (IPoint p : points.values()) {
                 int ret = p.select();
                 if (ret != -1) {
                     sel = ret;
@@ -615,7 +618,7 @@ public class FormContainer {
             selectedPoint = sel;
             PApplet.println("Selected Point " + selectedPoint);
         } else if (selectMode == SELECT_EDGES) {
-            for (Edge e : edges.values()) {
+            for (IEdge e : edges.values()) {
                 int ret = e.select();
                 if (ret != -1) {
                     sel = ret;
@@ -624,7 +627,7 @@ public class FormContainer {
             selectedEdge = sel;
             PApplet.println("Selected Edge " + selectedEdge);
         } else if (selectMode == SELECT_FACES) {
-            for (Face f : faces.values()) {
+            for (IFace f : faces.values()) {
                 int ret = f.select();
                 if (ret != -1) {
                     sel = ret;
@@ -743,9 +746,9 @@ public class FormContainer {
      */
     public void subdivideEdge() {
         if (selectedEdge != -1) {
-            Edge toDivide = edges.get(selectedEdge);
-            Point start = toDivide.getA();
-            Point end = toDivide.getB();
+            IEdge toDivide = edges.get(selectedEdge);
+            IPoint start = toDivide.getA();
+            IPoint end = toDivide.getB();
             PVector newPointPos = toDivide.getCentroid();
             ArrayList<Integer> connectedFaces = toDivide.getConnectedFaces();
 
@@ -784,9 +787,9 @@ public class FormContainer {
      */
     public void switchEdgeDirection() {
         if (selectedEdge != -1) {
-            Edge toSwitch = edges.get(selectedEdge);
-            Point start = toSwitch.getA();
-            Point end = toSwitch.getB();
+            IEdge toSwitch = edges.get(selectedEdge);
+            IPoint start = toSwitch.getA();
+            IPoint end = toSwitch.getB();
 
             // remove edge
             toSwitch.prepareDelete();

@@ -25,6 +25,10 @@ public class OscMessagePaths {
 
     public final static String SELECTMODE = "/mapper/edit/selectmode";
 
+    public final static String MOUSECOORDS = "/mapper/edit/mousecoords";
+
+    public final static String MOUSEBUTTON = "/mapper/edit/mousebutton";
+
     public final static String NEWCONFIG = "/mapper/file/newconfig";
 
     public final static String REQFILES = "/mapper/file/requestfilelist";

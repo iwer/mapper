@@ -23,11 +23,16 @@
  */
 package de.hawilux.mapper.file;
 
+import java.io.File;
+
 import processing.core.PApplet;
 import processing.data.XML;
 import de.hawilux.mapper.FormContainer;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
+import de.hawilux.mapper.shapes.IEdge;
+import de.hawilux.mapper.shapes.IFace;
+import de.hawilux.mapper.shapes.IPoint;
 import de.hawilux.mapper.shapes.Point;
 
 // TODO: Auto-generated Javadoc
@@ -124,7 +129,7 @@ public class FileHandler {
     public void saveXML(String filename) {
         XML xml = new XML("data");
 
-        for (Point p : data.getPoints().values()) {
+        for (IPoint p : data.getPoints().values()) {
             XML pointElement = xml.addChild("point");
             XML idElement = pointElement.addChild("id");
             idElement.setInt("id", p.getId());
@@ -132,7 +137,7 @@ public class FileHandler {
             positionElement.setInt("x", (int) p.getCentroid().x);
             positionElement.setInt("y", (int) p.getCentroid().y);
         }
-        for (Edge e : data.getEdges().values()) {
+        for (IEdge e : data.getEdges().values()) {
             XML edgeElement = xml.addChild("edge");
             XML idElement = edgeElement.addChild("id");
             idElement.setInt("id", e.getId());
@@ -140,16 +145,42 @@ public class FileHandler {
             pointsElement.setInt("a", e.getA().getId());
             pointsElement.setInt("b", e.getB().getId());
         }
-        for (Face f : data.getFaces().values()) {
+        for (IFace f : data.getFaces().values()) {
             XML faceElement = xml.addChild("face");
             XML idElement = faceElement.addChild("id");
             idElement.setInt("id", f.getId());
             // write connected Edge Ids
-            for (Edge e : f.getConnectedEdges()) {
+            for (IEdge e : f.getConnectedEdges()) {
                 XML edgeElement = faceElement.addChild("edge");
                 edgeElement.setInt("id", e.getId());
             }
         }
         data.getParent().saveXML(xml, filename);
+    }
+
+    /**
+     * Get filenames in data folder
+     */
+    public String[] filelist() {
+        /**
+         * listing-files taken from
+         * http://wiki.processing.org/index.php?title=Listing_files
+         * 
+         * @author antiplastik
+         */
+
+        // we'll have a look in the data folder
+        java.io.File folder = new java.io.File(data.getParent().dataPath(""));
+
+        // let's set a filter (which returns true if file's extension is .xml)
+        java.io.FilenameFilter xmlFilter = new java.io.FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.toLowerCase().endsWith(".xml");
+            }
+        };
+
+        // list the files in the data folder, passing the filter as parameter
+        String[] filenames = folder.list(xmlFilter);
+        return filenames;
     }
 }

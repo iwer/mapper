@@ -37,9 +37,12 @@ import controlP5.ControlP5;
 import controlP5.RadioButton;
 import controlP5.Toggle;
 import de.hawilux.mapper.file.FileHandler;
-import de.hawilux.mapper.shapes.Edge;
-import de.hawilux.mapper.shapes.Face;
-import de.hawilux.mapper.shapes.Point;
+import de.hawilux.mapper.shapes.IEdge;
+import de.hawilux.mapper.shapes.IFace;
+import de.hawilux.mapper.shapes.IPoint;
+import de.hawilux.mapper.shapes.ServerEdge;
+import de.hawilux.mapper.shapes.ServerFace;
+import de.hawilux.mapper.shapes.ServerPoint;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
 
@@ -51,21 +54,22 @@ public class ServerFormContainer {
 
     /** The parent. */
     PApplet parent;
+    MapperServer server;
 
     /** The edges. */
-    HashMap<Integer, Edge> edges;
+    HashMap<Integer, IEdge> edges;
 
     /** The points. */
-    HashMap<Integer, Point> points;
+    HashMap<Integer, IPoint> points;
 
     /** The faces. */
-    HashMap<Integer, Face> faces;
+    HashMap<Integer, IFace> faces;
 
     /** The file handler. */
     FileHandler fileHandler;
 
     /** The face to build. */
-    Face faceToBuild;
+    ServerFace faceToBuild;
 
     /** The selected point. */
     int selectedPoint;
@@ -134,11 +138,12 @@ public class ServerFormContainer {
      * @param parent_
      *            the parent_
      */
-    public ServerFormContainer(PApplet parent_) {
+    public ServerFormContainer(PApplet parent_, MapperServer server_) {
         parent = parent_;
-        edges = new HashMap<Integer, Edge>();
-        points = new HashMap<Integer, Point>();
-        faces = new HashMap<Integer, Face>();
+        server = server_;
+        edges = new HashMap<Integer, IEdge>();
+        points = new HashMap<Integer, IPoint>();
+        faces = new HashMap<Integer, IFace>();
 
         // fileHandler = new FileHandler(this);
 
@@ -159,11 +164,12 @@ public class ServerFormContainer {
         if (selectMode == SELECT_EDGES) {
             if (faceToBuild == null) {
                 maxFaceId++;
-                faceToBuild = new Face(parent, maxFaceId, showHelper);
+                faceToBuild = new ServerFace(parent, server, maxFaceId,
+                        showHelper);
             }
             select();
             if (selectedEdge != -1) {
-                Edge toAdd = edges.get(selectedEdge);
+                IEdge toAdd = edges.get(selectedEdge);
                 int nBefore = faceToBuild.getPoints().size();
                 faceToBuild.addEdge(toAdd);
                 int nAfter = faceToBuild.getPoints().size();
@@ -180,8 +186,8 @@ public class ServerFormContainer {
      * Adds a point at mouse position.
      */
     public void addPoint() {
-        Point a = null;
-        Point p = null;
+        IPoint a = null;
+        IPoint p = null;
         // add points only in point select mode
         if (selectMode == SELECT_POINTS) {
             // when a point is selected take as first point
@@ -192,7 +198,7 @@ public class ServerFormContainer {
 
             // check if mouse is over existing point
             int sel = -1;
-            for (Point exP : points.values()) {
+            for (IPoint exP : points.values()) {
                 int ret = exP.select();
                 if (ret != -1) {
                     sel = ret;
@@ -201,8 +207,8 @@ public class ServerFormContainer {
             // not over existing point, create new one
             if (sel == -1) {
                 maxPointId++;
-                p = new Point(parent, maxPointId, parent.mouseX, parent.mouseY,
-                        showHelper);
+                p = new ServerPoint(parent, server, maxPointId, server.mouseX,
+                        server.mouseY, showHelper);
                 selectedPoint = p.select();
                 points.put(p.getId(), p);
             }
@@ -214,7 +220,7 @@ public class ServerFormContainer {
             // if there was a point selected, draw a line to new point
             if (a != null) {
                 maxEdgeId++;
-                Edge e = new Edge(parent, maxEdgeId, a, p, showHelper);
+                IEdge e = new ServerEdge(parent, server, maxEdgeId, a, p, showHelper);
                 edges.put(maxEdgeId, e);
                 // face.addEdge(e);
             }
@@ -296,7 +302,7 @@ public class ServerFormContainer {
         if (selectMode == SELECT_POINTS) {
             PApplet.println("Delete Point " + selectedPoint);
             if (selectedPoint != -1) {
-                Point toRemove = points.get(selectedPoint);
+            	IPoint toRemove = points.get(selectedPoint);
                 ArrayList<Integer> conEdges = new ArrayList<Integer>(
                         toRemove.getConnectedEdges());
                 PApplet.println("Connected Edges at point " + selectedPoint
@@ -321,7 +327,7 @@ public class ServerFormContainer {
         } else if (selectMode == SELECT_EDGES) {
             PApplet.println("Delete Edge " + selectedEdge);
             if (selectedEdge != -1) {
-                Edge toRemove = edges.get(selectedEdge);
+            	IEdge toRemove = edges.get(selectedEdge);
                 toRemove.prepareDelete();
                 ArrayList<Integer> conFaces = new ArrayList<Integer>(
                         toRemove.getConnectedFaces());
@@ -337,7 +343,7 @@ public class ServerFormContainer {
         } else if (selectMode == SELECT_FACES) {
             PApplet.println("Delete Face " + selectedFace);
             if (selectedFace != -1) {
-                Face toRemove = faces.get(selectedFace);
+            	IFace toRemove = faces.get(selectedFace);
                 toRemove.prepareDelete();
                 faces.remove(selectedFace);
                 selectedEdge = -1;
@@ -364,7 +370,7 @@ public class ServerFormContainer {
         if (faceToBuild != null) {
             faceToBuild.display(config, true, false);
         }
-        for (Face f : faces.values()) {
+        for (IFace f : faces.values()) {
             if (selectedFace == f.getId()) {
                 selected = true;
             } else {
@@ -372,7 +378,7 @@ public class ServerFormContainer {
             }
             f.display(config, selected, (selectMode == SELECT_FACES));
         }
-        for (Edge e : edges.values()) {
+        for (IEdge e : edges.values()) {
             if (selectedEdge == e.getId()) {
                 selected = true;
             } else {
@@ -384,7 +390,7 @@ public class ServerFormContainer {
             }
         }
         if (config) {
-            for (Point p : points.values()) {
+            for (IPoint p : points.values()) {
                 if (selectedPoint == p.getId()) {
                     selected = true;
                 } else {
@@ -403,7 +409,7 @@ public class ServerFormContainer {
      * 
      * @return the edges
      */
-    public HashMap<Integer, Edge> getEdges() {
+    public HashMap<Integer, IEdge> getEdges() {
         return edges;
     }
 
@@ -412,7 +418,7 @@ public class ServerFormContainer {
      * 
      * @return the faces
      */
-    public HashMap<Integer, Face> getFaces() {
+    public HashMap<Integer, IFace> getFaces() {
         return faces;
     }
 
@@ -466,7 +472,7 @@ public class ServerFormContainer {
      * 
      * @return the points
      */
-    public HashMap<Integer, Point> getPoints() {
+    public HashMap<Integer, IPoint> getPoints() {
         return points;
     }
 
@@ -493,7 +499,7 @@ public class ServerFormContainer {
      */
     public void movePoint() {
         if (selectedPoint != -1) {
-            Point p = points.get(selectedPoint);
+        	IPoint p = points.get(selectedPoint);
             if (p != null) {
                 p.move();
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
@@ -519,7 +525,7 @@ public class ServerFormContainer {
      */
     public void movePoint(int dx, int dy) {
         if (selectedPoint != -1) {
-            Point p = points.get(selectedPoint);
+        	IPoint p = points.get(selectedPoint);
             if (p != null) {
                 p.move(dx, dy);
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
@@ -541,7 +547,7 @@ public class ServerFormContainer {
     public void select() {
         int sel = -1;
         if (selectMode == SELECT_POINTS) {
-            for (Point p : points.values()) {
+            for (IPoint p : points.values()) {
                 int ret = p.select();
                 if (ret != -1) {
                     sel = ret;
@@ -550,7 +556,7 @@ public class ServerFormContainer {
             selectedPoint = sel;
             PApplet.println("Selected Point " + selectedPoint);
         } else if (selectMode == SELECT_EDGES) {
-            for (Edge e : edges.values()) {
+            for (IEdge e : edges.values()) {
                 int ret = e.select();
                 if (ret != -1) {
                     sel = ret;
@@ -559,7 +565,7 @@ public class ServerFormContainer {
             selectedEdge = sel;
             PApplet.println("Selected Edge " + selectedEdge);
         } else if (selectMode == SELECT_FACES) {
-            for (Face f : faces.values()) {
+            for (IFace f : faces.values()) {
                 int ret = f.select();
                 if (ret != -1) {
                     sel = ret;
@@ -678,25 +684,27 @@ public class ServerFormContainer {
      */
     public void subdivideEdge() {
         if (selectedEdge != -1) {
-            Edge toDivide = edges.get(selectedEdge);
-            Point start = toDivide.getA();
-            Point end = toDivide.getB();
+        	IEdge toDivide = edges.get(selectedEdge);
+        	IPoint start = toDivide.getA();
+        	IPoint end = toDivide.getB();
             PVector newPointPos = toDivide.getCentroid();
             ArrayList<Integer> connectedFaces = toDivide.getConnectedFaces();
 
             // create new Point
             maxPointId++;
-            Point newPoint = new Point(parent, maxPointId, (int) newPointPos.x,
-                    (int) newPointPos.y, showHelper);
+            IPoint newPoint = new ServerPoint(parent, server, maxPointId,
+                    (int) newPointPos.x, (int) newPointPos.y, showHelper);
             selectedPoint = newPoint.select();
             points.put(newPoint.getId(), newPoint);
 
             // add new edges
             maxEdgeId++;
-            Edge e1 = new Edge(parent, maxEdgeId, start, newPoint, showHelper);
+            IEdge e1 = new ServerEdge(parent, server, maxEdgeId, start, newPoint,
+                    showHelper);
 
             maxEdgeId++;
-            Edge e2 = new Edge(parent, maxEdgeId, newPoint, end, showHelper);
+            IEdge e2 = new ServerEdge(parent, server, maxEdgeId, newPoint, end,
+                    showHelper);
 
             for (Integer i : connectedFaces) {
                 faces.get(i).addEdge(e1);
@@ -719,9 +727,9 @@ public class ServerFormContainer {
      */
     public void switchEdgeDirection() {
         if (selectedEdge != -1) {
-            Edge toSwitch = edges.get(selectedEdge);
-            Point start = toSwitch.getA();
-            Point end = toSwitch.getB();
+        	IEdge toSwitch = edges.get(selectedEdge);
+        	IPoint start = toSwitch.getA();
+        	IPoint end = toSwitch.getB();
 
             // remove edge
             toSwitch.prepareDelete();
@@ -729,7 +737,7 @@ public class ServerFormContainer {
 
             // add new edges first edge reuses id of deleted
             maxEdgeId++;
-            Edge e = new Edge(parent, maxEdgeId, end, start, showHelper);
+            IEdge e = new ServerEdge(parent, server, maxEdgeId, end, start, showHelper);
             for (Integer i : toSwitch.getConnectedFaces()) {
                 e.addConnectedFace(i);
             }
