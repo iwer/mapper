@@ -14,7 +14,15 @@ import controlP5.Toggle;
 import de.hawilux.mapper.net.OscStack;
 
 public class PcRemoteGui implements IGui {
+    /** The select points. */
+    public final int SELECT_POINTS = 0;
 
+    /** The select edges. */
+    public final int SELECT_EDGES = 1;
+
+    /** The select faces. */
+    public final int SELECT_FACES = 2;
+    
     /** The parent. */
     PApplet parent;
 
@@ -175,31 +183,10 @@ public class PcRemoteGui implements IGui {
                 .moveTo(setupSelectModeGroup).activate("points");
         btnDeleteSelected = cp5.addButton("deleteSelected").setPosition(10, 2)
                 .setColor(c).moveTo(setupEditGroup);
-        btnDeleteSelected.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    // deleteSelected();
-                }
-            }
-        });
         btnSubdivide = cp5.addButton("subdivide").setPosition(10, 27)
                 .setColor(c).hide().moveTo(setupEditGroup);
-        btnSubdivide.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    // subdivideEdge();
-                }
-            }
-        });
         btnSwitchDir = cp5.addButton("switchdir").setPosition(10, 52)
                 .setColor(c).hide().moveTo(setupEditGroup);
-        btnSwitchDir.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    // switchEdgeDirection();
-                }
-            }
-        });
 
         // effect group
         effectGroup = cp5.addGroup("effect").setColor(c);
@@ -215,7 +202,11 @@ public class PcRemoteGui implements IGui {
         mainAccordion.setCollapseMode(Accordion.SINGLE);
     }
 
-    int effectCnt = 0;
+    public RadioButton getRdbSelectMode() {
+		return rdbSelectMode;
+	}
+
+	int effectCnt = 0;
     int yPos = 10;
 
     public void addEffectToggle(String effectname, final OscStack oscStack) {
@@ -333,6 +324,22 @@ public class PcRemoteGui implements IGui {
         }
     }
 
+    /**
+     * Sets the line editor enabled.
+     * 
+     * @param state
+     *            the new line editor enabled
+     */
+    public void setLineEditorEnabled(boolean state) {
+        if (state == true) {
+            btnSubdivide.show();
+            btnSwitchDir.show();
+        } else {
+            btnSubdivide.hide();
+            btnSwitchDir.hide();
+        }
+    }
+    
     public Textlabel getSelectedPointsLabel() {
         return selectedPointsLabel;
     }

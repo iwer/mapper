@@ -308,7 +308,7 @@ public class FileChooser {
         int n = 0;
         lb.addItem("DATA", n++).setColorBackground(parent.color(80));
         for (String s1 : strs) {
-            ListBoxItem item = lb.addItem(s1, n++);
+            lb.addItem(s1, n++);
         }
         lb.scroll(0);
         //lb.setStringValue(f.getAbsolutePath().toString());

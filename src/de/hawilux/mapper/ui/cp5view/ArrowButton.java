@@ -34,7 +34,7 @@ public class ArrowButton implements ControllerView<Button>, PConstants {
     }
 
     PShape createArrow() {
-        PShape arrow = parent.createShape();
+        arrow = parent.createShape();
         arrow.beginShape();
         arrow.fill(0, 0, 255);
         arrow.noStroke();

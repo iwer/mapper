@@ -76,8 +76,8 @@ public abstract class AbstractEffect {
 	 * @param gui
 	 *            the gui
 	 */
-	public void addControllersToGui(Gui gui) {
-		this.gui = gui;
+	public void addControllersToGui(Gui gui_) {
+		this.gui = gui_;
 		grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC())
 				.hide();
 		gui.getEffectAccordion().addItem(grpEffectParams);
@@ -94,7 +94,7 @@ public abstract class AbstractEffect {
 	 * @param gui
 	 *            the gui
 	 */
-	public abstract void addEffectControllersToGui(Gui gui);
+	public abstract void addEffectControllersToGui(Gui gui_);
 
 	/**
 	 * Adds the enable toggle.
@@ -176,9 +176,9 @@ public abstract class AbstractEffect {
 	 *            the gui
 	 */
 	@Deprecated
-	public void removeEffectControllersFromGui(Gui gui) {
-		if (gui != null) {
-			gui.getEffectAccordion().removeItem(grpEffectParams);
+	public void removeEffectControllersFromGui(Gui gui_) {
+		if (gui_ != null) {
+			gui_.getEffectAccordion().removeItem(grpEffectParams);
 		}
 	}
 
