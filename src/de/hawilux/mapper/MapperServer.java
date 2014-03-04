@@ -1,8 +1,7 @@
 package de.hawilux.mapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 import oscP5.OscEventListener;
@@ -58,7 +57,8 @@ public class MapperServer implements PConstants {
 	OscStack oscStack;
 
 	/** The runs. */
-	final ArrayList<Runnable> runs = new ArrayList<Runnable>();
+	//final ArrayList<Runnable> runs = new ArrayList<Runnable>();
+	final ArrayBlockingQueue<Runnable> runs = new ArrayBlockingQueue<Runnable>(100);
 	ReentrantLock runnerLock;
 	/** The show gui flag. */
 	boolean showGUI = false;
@@ -305,13 +305,19 @@ public class MapperServer implements PConstants {
 	}
 
 	public void pre() {
-		runnerLock.lock();
-		Iterator<Runnable> it = runs.iterator();
-		while (it.hasNext()) {
-			it.next().run();
-			it.remove();
+//		runnerLock.lock();
+//		Iterator<Runnable> it = runs.iterator();
+//		while (it.hasNext()) {
+//			it.next().run();
+//			it.remove();
+//		}
+//		runnerLock.unlock();
+		while(!runs.isEmpty()){
+			Runnable r = runs.poll();
+			if (r!=null){
+				r.run();
+			}
 		}
-		runnerLock.unlock();
 	}
 
 	/**
@@ -557,59 +563,59 @@ public class MapperServer implements PConstants {
 					.checkAddrPattern(OscMessagePaths.LOADCONFIG) == true) {
 				final String filename = theOscMessage.get(0).stringValue();
 				PApplet.println("Loading " + filename);
-				runnerLock.lock();
-				runs.add(new Runnable() {
+//				runnerLock.lock();
+				runs.offer(new Runnable() {
 					public void run() {
 						formContainer.load(filename);
 					}
 				});
-				runnerLock.unlock();
+//				runnerLock.unlock();
 			} else if (theOscMessage
 					.checkAddrPattern(OscMessagePaths.SAVECONFIG) == true) {
 				final String filename = parent.dataPath(theOscMessage.get(0)
 						.stringValue());
 				PApplet.println("Saveing " + filename);
-				runnerLock.lock();
-				runs.add(new Runnable() {
+//				runnerLock.lock();
+				runs.offer(new Runnable() {
 					public void run() {
 						formContainer.save(filename);
 					}
 				});
-				runnerLock.unlock();
+//				runnerLock.unlock();
 			} else if (theOscMessage
 					.checkAddrPattern(OscMessagePaths.MOUSECOORDS) == true) {
 				mouseX = theOscMessage.get(0).intValue();
 				mouseY = theOscMessage.get(1).intValue();
-				runnerLock.lock();
-				runs.add(new Runnable() {
+//				runnerLock.lock();
+				runs.offer(new Runnable() {
 					public void run() {
 						dragMouse();
 					}
 				});
-				runnerLock.unlock();
+//				runnerLock.unlock();
 			} else if (theOscMessage
 					.checkAddrPattern(OscMessagePaths.MOUSEBUTTON) == true) {
 				int buttonNr = theOscMessage.get(0).intValue();
 				switch (buttonNr) {
 				case 1:
 					middleButton = theOscMessage.typetag().equals("iT");
-					runnerLock.lock();
-					runs.add(new Runnable() {
+//					runnerLock.lock();
+					runs.offer(new Runnable() {
 						public void run() {
 							pressMouse();
 						}
 					});
-					runnerLock.unlock();
+//					runnerLock.unlock();
 					break;
 				case 2:
 					rightButton = theOscMessage.typetag().equals("iT");
-					runnerLock.lock();
-					runs.add(new Runnable() {
+//					runnerLock.lock();
+					runs.offer(new Runnable() {
 						public void run() {
 							pressMouse();
 						}
 					});
-					runnerLock.unlock();
+//					runnerLock.unlock();
 					break;
 				}
 			} else {

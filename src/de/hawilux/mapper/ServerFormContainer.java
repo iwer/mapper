@@ -33,7 +33,7 @@ import processing.core.PVector;
 import controlP5.Button;
 import controlP5.RadioButton;
 import controlP5.Toggle;
-import de.hawilux.mapper.file.FileHandler;
+import de.hawilux.mapper.file.ServerFileHandler;
 import de.hawilux.mapper.shapes.IEdge;
 import de.hawilux.mapper.shapes.IFace;
 import de.hawilux.mapper.shapes.IPoint;
@@ -62,7 +62,7 @@ public class ServerFormContainer {
     HashMap<Integer, IFace> faces;
 
     /** The file handler. */
-    FileHandler fileHandler;
+    ServerFileHandler fileHandler;
 
     /** The face to build. */
     ServerFace faceToBuild;
@@ -141,7 +141,7 @@ public class ServerFormContainer {
         points = new HashMap<Integer, IPoint>();
         faces = new HashMap<Integer, IFace>();
 
-        fileHandler = new FileHandler(this);
+        fileHandler = new ServerFileHandler(this);
 
         faceToBuild = null;
 
