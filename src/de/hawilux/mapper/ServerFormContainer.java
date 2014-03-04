@@ -31,9 +31,6 @@ import java.util.HashMap;
 import processing.core.PApplet;
 import processing.core.PVector;
 import controlP5.Button;
-import controlP5.CallbackEvent;
-import controlP5.CallbackListener;
-import controlP5.ControlP5;
 import controlP5.RadioButton;
 import controlP5.Toggle;
 import de.hawilux.mapper.file.FileHandler;
@@ -44,7 +41,6 @@ import de.hawilux.mapper.shapes.ServerEdge;
 import de.hawilux.mapper.shapes.ServerFace;
 import de.hawilux.mapper.shapes.ServerPoint;
 import de.hawilux.mapper.ui.FileChooser;
-import de.hawilux.mapper.ui.Gui;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,7 +50,7 @@ public class ServerFormContainer {
 
     /** The parent. */
     PApplet parent;
-    MapperServer server;
+    public MapperServer server;
 
     /** The edges. */
     HashMap<Integer, IEdge> edges;
@@ -145,7 +141,7 @@ public class ServerFormContainer {
         points = new HashMap<Integer, IPoint>();
         faces = new HashMap<Integer, IFace>();
 
-        // fileHandler = new FileHandler(this);
+        fileHandler = new FileHandler(this);
 
         faceToBuild = null;
 
@@ -220,67 +216,20 @@ public class ServerFormContainer {
             // if there was a point selected, draw a line to new point
             if (a != null) {
                 maxEdgeId++;
-                IEdge e = new ServerEdge(parent, server, maxEdgeId, a, p, showHelper);
+                IEdge e = new ServerEdge(parent, server, maxEdgeId, a, p,
+                        showHelper);
                 edges.put(maxEdgeId, e);
                 // face.addEdge(e);
             }
         }
     }
 
-    /**
-     * Adds the setup gui.
-     * 
-     * @param gui
-     *            the gui
-     */
-    public void addSetupGui(Gui gui) {
-        tglHelper = gui.getCp5().addToggle("showHelper").setPosition(10, 10)
-                .setColor(gui.getC()).setMode(ControlP5.SWITCH).setValue(true)
-                .moveTo(gui.getSetupGroup());
-        tglHelper.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    if (theEvent.getController().getValue() == 1.0) {
-                        setHelper(true);
-                    } else {
-                        setHelper(false);
-                    }
-                }
-            }
-        });
-        rdbSelectMode = gui.getCp5().addRadioButton("selectmode")
-                .setPosition(10, 2).setColor(gui.getC())
-                .setNoneSelectedAllowed(false).addItem("points", 1)
-                .addItem("edges", 2).addItem("faces", 3)
-                .moveTo(gui.getSetupSelectModeGroup()).activate("points");
-        btnDeleteSelected = gui.getCp5().addButton("deleteSelected")
-                .setPosition(10, 2).setColor(gui.getC())
-                .moveTo(gui.getSetupEditGroup());
-        btnDeleteSelected.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    deleteSelected();
-                }
-            }
-        });
-        btnSubdivide = gui.getCp5().addButton("subdivide").setPosition(10, 27)
-                .setColor(gui.getC()).hide().moveTo(gui.getSetupEditGroup());
-        btnSubdivide.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    subdivideEdge();
-                }
-            }
-        });
-        btnSwitchDir = gui.getCp5().addButton("switchdir").setPosition(10, 52)
-                .setColor(gui.getC()).hide().moveTo(gui.getSetupEditGroup());
-        btnSwitchDir.addCallback(new CallbackListener() {
-            public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    switchEdgeDirection();
-                }
-            }
-        });
+    public void load(String filename) {
+        fileHandler.loadXML(filename);
+    }
+
+    public void save(String filename) {
+        fileHandler.saveXML(filename);
     }
 
     /**
@@ -302,7 +251,7 @@ public class ServerFormContainer {
         if (selectMode == SELECT_POINTS) {
             PApplet.println("Delete Point " + selectedPoint);
             if (selectedPoint != -1) {
-            	IPoint toRemove = points.get(selectedPoint);
+                IPoint toRemove = points.get(selectedPoint);
                 ArrayList<Integer> conEdges = new ArrayList<Integer>(
                         toRemove.getConnectedEdges());
                 PApplet.println("Connected Edges at point " + selectedPoint
@@ -327,7 +276,7 @@ public class ServerFormContainer {
         } else if (selectMode == SELECT_EDGES) {
             PApplet.println("Delete Edge " + selectedEdge);
             if (selectedEdge != -1) {
-            	IEdge toRemove = edges.get(selectedEdge);
+                IEdge toRemove = edges.get(selectedEdge);
                 toRemove.prepareDelete();
                 ArrayList<Integer> conFaces = new ArrayList<Integer>(
                         toRemove.getConnectedFaces());
@@ -343,7 +292,7 @@ public class ServerFormContainer {
         } else if (selectMode == SELECT_FACES) {
             PApplet.println("Delete Face " + selectedFace);
             if (selectedFace != -1) {
-            	IFace toRemove = faces.get(selectedFace);
+                IFace toRemove = faces.get(selectedFace);
                 toRemove.prepareDelete();
                 faces.remove(selectedFace);
                 selectedEdge = -1;
@@ -499,7 +448,7 @@ public class ServerFormContainer {
      */
     public void movePoint() {
         if (selectedPoint != -1) {
-        	IPoint p = points.get(selectedPoint);
+            IPoint p = points.get(selectedPoint);
             if (p != null) {
                 p.move();
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
@@ -525,7 +474,7 @@ public class ServerFormContainer {
      */
     public void movePoint(int dx, int dy) {
         if (selectedPoint != -1) {
-        	IPoint p = points.get(selectedPoint);
+            IPoint p = points.get(selectedPoint);
             if (p != null) {
                 p.move(dx, dy);
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
@@ -684,9 +633,9 @@ public class ServerFormContainer {
      */
     public void subdivideEdge() {
         if (selectedEdge != -1) {
-        	IEdge toDivide = edges.get(selectedEdge);
-        	IPoint start = toDivide.getA();
-        	IPoint end = toDivide.getB();
+            IEdge toDivide = edges.get(selectedEdge);
+            IPoint start = toDivide.getA();
+            IPoint end = toDivide.getB();
             PVector newPointPos = toDivide.getCentroid();
             ArrayList<Integer> connectedFaces = toDivide.getConnectedFaces();
 
@@ -699,8 +648,8 @@ public class ServerFormContainer {
 
             // add new edges
             maxEdgeId++;
-            IEdge e1 = new ServerEdge(parent, server, maxEdgeId, start, newPoint,
-                    showHelper);
+            IEdge e1 = new ServerEdge(parent, server, maxEdgeId, start,
+                    newPoint, showHelper);
 
             maxEdgeId++;
             IEdge e2 = new ServerEdge(parent, server, maxEdgeId, newPoint, end,
@@ -727,9 +676,9 @@ public class ServerFormContainer {
      */
     public void switchEdgeDirection() {
         if (selectedEdge != -1) {
-        	IEdge toSwitch = edges.get(selectedEdge);
-        	IPoint start = toSwitch.getA();
-        	IPoint end = toSwitch.getB();
+            IEdge toSwitch = edges.get(selectedEdge);
+            IPoint start = toSwitch.getA();
+            IPoint end = toSwitch.getB();
 
             // remove edge
             toSwitch.prepareDelete();
@@ -737,7 +686,8 @@ public class ServerFormContainer {
 
             // add new edges first edge reuses id of deleted
             maxEdgeId++;
-            IEdge e = new ServerEdge(parent, server, maxEdgeId, end, start, showHelper);
+            IEdge e = new ServerEdge(parent, server, maxEdgeId, end, start,
+                    showHelper);
             for (Integer i : toSwitch.getConnectedFaces()) {
                 e.addConnectedFace(i);
             }

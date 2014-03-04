@@ -47,7 +47,7 @@ public class FileChooser {
     PApplet parent;
 
     /** The gui. */
-    Gui gui;
+    IGui gui;
 
     /** The runs. */
     final ArrayList<Runnable> runs = new ArrayList<Runnable>();
@@ -106,7 +106,7 @@ public class FileChooser {
      * @param gui_
      *            the new gui
      */
-    public void setGui(Gui gui_) {
+    public void setGui(IGui gui_) {
         gui = gui_;
     }
 
@@ -118,17 +118,17 @@ public class FileChooser {
      */
     public void addFileChooser(String action) {
         enabled = true;
-        final Group fc = gui.cp5.addGroup("filechooser").setPosition(10, 250)
-                .setSize(300, 300).setColor(gui.c).hideBar();
+        final Group fc = gui.getCp5().addGroup("filechooser").setPosition(10, 250)
+                .setSize(300, 300).setColor(gui.getC()).hideBar();
 
-        final Textfield tf = gui.cp5.addTextfield("filename")
+        final Textfield tf = gui.getCp5().addTextfield("filename")
                 .setPosition(8, 210).setSize(284, 20).setGroup("filechooser")
-                .setColor(gui.c);
+                .setColor(gui.getC());
 
         tf.getCaptionLabel().hide();
 
-        final ListBox lb = gui.cp5.addListBox("selectfiles").setSize(300, 200)
-                .setPosition(0, 0).setColor(gui.c).hideBar()
+        final ListBox lb = gui.getCp5().addListBox("selectfiles").setSize(300, 200)
+                .setPosition(0, 0).setColor(gui.getC()).hideBar()
                 .setStringValue(new File(parent.dataPath("")).toString())
                 .setGroup("filechooser")
                 // what is this? see bottom of the sketch
@@ -143,8 +143,8 @@ public class FileChooser {
                     }
                 });
 
-        actionButton = gui.cp5.addButton(action).setPosition(7, 240)
-                .setSize(120, 20).setGroup("filechooser").setColor(gui.c)
+        actionButton = gui.getCp5().addButton(action).setPosition(7, 240)
+                .setSize(120, 20).setGroup("filechooser").setColor(gui.getC())
                 .addListener(new ControlListener() {
                     public void controlEvent(ControlEvent ev) {
                         filename = new File(new File(lb.getStringValue()), tf
@@ -158,8 +158,8 @@ public class FileChooser {
                     }
                 });
 
-        gui.cp5.addButton("cancel").setPosition(173, 240).setSize(120, 20)
-                .setGroup("filechooser").setColor(gui.c)
+        gui.getCp5().addButton("cancel").setPosition(173, 240).setSize(120, 20)
+                .setGroup("filechooser").setColor(gui.getC())
                 .addListener(new ControlListener() {
                     // when cancel is triggered, add a new runnable to
                     // safely remove the filechooser from controlP5 in
@@ -182,19 +182,19 @@ public class FileChooser {
      * @param action
      *            the action
      */
-    public void addRemoteFileChooser(String action) {
+    public void addRemoteFileChooser(String action, final String[] filenames) {
         enabled = true;
-        final Group fc = gui.cp5.addGroup("filechooser").setPosition(10, 250)
-                .setSize(300, 300).setColor(gui.c).hideBar();
+        final Group fc = gui.getCp5().addGroup("filechooser").setPosition(10, 250)
+                .setSize(300, 300).setColor(gui.getC()).hideBar();
 
-        final Textfield tf = gui.cp5.addTextfield("filename")
+        final Textfield tf = gui.getCp5().addTextfield("filename")
                 .setPosition(8, 210).setSize(284, 20).setGroup("filechooser")
-                .setColor(gui.c);
+                .setColor(gui.getC());
 
         tf.getCaptionLabel().hide();
 
-        final ListBox lb = gui.cp5.addListBox("selectfiles").setSize(300, 200)
-                .setPosition(0, 0).setColor(gui.c).hideBar()
+        final ListBox lb = gui.getCp5().addListBox("selectfiles").setSize(300, 200)
+                .setPosition(0, 0).setColor(gui.getC()).hideBar()
                 // .setStringValue(new File(parent.dataPath("")).toString())
                 .setStringValue("Bla").setGroup("filechooser")
                 // what is this? see bottom of the sketch
@@ -202,20 +202,19 @@ public class FileChooser {
                     public void controlEvent(final ControlEvent ev) {
                         runs.add(new Runnable() {
                             public void run() {
-                                updateFileChooser(((ListBox) ev.getGroup()),
-                                        tf, (int) ev.getValue());
+                                updateRemoteFileChooser(
+                                        ((ListBox) ev.getGroup()), tf,
+                                        filenames, (int) ev.getValue());
                             }
                         });
                     }
                 });
 
-        actionButton = gui.cp5.addButton(action).setPosition(7, 240)
-                .setSize(120, 20).setGroup("filechooser").setColor(gui.c)
+        actionButton = gui.getCp5().addButton(action).setPosition(7, 240)
+                .setSize(120, 20).setGroup("filechooser").setColor(gui.getC())
                 .addListener(new ControlListener() {
                     public void controlEvent(ControlEvent ev) {
-                        filename = "new_file.xml";
-                        // new File(new File(lb.getStringValue()), tf
-                        // .getText()).toString();
+                        filename = tf.getText();
                         runs.add(new Runnable() {
                             public void run() {
                                 fc.remove();
@@ -225,8 +224,8 @@ public class FileChooser {
                     }
                 });
 
-        gui.cp5.addButton("cancel").setPosition(173, 240).setSize(120, 20)
-                .setGroup("filechooser").setColor(gui.c)
+        gui.getCp5().addButton("cancel").setPosition(173, 240).setSize(120, 20)
+                .setGroup("filechooser").setColor(gui.getC())
                 .addListener(new ControlListener() {
                     // when cancel is triggered, add a new runnable to
                     // safely remove the filechooser from controlP5 in
@@ -240,7 +239,7 @@ public class FileChooser {
                         });
                     }
                 });
-        updateFileChooser(lb, tf, 0);
+        updateRemoteFileChooser(lb, tf, filenames, 0);
     }
 
     /**
@@ -270,7 +269,7 @@ public class FileChooser {
             if (f.isDirectory()) {
                 String[] strs = f.list();
                 lb.clear();
-                lb.setColor(gui.c);
+                lb.setColor(gui.getC());
                 int n = 0;
                 lb.addItem(f.getName(), n++).setColorBackground(
                         parent.color(80));
@@ -290,6 +289,37 @@ public class FileChooser {
         }
     }
 
+    /**
+     * Update file chooser.
+     * 
+     * @param lb
+     *            the lb
+     * @param tf
+     *            the tf
+     * @param theValue
+     *            the the value
+     */
+    final void updateRemoteFileChooser(ListBox lb, Textfield tf,
+            String[] files, int theValue) {
+
+        String[] strs = files;
+        lb.clear();
+        lb.setColor(gui.getC());
+        int n = 0;
+        lb.addItem("DATA", n++).setColorBackground(parent.color(80));
+        for (String s1 : strs) {
+            ListBoxItem item = lb.addItem(s1, n++);
+        }
+        lb.scroll(0);
+        //lb.setStringValue(f.getAbsolutePath().toString());
+
+        if (theValue != 0) {
+            String f = lb.getListBoxItems()[theValue][0];
+            PApplet.println("file selected : " + f);
+            tf.setText(f);
+        }
+    }
+
     // for some controlP5 events we need to handle events after the main draw
     // and
     // input events have been executed and completed. For this we use a list to
@@ -298,7 +328,7 @@ public class FileChooser {
     // execute an event once by calling run and then remove it.
     // For example, whenever an event of a filechooser's listbox has been
     // triggered, an
-    // anonymous class oftype Runnable will be added to List 'runs', executed
+    // anonymous class of type Runnable will be added to List 'runs', executed
     // once in post() and is then removed.
 
     /**

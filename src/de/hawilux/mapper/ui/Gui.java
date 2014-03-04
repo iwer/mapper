@@ -39,7 +39,7 @@ import controlP5.Toggle;
 /**
  * The Class Gui.
  */
-public class Gui {
+public class Gui implements IGui {
 
     /** The parent. */
     PApplet parent;

@@ -39,6 +39,10 @@ public class OscMessagePaths {
 
     public final static String LOADCONFIG = "/mapper/file/loadconfig";
 
+    public final static String SAVEFILE = "/mapper/file/savefile";
+
+    public final static String LOADFILE = "/mapper/file/loadfile";
+
     private final static ArrayList<String> effectPaths = new ArrayList<String>();
 
     public static void addEffectPath(String effectName) {

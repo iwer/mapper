@@ -13,7 +13,7 @@ import controlP5.Textlabel;
 import controlP5.Toggle;
 import de.hawilux.mapper.net.OscStack;
 
-public class PcRemoteGui {
+public class PcRemoteGui implements IGui {
 
     /** The parent. */
     PApplet parent;
@@ -248,21 +248,19 @@ public class PcRemoteGui {
         return effectGroup;
     }
 
-    /**
-     * Gets the cp5.
-     * 
-     * @return the cp5
-     */
-    public ControlP5 getCp5() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.ui.IGui#getCp5()
+	 */
+    @Override
+	public ControlP5 getCp5() {
         return cp5;
     }
 
-    /**
-     * Gets the c.
-     * 
-     * @return the c
-     */
-    public CColor getC() {
+    /* (non-Javadoc)
+	 * @see de.hawilux.mapper.ui.IGui#getC()
+	 */
+    @Override
+	public CColor getC() {
         return c;
     }
 

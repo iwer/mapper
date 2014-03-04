@@ -28,12 +28,16 @@ import java.io.File;
 import processing.core.PApplet;
 import processing.data.XML;
 import de.hawilux.mapper.FormContainer;
+import de.hawilux.mapper.ServerFormContainer;
 import de.hawilux.mapper.shapes.Edge;
 import de.hawilux.mapper.shapes.Face;
 import de.hawilux.mapper.shapes.IEdge;
 import de.hawilux.mapper.shapes.IFace;
 import de.hawilux.mapper.shapes.IPoint;
 import de.hawilux.mapper.shapes.Point;
+import de.hawilux.mapper.shapes.ServerEdge;
+import de.hawilux.mapper.shapes.ServerFace;
+import de.hawilux.mapper.shapes.ServerPoint;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -42,16 +46,16 @@ import de.hawilux.mapper.shapes.Point;
 public class FileHandler {
 
     /** The data. */
-    FormContainer data;
+    ServerFormContainer data;
 
     /**
      * Instantiates a new file handler.
      * 
-     * @param data_
+     * @param serverFormContainer
      *            the data_
      */
-    public FileHandler(FormContainer data_) {
-        data = data_;
+    public FileHandler(ServerFormContainer serverFormContainer) {
+        data = serverFormContainer;
     }
 
     /**
@@ -78,7 +82,7 @@ public class FileHandler {
             int y = positionElement.getInt("y");
 
             PApplet.println("Point: " + id + " # " + x + "," + y);
-            Point p = new Point(data.getParent(), id, x, y, data.isShowHelper());
+            ServerPoint p = new ServerPoint(data.getParent(), data.server, id, x, y, data.isShowHelper());
             data.getPoints().put(id, p);
             data.getParent();
             data.setMaxPointId(PApplet.max(id, data.getMaxPointId()));
@@ -97,7 +101,7 @@ public class FileHandler {
             int b = pointElement.getInt("b");
 
             PApplet.println("Edge: " + id + " # " + a + "," + b);
-            Edge e = new Edge(data.getParent(), id, data.getPoints().get(a),
+            ServerEdge e = new ServerEdge(data.getParent(), data.server, id, data.getPoints().get(a),
                     data.getPoints().get(b), data.isShowHelper());
             data.getEdges().put(id, e);
             data.setMaxEdgeId(PApplet.max(id, data.getMaxEdgeId()));
@@ -108,7 +112,7 @@ public class FileHandler {
             XML idElement = facesElement[i].getChild("id");
             int id = idElement.getInt("id");
 
-            Face f = new Face(data.getParent(), id, data.isShowHelper());
+            ServerFace f = new ServerFace(data.getParent(), data.server, id, data.isShowHelper());
             XML[] edgeElements = facesElement[i].getChildren("edge");
             for (int j = 0; j < edgeElements.length; j++) {
                 int edgeId = edgeElements[j].getInt("id");
