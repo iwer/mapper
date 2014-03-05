@@ -10,84 +10,84 @@ import processing.core.PApplet;
 
 public class OscStack implements OscEventListener {
 
-	static OscStack theInstance;
+    static OscStack theInstance;
 
-	OscP5 oscP5;
-	OscEventListener listener;// TODO: this out for this:
-	HashMap<String, OscEventListener> oscReceivers;
+    OscP5 oscP5;
+    OscEventListener listener;// TODO: this out for this:
+    HashMap<String, OscEventListener> oscReceivers;
 
-	public static OscStack getInstance(PApplet parent,
-			OscEventListener listener_, String multicastIP, int multicastPort) {
-		if (theInstance == null) {
-			theInstance = new OscStack(parent, listener_, multicastIP,
-					multicastPort);
-		}
-		return theInstance;
-	}
+    public static OscStack getInstance(PApplet parent,
+            OscEventListener listener_, String multicastIP, int multicastPort) {
+        if (theInstance == null) {
+            theInstance = new OscStack(parent, listener_, multicastIP,
+                    multicastPort);
+        }
+        return theInstance;
+    }
 
-	public static OscStack getExistingInstance() throws IllegalAccessException {
-		if (theInstance != null) {
-			return theInstance;
-		} else {
-			throw new IllegalAccessException(
-					"Can only be called after getInstance");
-		}
-	}
+    public static OscStack getExistingInstance() throws IllegalAccessException {
+        if (theInstance != null) {
+            return theInstance;
+        } else {
+            throw new IllegalAccessException(
+                    "Can only be called after getInstance");
+        }
+    }
 
-	private OscStack(PApplet parent, OscEventListener listener_,
-			String multicastIP, int multicastPort) {
-		oscP5 = new OscP5(parent, multicastIP, multicastPort, OscP5.MULTICAST);
+    private OscStack(PApplet parent, OscEventListener listener_,
+            String multicastIP, int multicastPort) {
+        oscP5 = new OscP5(parent, multicastIP, multicastPort, OscP5.MULTICAST);
 
-		oscReceivers = new HashMap<String, OscEventListener>();
+        oscReceivers = new HashMap<String, OscEventListener>();
 
-		this.listener = listener_;
-		oscP5.addListener(listener);
+        // this.listener = listener_;
+        // oscP5.addListener(listener);
 
-		oscP5.addListener(this);
-	}
+        oscP5.addListener(this);
+    }
 
-	public void registerOscMessageCallback(OscEventListener listener_,
-			String oscPath_) {
-		if (oscReceivers.get(oscPath_) == null) {
-			PApplet.println("Registering receiver for '" + oscPath_ + "'");
-			oscReceivers.put(oscPath_, listener_);
-		} else {
-			PApplet.println("Receiver for '" + oscPath_
-					+ "' already registered");
-		}
-	}
+    public void registerOscMessageCallback(OscEventListener listener_,
+            String oscPath_) {
+        if (oscReceivers.get(oscPath_) == null) {
+            PApplet.println("Registering receiver for '" + oscPath_ + "'");
+            oscReceivers.put(oscPath_, listener_);
+        } else {
+            PApplet.println("Receiver for '" + oscPath_
+                    + "' already registered");
+        }
+    }
 
-	public void oscEvent(OscMessage theOscMessage) {
-		String path = theOscMessage.addrPattern();
-		OscEventListener l = oscReceivers.get(path);
-		if (l != null) {
-			l.oscEvent(theOscMessage);
-		}
-	}
+    public void oscEvent(OscMessage theOscMessage) {
+        String path = theOscMessage.addrPattern();
+        OscEventListener l = oscReceivers.get(path);
+        if (l != null) {
+            l.oscEvent(theOscMessage);
+        }
+    }
 
-	public void sendOscMessage(OscMessage message) {
-		oscP5.send(message);
-	}
+    public void sendOscMessage(OscMessage message) {
+        oscP5.send(message);
+    }
 
-	public void sendOscMessage(String path, int value) {
-		OscMessage myOscMessage = new OscMessage(path);
-		myOscMessage.add(value);
-		oscP5.send(myOscMessage);
-	}
+    public void sendOscMessage(String path, int value) {
+        OscMessage myOscMessage = new OscMessage(path);
+        myOscMessage.add(value);
+        oscP5.send(myOscMessage);
+    }
 
-	public void sendOscMessage(String path, boolean b) {
-		OscMessage myOscMessage = new OscMessage(path);
-		myOscMessage.add(b);
-		oscP5.send(myOscMessage);
-	}
+    public void sendOscMessage(String path, boolean b) {
+        OscMessage myOscMessage = new OscMessage(path);
+        myOscMessage.add(b);
+        oscP5.send(myOscMessage);
+    }
 
-	@Override
-	public void oscStatus(OscStatus theStatus) {
-	}
-	
-	public static void messageDebug(OscMessage theMessage) {
-		PApplet.print("#-----# OSC #");
-		PApplet.print(" addrpattern: " + theMessage.addrPattern());
-		PApplet.println(" typetag: " + theMessage.typetag());
-	}
+    @Override
+    public void oscStatus(OscStatus theStatus) {
+    }
+
+    public static void messageDebug(OscMessage theMessage) {
+        PApplet.print("#-----# OSC #");
+        PApplet.print(" addrpattern: " + theMessage.addrPattern());
+        PApplet.println(" typetag: " + theMessage.typetag());
+    }
 }
