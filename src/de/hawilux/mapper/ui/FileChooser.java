@@ -44,22 +44,22 @@ import controlP5.Textfield;
 public class FileChooser {
 
     /** The parent. */
-    PApplet parent;
+    PApplet                   parent;
 
     /** The gui. */
-    IGui gui;
+    IGui                      gui;
 
     /** The runs. */
     final ArrayList<Runnable> runs = new ArrayList<Runnable>();
 
     /** The enabled. */
-    boolean enabled;
+    boolean                   enabled;
 
     /** The filename. */
-    String filename;
+    String                    filename;
 
     /** The action button. */
-    Button actionButton;
+    Button                    actionButton;
 
     /**
      * Instantiates a new file chooser.
@@ -121,34 +121,30 @@ public class FileChooser {
         final Group fc = gui.getCp5().addGroup("filechooser").setPosition(10, 250)
                 .setSize(300, 300).setColor(gui.getC()).hideBar();
 
-        final Textfield tf = gui.getCp5().addTextfield("filename")
-                .setPosition(8, 210).setSize(284, 20).setGroup("filechooser")
-                .setColor(gui.getC());
+        final Textfield tf = gui.getCp5().addTextfield("filename").setPosition(8, 210)
+                .setSize(284, 20).setGroup("filechooser").setColor(gui.getC());
 
         tf.getCaptionLabel().hide();
 
         final ListBox lb = gui.getCp5().addListBox("selectfiles").setSize(300, 200)
                 .setPosition(0, 0).setColor(gui.getC()).hideBar()
-                .setStringValue(new File(parent.dataPath("")).toString())
-                .setGroup("filechooser")
+                .setStringValue(new File(parent.dataPath("")).toString()).setGroup("filechooser")
                 // what is this? see bottom of the sketch
                 .addListener(new ControlListener() {
                     public void controlEvent(final ControlEvent ev) {
                         runs.add(new Runnable() {
                             public void run() {
-                                updateFileChooser(((ListBox) ev.getGroup()),
-                                        tf, (int) ev.getValue());
+                                updateFileChooser(((ListBox) ev.getGroup()), tf,
+                                        (int) ev.getValue());
                             }
                         });
                     }
                 });
 
-        actionButton = gui.getCp5().addButton(action).setPosition(7, 240)
-                .setSize(120, 20).setGroup("filechooser").setColor(gui.getC())
-                .addListener(new ControlListener() {
+        actionButton = gui.getCp5().addButton(action).setPosition(7, 240).setSize(120, 20)
+                .setGroup("filechooser").setColor(gui.getC()).addListener(new ControlListener() {
                     public void controlEvent(ControlEvent ev) {
-                        filename = new File(new File(lb.getStringValue()), tf
-                                .getText()).toString();
+                        filename = new File(new File(lb.getStringValue()), tf.getText()).toString();
                         runs.add(new Runnable() {
                             public void run() {
                                 fc.remove();
@@ -159,8 +155,7 @@ public class FileChooser {
                 });
 
         gui.getCp5().addButton("cancel").setPosition(173, 240).setSize(120, 20)
-                .setGroup("filechooser").setColor(gui.getC())
-                .addListener(new ControlListener() {
+                .setGroup("filechooser").setColor(gui.getC()).addListener(new ControlListener() {
                     // when cancel is triggered, add a new runnable to
                     // safely remove the filechooser from controlP5 in
                     // a post event.
@@ -187,9 +182,8 @@ public class FileChooser {
         final Group fc = gui.getCp5().addGroup("filechooser").setPosition(10, 250)
                 .setSize(300, 300).setColor(gui.getC()).hideBar();
 
-        final Textfield tf = gui.getCp5().addTextfield("filename")
-                .setPosition(8, 210).setSize(284, 20).setGroup("filechooser")
-                .setColor(gui.getC());
+        final Textfield tf = gui.getCp5().addTextfield("filename").setPosition(8, 210)
+                .setSize(284, 20).setGroup("filechooser").setColor(gui.getC());
 
         tf.getCaptionLabel().hide();
 
@@ -202,17 +196,15 @@ public class FileChooser {
                     public void controlEvent(final ControlEvent ev) {
                         runs.add(new Runnable() {
                             public void run() {
-                                updateRemoteFileChooser(
-                                        ((ListBox) ev.getGroup()), tf,
-                                        filenames, (int) ev.getValue());
+                                updateRemoteFileChooser(((ListBox) ev.getGroup()), tf, filenames,
+                                        (int) ev.getValue());
                             }
                         });
                     }
                 });
 
-        actionButton = gui.getCp5().addButton(action).setPosition(7, 240)
-                .setSize(120, 20).setGroup("filechooser").setColor(gui.getC())
-                .addListener(new ControlListener() {
+        actionButton = gui.getCp5().addButton(action).setPosition(7, 240).setSize(120, 20)
+                .setGroup("filechooser").setColor(gui.getC()).addListener(new ControlListener() {
                     public void controlEvent(ControlEvent ev) {
                         filename = tf.getText();
                         runs.add(new Runnable() {
@@ -225,8 +217,7 @@ public class FileChooser {
                 });
 
         gui.getCp5().addButton("cancel").setPosition(173, 240).setSize(120, 20)
-                .setGroup("filechooser").setColor(gui.getC())
-                .addListener(new ControlListener() {
+                .setGroup("filechooser").setColor(gui.getC()).addListener(new ControlListener() {
                     // when cancel is triggered, add a new runnable to
                     // safely remove the filechooser from controlP5 in
                     // a post event.
@@ -254,14 +245,14 @@ public class FileChooser {
      */
     final void updateFileChooser(ListBox lb, Textfield tf, int theValue) {
 
-        String s = (lb.getListBoxItems().length == 0) ? "" : lb
-                .getListBoxItems()[theValue][0];
+        String s = (lb.getListBoxItems().length == 0) ? "" : lb.getListBoxItems()[theValue][0];
 
         File f;
 
         if (s.equals("..")) {
             f = new File(lb.getStringValue()).getParentFile();
-        } else {
+        }
+        else {
             f = new File(new File(lb.getStringValue()), s);
         }
 
@@ -271,8 +262,7 @@ public class FileChooser {
                 lb.clear();
                 lb.setColor(gui.getC());
                 int n = 0;
-                lb.addItem(f.getName(), n++).setColorBackground(
-                        parent.color(80));
+                lb.addItem(f.getName(), n++).setColorBackground(parent.color(80));
                 lb.addItem("..", n++);
                 for (String s1 : strs) {
                     ListBoxItem item = lb.addItem(s1, n++);
@@ -282,7 +272,8 @@ public class FileChooser {
                 }
                 lb.scroll(0);
                 lb.setStringValue(f.getAbsolutePath().toString());
-            } else if (theValue != 0) {
+            }
+            else if (theValue != 0) {
                 PApplet.println("file selected : " + f.getAbsolutePath());
                 tf.setText(f.getName());
             }
@@ -299,8 +290,7 @@ public class FileChooser {
      * @param theValue
      *            the the value
      */
-    final void updateRemoteFileChooser(ListBox lb, Textfield tf,
-            String[] files, int theValue) {
+    final void updateRemoteFileChooser(ListBox lb, Textfield tf, String[] files, int theValue) {
 
         String[] strs = files;
         lb.clear();
@@ -311,7 +301,7 @@ public class FileChooser {
             lb.addItem(s1, n++);
         }
         lb.scroll(0);
-        //lb.setStringValue(f.getAbsolutePath().toString());
+        // lb.setStringValue(f.getAbsolutePath().toString());
 
         if (theValue != 0) {
             String f = lb.getListBoxItems()[theValue][0];

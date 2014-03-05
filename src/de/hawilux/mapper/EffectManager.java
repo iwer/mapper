@@ -35,7 +35,7 @@ import de.hawilux.mapper.net.OscMessagePaths;
 class EffectManager {
 
     /** The mapper. */
-    Mapper mapper;
+    Mapper                          mapper;
 
     /** The effects available. */
     HashMap<String, AbstractEffect> effectsAvailable;

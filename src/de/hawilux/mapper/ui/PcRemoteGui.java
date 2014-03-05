@@ -15,98 +15,98 @@ import de.hawilux.mapper.net.OscStack;
 
 public class PcRemoteGui implements IGui {
     /** The select points. */
-    public final int SELECT_POINTS = 0;
+    public final int SELECT_POINTS       = 0;
 
     /** The select edges. */
-    public final int SELECT_EDGES = 1;
+    public final int SELECT_EDGES        = 1;
 
     /** The select faces. */
-    public final int SELECT_FACES = 2;
-    
+    public final int SELECT_FACES        = 2;
+
     /** The parent. */
-    PApplet parent;
+    PApplet          parent;
 
     /** The cp5. */
-    ControlP5 cp5;
+    ControlP5        cp5;
 
     /** The cb. */
     CallbackListener cb;
 
     /** The c active. */
-    int cActive;
+    int              cActive;
 
     /** The c background. */
-    int cBackground;
+    int              cBackground;
 
     /** The c caption label. */
-    int cCaptionLabel;
+    int              cCaptionLabel;
 
     /** The c foreground. */
-    int cForeground;
+    int              cForeground;
 
     /** The c value label. */
-    int cValueLabel;
+    int              cValueLabel;
 
     /** The c. */
-    CColor c;
+    CColor           c;
 
     /** The fps label. */
-    Textlabel fpsLabel;
+    Textlabel        fpsLabel;
 
     /** The main accordion. */
-    Accordion mainAccordion;
+    Accordion        mainAccordion;
 
     /** The effect accordion. */
-    Accordion effectAccordion;
+    Accordion        effectAccordion;
 
     /** The rdb effects. */
-    RadioButton rdbEffects;
+    RadioButton      rdbEffects;
 
     /** The effect group. */
-    Group effectGroup;
+    Group            effectGroup;
 
     /** The file group. */
-    Group fileGroup;
+    Group            fileGroup;
 
     /** The setup group. */
-    Group setupGroup;
+    Group            setupGroup;
 
     /** The setup select mode group. */
-    Group setupSelectModeGroup;
+    Group            setupSelectModeGroup;
 
     /** The setup edit group. */
-    Group setupEditGroup;
+    Group            setupEditGroup;
 
     /** The btn new config. */
-    Button btnNewConfig;
+    Button           btnNewConfig;
 
     /** The btn load config. */
-    Button btnLoadConfig;
+    Button           btnLoadConfig;
 
     /** The btn save config. */
-    Button btnSaveConfig;
-    
+    Button           btnSaveConfig;
+
     /** The tgl helper. */
-    Toggle tglHelper;
+    Toggle           tglHelper;
 
     /** The rdb select mode. */
-    RadioButton rdbSelectMode;
+    RadioButton      rdbSelectMode;
 
     /** The btn delete selected. */
-    Button btnDeleteSelected;
+    Button           btnDeleteSelected;
 
     /** The btn switch dir. */
-    Button btnSwitchDir;
+    Button           btnSwitchDir;
 
     /** The btn subdivide. */
-    Button btnSubdivide;
+    Button           btnSubdivide;
 
     /** The filename. */
-    String filename = new String();
+    String           filename            = new String();
 
-    Textlabel selectedPointsLabel;
+    Textlabel        selectedPointsLabel;
 
-    private int nextEffectTogglePos = 10;
+    private int      nextEffectTogglePos = 10;
 
     /**
      * Instantiates a new gui.
@@ -143,81 +143,71 @@ public class PcRemoteGui implements IGui {
         cp5.addFrameRate().setInterval(10).setPosition(10, 10);
         fpsLabel = cp5.addTextlabel("fps").setPosition(25, 10).setText("FPS");
 
-        selectedPointsLabel = cp5.addTextlabel("selectedPoint")
-                .setPosition(150, 10).setColor(c).setText("Nr:");
+        selectedPointsLabel = cp5.addTextlabel("selectedPoint").setPosition(150, 10).setColor(c)
+                .setText("Nr:");
 
         // file group
         fileGroup = cp5.addGroup("file").setColor(c);
 
-        btnNewConfig = cp5.addButton("newConfig").setPosition(10, 10)
-                .setColor(c).moveTo(fileGroup);
-        
-        btnLoadConfig = cp5.addButton("loadConfig")
-                .setPosition(10, 35).setColor(c)
+        btnNewConfig = cp5.addButton("newConfig").setPosition(10, 10).setColor(c).moveTo(fileGroup);
+
+        btnLoadConfig = cp5.addButton("loadConfig").setPosition(10, 35).setColor(c)
                 .moveTo(fileGroup);
-        btnSaveConfig = cp5.addButton("saveConfig")
-                .setPosition(10, 60).setColor(c)
+        btnSaveConfig = cp5.addButton("saveConfig").setPosition(10, 60).setColor(c)
                 .moveTo(fileGroup);
-        
-        
-        
+
         // setup group
         setupGroup = cp5.addGroup("setup").setColor(c).setBackgroundHeight(200);
 
         // setup -> selectmode
-        setupSelectModeGroup = cp5.addGroup("selectmodegroup")
-                .setLabel("selectmode").setPosition(0, 55).setColor(c)
-                .disableCollapse().moveTo(setupGroup);
+        setupSelectModeGroup = cp5.addGroup("selectmodegroup").setLabel("selectmode")
+                .setPosition(0, 55).setColor(c).disableCollapse().moveTo(setupGroup);
 
         // setup -> edit
-        setupEditGroup = cp5.addGroup("editgroup").setLabel("edit")
-                .setPosition(0, 100).setColor(c).disableCollapse()
-                .moveTo(setupGroup);
+        setupEditGroup = cp5.addGroup("editgroup").setLabel("edit").setPosition(0, 100).setColor(c)
+                .disableCollapse().moveTo(setupGroup);
 
         tglHelper = cp5.addToggle("showHelper").setPosition(10, 10).setColor(c)
                 .setMode(ControlP5.SWITCH).setValue(true).moveTo(setupGroup);
 
-        rdbSelectMode = cp5.addRadioButton("selectmode").setPosition(10, 2)
-                .setColor(c).setNoneSelectedAllowed(false).addItem("points", 1)
-                .addItem("edges", 2).addItem("faces", 3)
-                .moveTo(setupSelectModeGroup).activate("points");
-        btnDeleteSelected = cp5.addButton("deleteSelected").setPosition(10, 2)
-                .setColor(c).moveTo(setupEditGroup);
-        btnSubdivide = cp5.addButton("subdivide").setPosition(10, 27)
-                .setColor(c).hide().moveTo(setupEditGroup);
-        btnSwitchDir = cp5.addButton("switchdir").setPosition(10, 52)
-                .setColor(c).hide().moveTo(setupEditGroup);
+        rdbSelectMode = cp5.addRadioButton("selectmode").setPosition(10, 2).setColor(c)
+                .setNoneSelectedAllowed(false).addItem("points", 1).addItem("edges", 2)
+                .addItem("faces", 3).moveTo(setupSelectModeGroup).activate("points");
+        btnDeleteSelected = cp5.addButton("deleteSelected").setPosition(10, 2).setColor(c)
+                .moveTo(setupEditGroup);
+        btnSubdivide = cp5.addButton("subdivide").setPosition(10, 27).setColor(c).hide()
+                .moveTo(setupEditGroup);
+        btnSwitchDir = cp5.addButton("switchdir").setPosition(10, 52).setColor(c).hide()
+                .moveTo(setupEditGroup);
 
         // effect group
         effectGroup = cp5.addGroup("effect").setColor(c);
 
         // accordion
-        mainAccordion = cp5.addAccordion("acc").setPosition(10, 40)
-                .setWidth(100).addItem(fileGroup).addItem(setupGroup)
-                .addItem(effectGroup);
+        mainAccordion = cp5.addAccordion("acc").setPosition(10, 40).setWidth(100)
+                .addItem(fileGroup).addItem(setupGroup).addItem(effectGroup);
         mainAccordion.setCollapseMode(Accordion.SINGLE);
 
-        effectAccordion = cp5.addAccordion("effAcc")
-                .setPosition(parent.width - 210, 40).setWidth(100);
+        effectAccordion = cp5.addAccordion("effAcc").setPosition(parent.width - 210, 40)
+                .setWidth(100);
         mainAccordion.setCollapseMode(Accordion.SINGLE);
     }
 
     public RadioButton getRdbSelectMode() {
-		return rdbSelectMode;
-	}
+        return rdbSelectMode;
+    }
 
-	int effectCnt = 0;
-    int yPos = 10;
+    int effectCnt = 0;
+    int yPos      = 10;
 
     public void addEffectToggle(String effectname, final OscStack oscStack) {
         Toggle t;
         if (effectCnt % 2 == 0) {
-            t = cp5.addToggle(effectname.toLowerCase())
-                    .setSize(parent.width / 2 - 20, 50).setPosition(0, yPos)
-                    .moveTo(effectGroup);
-        } else {
-            t = cp5.addToggle(effectname.toLowerCase())
-                    .setSize(parent.width / 2 - 20, 50)
+            t = cp5.addToggle(effectname.toLowerCase()).setSize(parent.width / 2 - 20, 50)
+                    .setPosition(0, yPos).moveTo(effectGroup);
+        }
+        else {
+            t = cp5.addToggle(effectname.toLowerCase()).setSize(parent.width / 2 - 20, 50)
                     .setPosition(parent.width / 2, yPos).moveTo(effectGroup);
             yPos += 100;
         }
@@ -226,8 +216,7 @@ public class PcRemoteGui implements IGui {
             @Override
             public void controlEvent(CallbackEvent theEvent) {
                 if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
-                    oscStack.sendOscMessage("/mapper/effect/"
-                            + theEvent.getController().getName(),
+                    oscStack.sendOscMessage("/mapper/effect/" + theEvent.getController().getName(),
                             (int) theEvent.getController().getValue());
                 }
             }
@@ -239,19 +228,23 @@ public class PcRemoteGui implements IGui {
         return effectGroup;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.ui.IGui#getCp5()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.ui.IGui#getCp5()
+     */
     @Override
-	public ControlP5 getCp5() {
+    public ControlP5 getCp5() {
         return cp5;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.ui.IGui#getC()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.ui.IGui#getC()
+     */
     @Override
-	public CColor getC() {
+    public CColor getC() {
         return c;
     }
 
@@ -319,7 +312,8 @@ public class PcRemoteGui implements IGui {
     public void show(boolean state) {
         if (state == true) {
             cp5.show();
-        } else {
+        }
+        else {
             cp5.hide();
         }
     }
@@ -334,12 +328,13 @@ public class PcRemoteGui implements IGui {
         if (state == true) {
             btnSubdivide.show();
             btnSwitchDir.show();
-        } else {
+        }
+        else {
             btnSubdivide.hide();
             btnSwitchDir.hide();
         }
     }
-    
+
     public Textlabel getSelectedPointsLabel() {
         return selectedPointsLabel;
     }

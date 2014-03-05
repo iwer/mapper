@@ -10,17 +10,16 @@ import processing.core.PApplet;
 
 public class OscStack implements OscEventListener {
 
-    static OscStack theInstance;
+    static OscStack                   theInstance;
 
-    OscP5 oscP5;
-    OscEventListener listener;// TODO: this out for this:
+    OscP5                             oscP5;
+    OscEventListener                  listener;    // TODO: this out for this:
     HashMap<String, OscEventListener> oscReceivers;
 
-    public static OscStack getInstance(PApplet parent,
-            OscEventListener listener_, String multicastIP, int multicastPort) {
+    public static OscStack getInstance(PApplet parent, OscEventListener listener_,
+            String multicastIP, int multicastPort) {
         if (theInstance == null) {
-            theInstance = new OscStack(parent, listener_, multicastIP,
-                    multicastPort);
+            theInstance = new OscStack(parent, listener_, multicastIP, multicastPort);
         }
         return theInstance;
     }
@@ -28,14 +27,14 @@ public class OscStack implements OscEventListener {
     public static OscStack getExistingInstance() throws IllegalAccessException {
         if (theInstance != null) {
             return theInstance;
-        } else {
-            throw new IllegalAccessException(
-                    "Can only be called after getInstance");
+        }
+        else {
+            throw new IllegalAccessException("Can only be called after getInstance");
         }
     }
 
-    private OscStack(PApplet parent, OscEventListener listener_,
-            String multicastIP, int multicastPort) {
+    private OscStack(PApplet parent, OscEventListener listener_, String multicastIP,
+            int multicastPort) {
         oscP5 = new OscP5(parent, multicastIP, multicastPort, OscP5.MULTICAST);
 
         oscReceivers = new HashMap<String, OscEventListener>();
@@ -46,14 +45,13 @@ public class OscStack implements OscEventListener {
         oscP5.addListener(this);
     }
 
-    public void registerOscMessageCallback(OscEventListener listener_,
-            String oscPath_) {
+    public void registerOscMessageCallback(OscEventListener listener_, String oscPath_) {
         if (oscReceivers.get(oscPath_) == null) {
             PApplet.println("Registering receiver for '" + oscPath_ + "'");
             oscReceivers.put(oscPath_, listener_);
-        } else {
-            PApplet.println("Receiver for '" + oscPath_
-                    + "' already registered");
+        }
+        else {
+            PApplet.println("Receiver for '" + oscPath_ + "' already registered");
         }
     }
 
@@ -72,6 +70,12 @@ public class OscStack implements OscEventListener {
     public void sendOscMessage(String path, int value) {
         OscMessage myOscMessage = new OscMessage(path);
         myOscMessage.add(value);
+        oscP5.send(myOscMessage);
+    }
+
+    public void sendOscMessage(String path, float f) {
+        OscMessage myOscMessage = new OscMessage(path);
+        myOscMessage.add(f);
         oscP5.send(myOscMessage);
     }
 

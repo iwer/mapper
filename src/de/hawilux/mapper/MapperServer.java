@@ -21,28 +21,28 @@ import de.hawilux.mapper.ui.ServerCursor;
 public class MapperServer implements PConstants {
 
     /** The parent PApplet. */
-    PApplet parent;
+    PApplet               parent;
 
     /**
      * The form container. Contains the points, edges and faces and provides
      * methods to manipulate them
      */
-    ServerFormContainer formContainer;
+    ServerFormContainer   formContainer;
 
     /**
      * The file chooser. A gui element to choose files for loading and saving
      */
-    FileChooser fileChooser;
+    FileChooser           fileChooser;
 
     /**
      * The effect manager. Contains Available Effects and tracks active Effects
      */
-    ServerEffectManager effectManager;
+    ServerEffectManager   effectManager;
 
     /**
      * The cursor. To find your mouse on the projection
      */
-    ServerCursor cursor;
+    ServerCursor          cursor;
 
     /**
      * The Mapper Control listener. hooks to ControlP5 to catch events from our
@@ -50,36 +50,36 @@ public class MapperServer implements PConstants {
      */
     MapperControlListener myListener;
 
-    OscStack oscStack;
+    OscStack              oscStack;
 
     /** The task queue. */
-    TaskQueue preDrawTasks;
+    TaskQueue             preDrawTasks;
 
     /** The show gui flag. */
-    boolean showGUI = false;
+    boolean               showGUI      = false;
 
     /** The show console flag. */
-    boolean showConsole = false;
+    boolean               showConsole  = false;
 
     /** The setup mode flag. */
-    boolean setupMode = false;
+    boolean               setupMode    = false;
 
     /** The effect mode flag. */
-    boolean effectMode = false;
+    boolean               effectMode   = false;
 
-    public boolean clientJustConnected;
+    public boolean        clientJustConnected;
 
-    public int mouseX;
-    public int mouseY;
-    boolean middleButton = false;
-    boolean rightButton = false;
+    public int            mouseX;
+    public int            mouseY;
+    boolean               middleButton = false;
+    boolean               rightButton  = false;
 
     /** The version string. */
-    String version = "0.1.0";
+    String                version      = "0.1.0";
 
     /** The Mapper instance. */
-    static MapperServer theInstance;
-    OscEventListener listener;
+    static MapperServer   theInstance;
+    OscEventListener      listener;
 
     /**
      * Gets the single instance of Mapper.
@@ -107,13 +107,12 @@ public class MapperServer implements PConstants {
      * @throws IllegalAccessException
      *             the illegal access exception
      */
-    public static MapperServer getExistingInstance()
-            throws IllegalAccessException {
+    public static MapperServer getExistingInstance() throws IllegalAccessException {
         if (theInstance != null) {
             return theInstance;
-        } else {
-            throw new IllegalAccessException(
-                    "Can only be called after getInstance");
+        }
+        else {
+            throw new IllegalAccessException("Can only be called after getInstance");
         }
     }
 
@@ -136,13 +135,10 @@ public class MapperServer implements PConstants {
 
         oscStack.registerOscMessageCallback(listener, OscMessagePaths.HELLO);
         oscStack.registerOscMessageCallback(listener, OscMessagePaths.MODESETUP);
-        oscStack.registerOscMessageCallback(listener,
-                OscMessagePaths.MODEEFFECT);
+        oscStack.registerOscMessageCallback(listener, OscMessagePaths.MODEEFFECT);
         oscStack.registerOscMessageCallback(listener, OscMessagePaths.MODEFILE);
-        oscStack.registerOscMessageCallback(listener,
-                OscMessagePaths.MOUSECOORDS);
-        oscStack.registerOscMessageCallback(listener,
-                OscMessagePaths.MOUSEBUTTON);
+        oscStack.registerOscMessageCallback(listener, OscMessagePaths.MOUSECOORDS);
+        oscStack.registerOscMessageCallback(listener, OscMessagePaths.MOUSEBUTTON);
 
         fileChooser = new FileChooser(parent);
         formContainer = new ServerFormContainer(parent, this);
@@ -156,8 +152,7 @@ public class MapperServer implements PConstants {
         parent.registerMethod("post", this);
         parent.registerMethod("pre", this);
 
-        PApplet.println("mapper " + version
-                + ", Copyright (C) 2013 Iwer Petersen.");
+        PApplet.println("mapper " + version + ", Copyright (C) 2013 Iwer Petersen.");
 
     }
 
@@ -171,12 +166,14 @@ public class MapperServer implements PConstants {
         if (setupMode) {
             formContainer.display(setupMode);
             cursor.display();
-        } else if (effectMode) {
+        }
+        else if (effectMode) {
             for (AbstractEffect ae : effectManager.effectsEnabled.values()) {
                 ae.update();
                 ae.display();
             }
-        } else {
+        }
+        else {
             formContainer.display(setupMode);
         }
     }
@@ -188,7 +185,8 @@ public class MapperServer implements PConstants {
         if (setupMode && middleButton) {
             if (formContainer.getSelectMode() == formContainer.SELECT_POINTS) {
                 formContainer.addPoint();
-            } else if (formContainer.getSelectMode() == formContainer.SELECT_EDGES) {
+            }
+            else if (formContainer.getSelectMode() == formContainer.SELECT_EDGES) {
                 formContainer.addEdgeToFace();
             }
         }
@@ -310,44 +308,44 @@ public class MapperServer implements PConstants {
             OscStack.messageDebug(theOscMessage);
 
             if (theOscMessage.checkAddrPattern(OscMessagePaths.HELLO) == true) {
-                PApplet.println("Got discovery from "
-                        + theOscMessage.netAddress().toString());
+                PApplet.println("Got discovery from " + theOscMessage.netAddress().toString());
                 if (theOscMessage.get(0).intValue() == 1) {
-                    OscMessage effectMessage = new OscMessage(
-                            OscMessagePaths.EFFECTLIST);
+                    OscMessage effectMessage = new OscMessage(OscMessagePaths.EFFECTLIST);
                     for (String s : effectManager.getEffectsAvailable()) {
                         effectMessage.add(s);
                     }
                     oscStack.sendOscMessage(effectMessage);
 
-                    OscMessage myOscMessage = new OscMessage(
-                            OscMessagePaths.SELECTEDPOINT);
+                    OscMessage myOscMessage = new OscMessage(OscMessagePaths.SELECTEDPOINT);
                     myOscMessage.add(formContainer.selectedPoint);
                     oscStack.sendOscMessage(myOscMessage);
 
                     clientJustConnected = true;
                 }
-            } else if (theOscMessage
-                    .checkAddrPattern(OscMessagePaths.MODESETUP) == true) {
+            }
+            else if (theOscMessage.checkAddrPattern(OscMessagePaths.MODESETUP) == true) {
                 if (theOscMessage.get(0).intValue() == 1) {
                     setupMode = true;
                     effectMode = false;
-                } else {
+                }
+                else {
                     setupMode = false;
                 }
-            } else if (theOscMessage
-                    .checkAddrPattern(OscMessagePaths.MODEEFFECT) == true) {
+            }
+            else if (theOscMessage.checkAddrPattern(OscMessagePaths.MODEEFFECT) == true) {
                 if (theOscMessage.get(0).intValue() == 1) {
                     effectMode = true;
                     setupMode = false;
-                } else {
+                }
+                else {
                     effectMode = false;
                 }
-            } else if (theOscMessage.checkAddrPattern(OscMessagePaths.MODEFILE) == true) {
+            }
+            else if (theOscMessage.checkAddrPattern(OscMessagePaths.MODEFILE) == true) {
                 effectMode = false;
                 setupMode = false;
-            } else if (theOscMessage
-                    .checkAddrPattern(OscMessagePaths.MOUSECOORDS) == true) {
+            }
+            else if (theOscMessage.checkAddrPattern(OscMessagePaths.MOUSECOORDS) == true) {
                 mouseX = theOscMessage.get(0).intValue();
                 mouseY = theOscMessage.get(1).intValue();
                 preDrawTasks.queueTask(new Runnable() {
@@ -355,8 +353,8 @@ public class MapperServer implements PConstants {
                         dragMouse();
                     }
                 });
-            } else if (theOscMessage
-                    .checkAddrPattern(OscMessagePaths.MOUSEBUTTON) == true) {
+            }
+            else if (theOscMessage.checkAddrPattern(OscMessagePaths.MOUSEBUTTON) == true) {
                 int buttonNr = theOscMessage.get(0).intValue();
                 switch (buttonNr) {
                 case 1:
@@ -376,15 +374,15 @@ public class MapperServer implements PConstants {
                     });
                     break;
                 }
-            } else {
+            }
+            else {
                 for (String s : effectManager.getEffectsAvailable()) {
-                    if (theOscMessage.checkAddrPattern("/mapper/effect/"
-                            + s.toLowerCase()) == true) {
-                        PApplet.println("State of " + s + " is "
-                                + theOscMessage.get(0).intValue());
+                    if (theOscMessage.checkAddrPattern("/mapper/effect/" + s.toLowerCase()) == true) {
+                        PApplet.println("State of " + s + " is " + theOscMessage.get(0).intValue());
                         if (theOscMessage.get(0).intValue() == 0) {
                             effectManager.disableEffect(s);
-                        } else
+                        }
+                        else
                             effectManager.enableEffect(s);
                     }
                 }
