@@ -21,5 +21,4 @@ public interface IGui {
     public abstract CColor getC();
 
     public abstract Accordion getEffectAccordion();
-
 }

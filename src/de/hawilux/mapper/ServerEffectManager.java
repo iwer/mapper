@@ -34,93 +34,94 @@ import de.hawilux.mapper.net.OscMessagePaths;
  */
 class ServerEffectManager {
 
-    /** The mapper. */
-    MapperServer mapper;
+	/** The mapper. */
+	MapperServer mapper;
 
-    /** The effects available. */
-    HashMap<String, AbstractEffect> effectsAvailable;
+	/** The effects available. */
+	HashMap<String, AbstractEffect> effectsAvailable;
 
-    /** The effects enabled. */
-    HashMap<String, AbstractEffect> effectsEnabled;
+	/** The effects enabled. */
+	HashMap<String, AbstractEffect> effectsEnabled;
 
-    /**
-     * Instantiates a new effect manager.
-     * 
-     * @param mapper
-     *            the mapper
-     */
-    public ServerEffectManager(MapperServer mapper) {
-        this.mapper = mapper;
-        this.effectsAvailable = new HashMap<String, AbstractEffect>();
-        this.effectsEnabled = new HashMap<String, AbstractEffect>();
-    }
+	/**
+	 * Instantiates a new effect manager.
+	 * 
+	 * @param mapper
+	 *            the mapper
+	 */
+	public ServerEffectManager(MapperServer mapper) {
+		this.mapper = mapper;
+		this.effectsAvailable = new HashMap<String, AbstractEffect>();
+		this.effectsEnabled = new HashMap<String, AbstractEffect>();
+	}
 
-    /**
-     * Register effect.
-     * 
-     * Registers the effect as available and creates visible and hidden gui
-     * elements that appear when effect is activated.
-     * 
-     * @param effect
-     *            the effect
-     */
-    public void registerEffect(AbstractEffect effect) {
-        PApplet.println("Registering effect - " + effect.getName());
-        effectsAvailable.put(effect.getName(), effect);
-        OscMessagePaths.addEffectPath(effect.getName());
-    }
+	/**
+	 * Register effect.
+	 * 
+	 * Registers the effect as available and creates visible and hidden gui
+	 * elements that appear when effect is activated.
+	 * 
+	 * @param effect
+	 *            the effect
+	 */
+	public void registerEffect(AbstractEffect effect) {
+		PApplet.println("Registering effect - " + effect.getName() + "'"
+				+ effect.getClass().getName() + "'");
+		effectsAvailable.put(effect.getName(), effect);
+		OscMessagePaths.addEffectPath(effect.getName());
+	}
 
-    /**
-     * Enable effect.
-     * 
-     * Adds the effect to the enabled effects and unhides the effect specific
-     * gui elements.
-     * 
-     * @param effectName
-     *            the effect name
-     */
-    public void enableEffect(String effectName) {
-        AbstractEffect effect = effectsAvailable.get(effectName);
-        if (effect != null) {
-            PApplet.println("Enabling effect - " + effectName);
-            effectsEnabled.put(effectName, effect);
-            effect.enable();
-        }
-    }
+	/**
+	 * Enable effect.
+	 * 
+	 * Adds the effect to the enabled effects and unhides the effect specific
+	 * gui elements.
+	 * 
+	 * @param effectName
+	 *            the effect name
+	 */
+	public void enableEffect(String effectName) {
+		AbstractEffect effect = effectsAvailable.get(effectName);
+		if (effect != null) {
+			PApplet.println("Enabling effect - " + effectName);
+			effectsEnabled.put(effectName, effect);
+			effect.enable();
+		}
+	}
 
-    /**
-     * Disable effect.
-     * 
-     * Removes effect from enabled effects, and hides effect specific gui
-     * elements.
-     * 
-     * @param effectName
-     *            the effect name
-     */
-    public void disableEffect(String effectName) {
-        AbstractEffect effect = effectsEnabled.get(effectName);
-        if (effect != null) {
-            PApplet.println("Disabling effect - " + effectName);
-            effectsEnabled.remove(effectName);
-            effect.disable();
-        }
-    }
+	/**
+	 * Disable effect.
+	 * 
+	 * Removes effect from enabled effects, and hides effect specific gui
+	 * elements.
+	 * 
+	 * @param effectName
+	 *            the effect name
+	 */
+	public void disableEffect(String effectName) {
+		AbstractEffect effect = effectsEnabled.get(effectName);
+		if (effect != null) {
+			PApplet.println("Disabling effect - " + effectName);
+			effectsEnabled.remove(effectName);
+			effect.disable();
+		}
+	}
 
-    /**
-     * Gets the effects available.
-     * 
-     * @return the effects available
-     */
-    public Set<String> getEffectsAvailable() {
-        return effectsAvailable.keySet();
-    }
+	/**
+	 * Gets the effects available.
+	 * 
+	 * @return the effects available
+	 */
+	public Set<String> getEffectsAvailable() {
+		return effectsAvailable.keySet();
+	}
 
-    /**
-     * Gets the effects enabled.
-     * 
-     * @return the effects enabled
-     */
-    public Set<String> getEffectsEnabled() {
-        return effectsEnabled.keySet();
-    }
+	/**
+	 * Gets the effects enabled.
+	 * 
+	 * @return the effects enabled
+	 */
+	public Set<String> getEffectsEnabled() {
+		return effectsEnabled.keySet();
+	}
 }
