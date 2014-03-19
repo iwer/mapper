@@ -90,9 +90,9 @@ public class OscStack implements OscEventListener {
     }
 
     public static void messageDebug(OscMessage theMessage) {
-        PApplet.print("#-----# OSC #");
-        PApplet.print(" addrpattern: " + theMessage.addrPattern());
-        PApplet.print(" typetag: " + theMessage.typetag());
+//        PApplet.print("#-----# OSC #");
+//        PApplet.print(" addrpattern: " + theMessage.addrPattern());
+//        PApplet.print(" typetag: " + theMessage.typetag());
         byte[] typeTag = theMessage.getTypetagAsBytes();
         for (int i = 0; i < typeTag.length; i++) {
             switch (typeTag[i]) {
