@@ -136,6 +136,10 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
+        int c = getColor(true, true, true);
+        circle.setStrokeWeight(3);
+        circle.setStroke(c);
+
 //        parent.pushMatrix();
 //
 //        int c = getColor(config, selected, mouseOverColor);
@@ -233,7 +237,7 @@ public class Point extends Shape implements PConstants, IPoint {
         int c = getColor(true, true, mouseOver(centroid));
 
         parent.pushMatrix();
-        parent.shapeMode(CENTER);
+//        parent.shapeMode(CENTER);
         circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
@@ -242,13 +246,13 @@ public class Point extends Shape implements PConstants, IPoint {
         circle.translate(centroid.x - RADIUS / 2, centroid.y - RADIUS / 2);
         shapeGroup.addChild(circle);
 
-        parent.shapeMode(CORNER);
+//        parent.shapeMode(CORNER);
         shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
         shape.setFill(false);
         shape.setStrokeWeight(3);
         shape.setStroke(c);
         shape.resetMatrix();
-        shape.translate(centroid.x, centroid.y);
+        shape.translate(centroid.x-1, centroid.y-1);
         shapeGroup.addChild(shape);
         parent.popMatrix();
 

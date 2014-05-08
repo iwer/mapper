@@ -177,20 +177,28 @@ public class FormContainer {
                 maxFaceId++;
                 faceToBuild = new Face(parent, faceShapeGroup, maxFaceId,
                         showHelper);
+                faceToBuild.getShape().setFill(parent.color(180));
                 faceShapeGroup.addChild(faceToBuild.getShape());
-                faceToBuild.update();
-
             }
             select();
             if (selectedEdge != -1) {
                 IEdge toAdd = edges.get(selectedEdge);
                 int nBefore = faceToBuild.getPoints().size();
+                faceShapeGroup.removeChild(faceShapeGroup
+                        .getChildIndex(faceToBuild.getShape()));
                 faceToBuild.addEdge(toAdd);
+                faceShapeGroup.addChild(faceToBuild.getShape());
+
                 int nAfter = faceToBuild.getPoints().size();
                 // TODO: this needs a better check (line-loop?)
                 if (nBefore == nAfter) {
-                    faces.put(faceToBuild.getId(), faceToBuild);
+                    int id = faceToBuild.getId();
+//                    faceToBuild.update();
+                    faces.put(id, faceToBuild);
+                    faceShapeGroup.removeChild(faceShapeGroup.getChildIndex(faceToBuild.getShape()));
                     faceToBuild = null;
+                    faces.get(id).getShape().setFill(parent.color(100));
+                    faceShapeGroup.addChild(faces.get(id).getShape());
                 }
             }
         }
@@ -464,13 +472,13 @@ public class FormContainer {
      */
     public void display(boolean config) {
         if (faceToBuild != null) {
-            faceToBuild.display(config, true, false);
+            faceToBuild.display(config, false, false);
         }
         parent.shape(faceShapeGroup);
 
         parent.shape(edgeShapeGroup);
-        if (config) {
 
+        if (config) {
             parent.shape(pointShapeGroup);
         }
     }
@@ -626,12 +634,14 @@ public class FormContainer {
     private void updateShapesAfterPointMoved(IPoint p) {
         ArrayList<Integer> conEdges = p.getConnectedEdges();
         for (Integer i : conEdges) {
-            edgeShapeGroup.removeChild(edgeShapeGroup.getChildIndex(edges.get(i).getShape()));
+            edgeShapeGroup.removeChild(edgeShapeGroup.getChildIndex(edges
+                    .get(i).getShape()));
             edges.get(i).update();
             edgeShapeGroup.addChild(edges.get(i).getShape());
             ArrayList<Integer> conFaces = edges.get(i).getConnectedFaces();
             for (Integer j : conFaces) {
-                faceShapeGroup.removeChild(faceShapeGroup.getChildIndex(faces.get(j).getShape()));
+                faceShapeGroup.removeChild(faceShapeGroup.getChildIndex(faces
+                        .get(j).getShape()));
                 faces.get(j).update();
                 faceShapeGroup.addChild(faces.get(j).getShape());
             }

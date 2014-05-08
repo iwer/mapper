@@ -199,14 +199,14 @@ public class Face extends Shape implements PConstants, IFace {
         // shape.setFill(true);
         // shape.setFill(c);
         // shape.setStroke(parent.color(255, 255, 255));
-        // parent.shapeMode(CORNERS);
+        // // parent.shapeMode(CORNERS);
         // parent.shape(shape);
         //
         // if (config) {
-        // grabber.setFill(true);
+        // // grabber.setFill(true);
         // grabber.setFill(parent.color(0, 255, 255));
         // grabber.setStroke(c);
-        // parent.shapeMode(CENTER);
+        // // parent.shapeMode(CENTER);
         // parent.shape(grabber);
         // parent.fill(parent.color(0, 255, 255));
         // parent.text(id, centroid.x + 10, centroid.y - 10);
@@ -224,12 +224,12 @@ public class Face extends Shape implements PConstants, IFace {
         updateCentroid();
         sortVertices();
 
-        int c = getColor(true, false, true);
+        int c = getColor(true, false, false);
         shapeGroup = parent.createShape(GROUP);
 
         parent.pushMatrix();
 
-//        parent.shapeMode(CORNERS);
+        // parent.shapeMode(CORNERS);
         shape = parent.createShape();
         shape.beginShape();
         for (PVector v : vertices) {
@@ -237,17 +237,19 @@ public class Face extends Shape implements PConstants, IFace {
         }
         shape.endShape(CLOSE);
         shape.setStrokeWeight((float) .5);
-        shape.setFill(c);
+        shape.setFill(true);
+        shape.setFill(parent.color(100));
         shape.setStroke(parent.color(255, 255, 255));
         shapeGroup.addChild(shape);
 
-//        parent.shapeMode(CENTER);
+        // parent.shapeMode(CENTER);
         grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
         grabber.setFill(true);
         grabber.setFill(parent.color(0, 255, 255));
         grabber.setStroke(c);
-//        shapeGroup.addChild(grabber);
+        shapeGroup.addChild(grabber);
+        //shapeGroup.setFill(c);
         parent.popMatrix();
 
     }

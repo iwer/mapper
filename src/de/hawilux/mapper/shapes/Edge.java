@@ -266,7 +266,7 @@ public class Edge extends Shape implements PConstants, IEdge {
 //        parent.shapeMode(CENTER);
         grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
-        // shapeGroup.addChild(grabber);
+//        shapeGroup.addChild(grabber);
 
         PVector arrowstart = new PVector(), arrowend1 = new PVector(), arrowend2 = new PVector();
         arrowstart.x = PApplet.lerp(a.getX(), b.getX(), .6f);
@@ -286,7 +286,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         shape.endShape();
         shape.setStrokeWeight(3);
         shape.setStroke(c);
-        shape.setFill(false);
+        shape.setFill(true);
         shapeGroup.addChild(shape);
 
 //        parent.shapeMode(CORNERS);
@@ -299,7 +299,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrow.vertex(arrowstart.x, arrowstart.y);
         arrow.vertex(arrowend2.x, arrowend2.y);
         arrow.endShape();
-        shapeGroup.addChild(arrow);
+        //shapeGroup.addChild(arrow);
 
         parent.popMatrix();
     }
