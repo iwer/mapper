@@ -193,9 +193,10 @@ public class FormContainer {
                 // TODO: this needs a better check (line-loop?)
                 if (nBefore == nAfter) {
                     int id = faceToBuild.getId();
-//                    faceToBuild.update();
+                    // faceToBuild.update();
                     faces.put(id, faceToBuild);
-                    faceShapeGroup.removeChild(faceShapeGroup.getChildIndex(faceToBuild.getShape()));
+                    faceShapeGroup.removeChild(faceShapeGroup
+                            .getChildIndex(faceToBuild.getShape()));
                     faceToBuild = null;
                     faces.get(id).getShape().setFill(parent.color(100));
                     faceShapeGroup.addChild(faces.get(id).getShape());
@@ -634,14 +635,19 @@ public class FormContainer {
     private void updateShapesAfterPointMoved(IPoint p) {
         ArrayList<Integer> conEdges = p.getConnectedEdges();
         for (Integer i : conEdges) {
-            edgeShapeGroup.removeChild(edgeShapeGroup.getChildIndex(edges
-                    .get(i).getShape()));
+            int eIndex = edgeShapeGroup.getChildIndex(edges.get(i).getShape());
+            if (eIndex != -1) {
+                edgeShapeGroup.removeChild(eIndex);
+            }
             edges.get(i).update();
             edgeShapeGroup.addChild(edges.get(i).getShape());
             ArrayList<Integer> conFaces = edges.get(i).getConnectedFaces();
             for (Integer j : conFaces) {
-                faceShapeGroup.removeChild(faceShapeGroup.getChildIndex(faces
-                        .get(j).getShape()));
+                int fIndex = faceShapeGroup.getChildIndex(faces.get(j)
+                        .getShape());
+                if (fIndex != -1) {
+                    faceShapeGroup.removeChild(fIndex);
+                }
                 faces.get(j).update();
                 faceShapeGroup.addChild(faces.get(j).getShape());
             }

@@ -5,7 +5,6 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import controlP5.Group;
 import de.hawilux.mapper.ui.Gui;
-import de.hawilux.mapper.ui.IGui;
 
 public abstract class AbstractActivationTexture implements PConstants {
     protected PApplet parent;

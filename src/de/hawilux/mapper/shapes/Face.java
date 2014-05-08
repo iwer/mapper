@@ -31,7 +31,6 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
-import sun.font.CreatedFontTracker;
 
 // TODO: Auto-generated Javadoc
 /**
