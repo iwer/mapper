@@ -46,31 +46,31 @@ import de.hawilux.mapper.ui.Gui;
 public class Mapper implements PConstants {
 
     /** The parent PApplet. */
-    PApplet parent;
+    PApplet               parent;
 
     /** The gui. */
-    Gui gui;
+    Gui                   gui;
 
     /**
      * The form container. Contains the points, edges and faces and provides
      * methods to manipulate them
      */
-    FormContainer formContainer;
+    FormContainer         formContainer;
 
     /**
      * The file chooser. A gui element to choose files for loading and saving
      */
-    FileChooser fileChooser;
+    FileChooser           fileChooser;
 
     /**
      * The effect manager. Contains Available Effects and tracks active Effects
      */
-    EffectManager effectManager;
+    EffectManager         effectManager;
 
     /**
      * The cursor. To find your mouse on the projection
      */
-    Cursor cursor;
+    Cursor                cursor;
 
     /**
      * The Mapper Control listener. hooks to ControlP5 to catch events from our
@@ -79,22 +79,22 @@ public class Mapper implements PConstants {
     MapperControlListener myListener;
 
     /** The show gui flag. */
-    boolean showGUI = false;
+    boolean               showGUI     = false;
 
     /** The show console flag. */
-    boolean showConsole = false;
+    boolean               showConsole = false;
 
     /** The setup mode flag. */
-    boolean setupMode = false;
+    boolean               setupMode   = false;
 
     /** The effect mode flag. */
-    boolean effectMode = false;
+    boolean               effectMode  = false;
 
     /** The version string. */
-    String version = "0.1.0";
+    String                version     = "0.1.0";
 
     /** The Mapper instance. */
-    static Mapper theInstance;
+    static Mapper         theInstance;
 
     /**
      * Gets the single instance of Mapper.
@@ -160,7 +160,7 @@ public class Mapper implements PConstants {
         parent.registerMethod("post", this);
 
         showGUI = true;
-        showConsole = true;
+        showConsole = false;
 
         myListener = new MapperControlListener();
 
@@ -168,7 +168,7 @@ public class Mapper implements PConstants {
 
         PApplet.println("mapper "
                 + version
-                + ", Copyright (C) 2013 Iwer Petersen.\n\n"
+                + ", Copyright (C) 2014 Iwer Petersen.\n\n"
                 + "  Keys:\n  h - help\n  m - show/hide menus\n  c - show/hide console\n\nHave fun mapping!");
 
     }

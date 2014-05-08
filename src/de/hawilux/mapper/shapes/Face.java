@@ -31,6 +31,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
+import sun.font.CreatedFontTracker;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,21 +41,21 @@ public class Face extends Shape implements PConstants, IFace {
 
     // this should be edges rather than id's
     /** The connected edges. */
-    ArrayList<IEdge> connectedEdges;
+    ArrayList<IEdge>   connectedEdges;
 
     // this also could be an ArrayList with contains() check in addEdge,
     // then we can get rid of the cast in sortVertices
     /** The points. */
-    HashSet<IPoint> points;
+    HashSet<IPoint>    points;
 
     /** The vertices. */
     ArrayList<PVector> vertices;
 
     /** The grabber. */
-    PShape grabber;
+    PShape             grabber;
 
     /** The helper. */
-    boolean helper;
+    boolean            helper;
 
     /**
      * Instantiates a new face.
@@ -66,8 +67,8 @@ public class Face extends Shape implements PConstants, IFace {
      * @param helper_
      *            the helper_
      */
-    public Face(PApplet parent_, int id_, boolean helper_) {
-        super(parent_, id_);
+    public Face(PApplet parent_, PShape shapeGroup_, int id_, boolean helper_) {
+        super(parent_, shapeGroup_, id_);
         helper = helper_;
         connectedEdges = new ArrayList<IEdge>();
         points = new HashSet<IPoint>();
@@ -76,43 +77,54 @@ public class Face extends Shape implements PConstants, IFace {
         update();
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#getConnectedEdges()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#getConnectedEdges()
+     */
     @Override
-	public ArrayList<IEdge> getConnectedEdges() {
+    public ArrayList<IEdge> getConnectedEdges() {
         return connectedEdges;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#getShape()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#getShape()
+     */
     @Override
-	public PShape getShape() {
+    public PShape getShape() {
         return shape;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#getPoints()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#getPoints()
+     */
     @Override
-	public HashSet<IPoint> getPoints() {
+    public HashSet<IPoint> getPoints() {
         return points;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#getVertices()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#getVertices()
+     */
     @Override
-	public ArrayList<PVector> getVertices() {
+    public ArrayList<PVector> getVertices() {
         return vertices;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#addEdge(de.hawilux.mapper.shapes.Edge)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * de.hawilux.mapper.shapes.IFace#addEdge(de.hawilux.mapper.shapes.Edge)
+     */
     @Override
-	public void addEdge(IEdge e_) {
+    public void addEdge(IEdge e_) {
         e_.addConnectedFace(id);
         connectedEdges.add(e_);
         points.add(e_.getA());
@@ -121,11 +133,13 @@ public class Face extends Shape implements PConstants, IFace {
         update();
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#prepareDelete()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#prepareDelete()
+     */
     @Override
-	public void prepareDelete() {
+    public void prepareDelete() {
         // remove this face from all connected Edges
         for (IEdge e : connectedEdges) {
             e.removeConnectedFace(id);
@@ -163,11 +177,13 @@ public class Face extends Shape implements PConstants, IFace {
         return c;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#display(boolean, boolean, boolean)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#display(boolean, boolean, boolean)
+     */
     @Override
-	public void display(boolean config, boolean selected, boolean mouseOverColor) {
+    public void display(boolean config, boolean selected, boolean mouseOverColor) {
         boolean update = false;
         for (IPoint p : points) {
             if (p.isUpdated()) {
@@ -177,44 +193,63 @@ public class Face extends Shape implements PConstants, IFace {
         if (update) {
             update();
         }
-        parent.pushMatrix();
-        int c = getColor(config, selected, mouseOverColor);
-
-        shape.setFill(true);
-        shape.setFill(c);
-        shape.setStroke(parent.color(255, 255, 255));
-        parent.shapeMode(CORNERS);
-        parent.shape(shape);
-
-        if (config) {
-            grabber.setFill(true);
-            grabber.setFill(parent.color(0, 255, 255));
-            grabber.setStroke(c);
-            parent.shapeMode(CENTER);
-            parent.shape(grabber);
-            parent.fill(parent.color(0, 255, 255));
-            parent.text(id, centroid.x + 10, centroid.y - 10);
-        }
-        parent.popMatrix();
+        // parent.pushMatrix();
+        // int c = getColor(config, selected, mouseOverColor);
+        //
+        // shape.setFill(true);
+        // shape.setFill(c);
+        // shape.setStroke(parent.color(255, 255, 255));
+        // parent.shapeMode(CORNERS);
+        // parent.shape(shape);
+        //
+        // if (config) {
+        // grabber.setFill(true);
+        // grabber.setFill(parent.color(0, 255, 255));
+        // grabber.setStroke(c);
+        // parent.shapeMode(CENTER);
+        // parent.shape(grabber);
+        // parent.fill(parent.color(0, 255, 255));
+        // parent.text(id, centroid.x + 10, centroid.y - 10);
+        // }
+        // parent.popMatrix();
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#update()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#update()
+     */
     @Override
-	public void update() {
+    public void update() {
         updateCentroid();
         sortVertices();
+
+        int c = getColor(true, false, true);
+        shapeGroup = parent.createShape(GROUP);
+
+        parent.pushMatrix();
+
+//        parent.shapeMode(CORNERS);
         shape = parent.createShape();
         shape.beginShape();
-        shape.strokeWeight((float) .5);
-        shape.fill(255);
         for (PVector v : vertices) {
             shape.vertex(v.x, v.y);
         }
         shape.endShape(CLOSE);
+        shape.setStrokeWeight((float) .5);
+        shape.setFill(c);
+        shape.setStroke(parent.color(255, 255, 255));
+        shapeGroup.addChild(shape);
+
+//        parent.shapeMode(CENTER);
         grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
+        grabber.setFill(true);
+        grabber.setFill(parent.color(0, 255, 255));
+        grabber.setStroke(c);
+//        shapeGroup.addChild(grabber);
+        parent.popMatrix();
+
     }
 
     /**
@@ -292,11 +327,13 @@ public class Face extends Shape implements PConstants, IFace {
         }
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IFace#select()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IFace#select()
+     */
     @Override
-	public int select() {
+    public int select() {
         if (mouseOver()) {
             return id;
         } else {

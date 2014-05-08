@@ -1,6 +1,7 @@
 package de.hawilux.mapper.shapes;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PShape;
 import processing.core.PVector;
 
@@ -9,16 +10,20 @@ public abstract class Shape {
     protected PApplet parent;
 
     /** The shape. */
-    protected PShape shape;
+    protected PShape  shapeGroup;
+    
+    /** The shape. */
+    protected PShape  shape;
 
     /** The id. */
-    protected int id;
+    protected int     id;
 
     /** The centroid. */
     protected PVector centroid;
 
-    public Shape(PApplet parent_, int id_) {
+    public Shape(PApplet parent_, PShape  shapeGroup_, int id_) {
         parent = parent_;
+        shapeGroup = parent.createShape(PConstants.GROUP);
         id = id_;
         centroid = new PVector();
     }
@@ -47,7 +52,7 @@ public abstract class Shape {
      * @return the shape
      */
     public PShape getShape() {
-        return shape;
+        return shapeGroup;
     }
 
     public abstract void update();
