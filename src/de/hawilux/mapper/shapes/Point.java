@@ -234,7 +234,9 @@ public class Point extends Shape implements PConstants, IPoint {
     public void update() {
         shapeGroup = parent.createShape(GROUP);
         int c = getColor(true, true, mouseOver(centroid));
-
+        // TODO: Shapes need a method that updates their color in each frame. 
+        // To do this without changing the shapeGroup the need to be accessed 
+        // by shapeGroup.getChild(<indexOfSubShape>) 
         parent.pushMatrix();
 //        parent.shapeMode(CENTER);
         circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
