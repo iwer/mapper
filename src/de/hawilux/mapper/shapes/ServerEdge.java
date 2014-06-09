@@ -25,6 +25,7 @@ package de.hawilux.mapper.shapes;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PShape;
 import processing.core.PVector;
 import de.hawilux.mapper.MapperServer;
 
@@ -34,9 +35,9 @@ import de.hawilux.mapper.MapperServer;
 public class ServerEdge extends Edge implements PConstants, IEdge {
 	MapperServer server;
 
-    public ServerEdge(PApplet parent_, MapperServer server_, int id_,
+    public ServerEdge(PApplet parent_, PShape shapeGroup_, MapperServer server_, int id_,
             IPoint a_, IPoint b_, boolean helper_) {
-        super(parent_,id_,a_,b_,helper_);
+        super(parent_, shapeGroup_,id_,a_,b_,helper_);
         server = server_;
     }
 

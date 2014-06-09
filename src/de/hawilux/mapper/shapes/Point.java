@@ -37,21 +37,21 @@ import processing.core.PVector;
 public class Point extends Shape implements PConstants, IPoint {
 
     /** The radius. */
-    private int RADIUS = 15;
+    private int                RADIUS  = 16;
 
     /** The RADIUS to the power of 2. */
-    protected int RADIUS2 = RADIUS * 2;
+    protected int              RADIUS2 = RADIUS * 2;
 
     /** The show helper. */
-    boolean showHelper;
+    boolean                    showHelper;
 
-    protected boolean updated;
+    protected boolean          updated;
 
     /** The connected edges. */
     private ArrayList<Integer> connectedEdges;
 
     /** The dot. */
-    private PShape circle;
+    private PShape             circle;
 
     /**
      * Instantiates a new point.
@@ -67,8 +67,9 @@ public class Point extends Shape implements PConstants, IPoint {
      * @param helper_
      *            the helper_
      */
-    public Point(PApplet parent_, int id_, int x_, int y_, boolean helper_) {
-        super(parent_, id_);
+    public Point(PApplet parent_, PShape shapeGroup_, int id_, int x_, int y_,
+            boolean helper_) {
+        super(parent_, shapeGroup_, id_);
         centroid = new PVector(x_, y_);
         // selected = false;
         showHelper = helper_;
@@ -134,20 +135,25 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
-        parent.pushMatrix();
-
-        int c = getColor(config, selected, mouseOverColor);
+        int c = getColor(true, true, true);
+        circle.setStrokeWeight(3);
         circle.setStroke(c);
-        parent.shapeMode(CENTER);
-        circle.resetMatrix();
-        circle.translate(centroid.x, centroid.y);
-        parent.shape(circle);
-        shape.setStroke(c);
-        shape.resetMatrix();
-        shape.translate(centroid.x, centroid.y);
-        parent.shape(shape);
 
-        parent.popMatrix();
+//        parent.pushMatrix();
+//
+//        int c = getColor(config, selected, mouseOverColor);
+//        circle.setStroke(c);
+//        parent.shapeMode(CENTER);
+//        circle.resetMatrix();
+//        circle.translate(centroid.x, centroid.y);
+//        parent.shape(circle);
+//        shape.setStroke(c);
+//        shape.resetMatrix();
+//        shape.translate(centroid.x, centroid.y);
+//        parent.shape(shape);
+//        ;
+//
+//        parent.popMatrix();
     }
 
     /*
@@ -174,7 +180,7 @@ public class Point extends Shape implements PConstants, IPoint {
     boolean mouseOver(PVector v) {
         PVector dist = new PVector(parent.mouseX, parent.mouseY);
         dist.sub(v);
-        if (dist.magSq() > RADIUS2) {
+        if (dist.magSq() > RADIUS2 * 1.5) {
             return false;
         } else {
             return true;
@@ -226,14 +232,31 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void update() {
-        // circle = parent.createShape(ELLIPSE, centroid.x, centroid.y, RADIUS,
-        // RADIUS);
+        shapeGroup = parent.createShape(GROUP);
+        int c = getColor(true, true, mouseOver(centroid));
+        // TODO: Shapes need a method that updates their color in each frame. 
+        // To do this without changing the shapeGroup the need to be accessed 
+        // by shapeGroup.getChild(<indexOfSubShape>) 
+        parent.pushMatrix();
+//        parent.shapeMode(CENTER);
         circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
+        circle.setStroke(c);
+        circle.resetMatrix();
+        circle.translate(centroid.x - RADIUS / 2, centroid.y - RADIUS / 2);
+        shapeGroup.addChild(circle);
+
+//        parent.shapeMode(CORNER);
         shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
         shape.setFill(false);
         shape.setStrokeWeight(3);
+        shape.setStroke(c);
+        shape.resetMatrix();
+        shape.translate(centroid.x-1, centroid.y-1);
+        shapeGroup.addChild(shape);
+        parent.popMatrix();
+
     }
 
     /*

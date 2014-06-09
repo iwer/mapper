@@ -9,28 +9,28 @@ import processing.core.PVector;
 import de.hawilux.mapper.MapperServer;
 
 public class ServerPoint extends Shape implements PConstants, IPoint {
-    MapperServer server;
+    MapperServer               server;
 
     /** The radius. */
-    private int RADIUS = 15;
+    private int                RADIUS  = 15;
 
     /** The RADIUS to the power of 2. */
-    protected int RADIUS2 = RADIUS * 2;
+    protected int              RADIUS2 = RADIUS * 2;
 
     /** The show helper. */
-    private boolean showHelper;
+    private boolean            showHelper;
 
-    protected boolean updated;
+    protected boolean          updated;
 
     /** The connected edges. */
     private ArrayList<Integer> connectedEdges;
 
     /** The dot. */
-    private PShape circle;
+    private PShape             circle;
 
-    public ServerPoint(PApplet parent_, MapperServer server_, int id_, int x_,
-            int y_, boolean helper_) {
-        super(parent_, id_);
+    public ServerPoint(PApplet parent_, PShape shapeGroup_,
+            MapperServer server_, int id_, int x_, int y_, boolean helper_) {
+        super(parent_, shapeGroup_, id_);
         server = server_;
         centroid = new PVector(x_, y_);
         // selected = false;
@@ -188,12 +188,17 @@ public class ServerPoint extends Shape implements PConstants, IPoint {
     public void update() {
         // circle = parent.createShape(ELLIPSE, centroid.x, centroid.y, RADIUS,
         // RADIUS);
+        PShape localShape = parent.createShape(GROUP);
         circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
+        localShape.addChild(circle);
+
         shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
         shape.setFill(false);
         shape.setStrokeWeight(3);
+        localShape.addChild(shape);
+        shapeGroup.addChild(localShape, id);
     }
 
     /*

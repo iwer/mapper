@@ -2,106 +2,111 @@ package de.hawilux.mapper.shapes;
 
 import java.util.ArrayList;
 
+import processing.core.PShape;
 import processing.core.PVector;
 
 public interface IPoint {
 
-	/**
+    /**
      * Gets the id.
      * 
      * @return the id
      */
     public int getId();
+
     public PVector getCentroid();
-	public abstract boolean isUpdated();
 
-	public abstract void setUpdated(boolean updated);
+    public abstract boolean isUpdated();
 
-	/**
-	 * Display.
-	 * 
-	 * @param config
-	 *            the config
-	 * @param selected
-	 *            the selected
-	 * @param mouseOverColor
-	 *            the mouse over color
-	 */
-	public abstract void display(boolean config, boolean selected,
-			boolean mouseOverColor);
+    public abstract void setUpdated(boolean updated);
 
-	/**
-	 * Display helper.
-	 * 
-	 * @param selected
-	 *            the selected
-	 * @param mouseOverColor
-	 *            the mouse over color
-	 */
-	public abstract void displayHelper(boolean selected, boolean mouseOverColor);
+    /**
+     * Display.
+     * 
+     * @param config
+     *            the config
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
+    public abstract void display(boolean config, boolean selected,
+            boolean mouseOverColor);
 
-	/**
-	 * Select.
-	 * 
-	 * @return the int
-	 */
-	public abstract int select();
+    /**
+     * Display helper.
+     * 
+     * @param selected
+     *            the selected
+     * @param mouseOverColor
+     *            the mouse over color
+     */
+    public abstract void displayHelper(boolean selected, boolean mouseOverColor);
 
-	/**
-	 * Move.
-	 */
-	public abstract void move();
+    /**
+     * Select.
+     * 
+     * @return the int
+     */
+    public abstract int select();
 
-	/**
-	 * Move.
-	 * 
-	 * @param dx
-	 *            the dx
-	 * @param dy
-	 *            the dy
-	 */
-	public abstract void move(int dx, int dy);
+    /**
+     * Move.
+     */
+    public abstract void move();
 
-	/**
-	 * Update.
-	 */
-	public abstract void update();
+    /**
+     * Move.
+     * 
+     * @param dx
+     *            the dx
+     * @param dy
+     *            the dy
+     */
+    public abstract void move(int dx, int dy);
 
-	/**
-	 * Adds the connected edge.
-	 * 
-	 * @param id_
-	 *            the id_
-	 */
-	public abstract void addConnectedEdge(int id_);
+    /**
+     * Update.
+     */
+    public abstract void update();
 
-	/**
-	 * Removes the connected edge.
-	 * 
-	 * @param id_
-	 *            the id_
-	 */
-	public abstract void removeConnectedEdge(int id_);
+    /**
+     * Adds the connected edge.
+     * 
+     * @param id_
+     *            the id_
+     */
+    public abstract void addConnectedEdge(int id_);
 
-	/**
-	 * Gets the connected edges.
-	 * 
-	 * @return the connected edges
-	 */
-	public abstract ArrayList<Integer> getConnectedEdges();
+    /**
+     * Removes the connected edge.
+     * 
+     * @param id_
+     *            the id_
+     */
+    public abstract void removeConnectedEdge(int id_);
 
-	/**
-	 * Gets the x.
-	 * 
-	 * @return the x
-	 */
-	public abstract float getX();
+    /**
+     * Gets the connected edges.
+     * 
+     * @return the connected edges
+     */
+    public abstract ArrayList<Integer> getConnectedEdges();
 
-	/**
-	 * Gets the y.
-	 * 
-	 * @return the y
-	 */
-	public abstract float getY();
+    /**
+     * Gets the x.
+     * 
+     * @return the x
+     */
+    public abstract float getX();
+
+    /**
+     * Gets the y.
+     * 
+     * @return the y
+     */
+    public abstract float getY();
+
+    public PShape getShape();
 
 }

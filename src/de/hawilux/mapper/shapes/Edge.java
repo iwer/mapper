@@ -37,22 +37,22 @@ import processing.core.PVector;
 public class Edge extends Shape implements PConstants, IEdge {
 
     /** The arrow. */
-    private PShape arrow;
+    private PShape             arrow;
 
     /** The grabber. */
-    private PShape grabber;
+    private PShape             grabber;
 
     /** The b. */
-    IPoint a, b;
+    IPoint                     a, b;
 
     /** The connected faces. */
     private ArrayList<Integer> connectedFaces;
 
     /** The labelpos. */
-    private PVector labelpos;
+    private PVector            labelpos;
 
     /** The show helper. */
-    private boolean showHelper;
+    private boolean            showHelper;
 
     /**
      * Instantiates a new edge.
@@ -68,8 +68,9 @@ public class Edge extends Shape implements PConstants, IEdge {
      * @param helper_
      *            the helper_
      */
-    public Edge(PApplet parent_, int id_, IPoint a_, IPoint b_, boolean helper_) {
-        super(parent_, id_);
+    public Edge(PApplet parent_, PShape shapeGroup_, int id_, IPoint a_,
+            IPoint b_, boolean helper_) {
+        super(parent_, shapeGroup_, id_);
         a = a_;
         b = b_;
         connectedFaces = new ArrayList<Integer>();
@@ -84,27 +85,33 @@ public class Edge extends Shape implements PConstants, IEdge {
         update();
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#getA()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#getA()
+     */
     @Override
-	public IPoint getA() {
+    public IPoint getA() {
         return a;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#getB()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#getB()
+     */
     @Override
-	public IPoint getB() {
+    public IPoint getB() {
         return b;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#getConnectedFaces()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#getConnectedFaces()
+     */
     @Override
-	public ArrayList<Integer> getConnectedFaces() {
+    public ArrayList<Integer> getConnectedFaces() {
         return connectedFaces;
     }
 
@@ -119,29 +126,35 @@ public class Edge extends Shape implements PConstants, IEdge {
         return centroid;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#prepareDelete()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#prepareDelete()
+     */
     @Override
-	public void prepareDelete() {
+    public void prepareDelete() {
         a.removeConnectedEdge(id);
         b.removeConnectedEdge(id);
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#addConnectedFace(int)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#addConnectedFace(int)
+     */
     @Override
-	public void addConnectedFace(int id_) {
+    public void addConnectedFace(int id_) {
         connectedFaces.add(id_);
         // println("Connected Faces at edge " + id + ":" + connectedFaces);
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#removeConnectedFace(int)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#removeConnectedFace(int)
+     */
     @Override
-	public void removeConnectedFace(int id_) {
+    public void removeConnectedFace(int id_) {
         Integer toRemove = new Integer(id_);
         if (connectedFaces.contains(toRemove)) {
             connectedFaces.remove(toRemove);
@@ -181,38 +194,42 @@ public class Edge extends Shape implements PConstants, IEdge {
         return c;
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#display(boolean, boolean, boolean)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#display(boolean, boolean, boolean)
+     */
     @Override
-	public void display(boolean config, boolean selected, boolean mouseOverColor) {
+    public void display(boolean config, boolean selected, boolean mouseOverColor) {
         if (a.isUpdated() || b.isUpdated()) {
             update();
         }
-        parent.pushMatrix();
-        int c = getColor(config, selected, mouseOverColor);
-
-        shape.setStrokeWeight(3);
-        shape.setStroke(c);
-        shape.setFill(false);
-        parent.shapeMode(CORNERS);
-        parent.shape(shape);
-
-        if (config && showHelper) {
-            grabber.setFill(true);
-            grabber.setFill(c);
-            grabber.setStroke(c);
-            parent.shapeMode(CENTER);
-            parent.shape(grabber);
-        }
-        parent.popMatrix();
+        // parent.pushMatrix();
+        // int c = getColor(config, selected, mouseOverColor);
+        //
+        // shape.setStrokeWeight(3);
+        // shape.setStroke(c);
+        // shape.setFill(false);
+        // parent.shapeMode(CORNERS);
+        // parent.shape(shape);
+        //
+        // if (config && showHelper) {
+        // grabber.setFill(true);
+        // grabber.setFill(c);
+        // grabber.setStroke(c);
+        // parent.shapeMode(CENTER);
+        // parent.shape(grabber);
+        // }
+        // parent.popMatrix();
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#displayHelper(boolean, boolean)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#displayHelper(boolean, boolean)
+     */
     @Override
-	public void displayHelper(boolean selected, boolean mouseOverColor) {
+    public void displayHelper(boolean selected, boolean mouseOverColor) {
         int c = getColor(true, selected, mouseOverColor);
         parent.pushMatrix();
         parent.fill(c);
@@ -223,12 +240,16 @@ public class Edge extends Shape implements PConstants, IEdge {
         parent.popMatrix();
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#update()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#update()
+     */
     @Override
-	public void update() {
+    public void update() {
+        shapeGroup = parent.createShape(GROUP);
         PVector normal = new PVector(a.getCentroid().x, a.getCentroid().y);
+
         normal.sub(b.getCentroid());
         normal.normalize();
         normal.rotate(PApplet.radians(90));
@@ -239,8 +260,13 @@ public class Edge extends Shape implements PConstants, IEdge {
         labelpos.x = centroid.x + normal.x;
         labelpos.y = centroid.y + normal.y;
 
+        parent.pushMatrix();
+        int c = getColor(true, false, mouseOver());
+
+//        parent.shapeMode(CENTER);
         grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
+//        shapeGroup.addChild(grabber);
 
         PVector arrowstart = new PVector(), arrowend1 = new PVector(), arrowend2 = new PVector();
         arrowstart.x = PApplet.lerp(a.getX(), b.getX(), .6f);
@@ -250,6 +276,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrowend2.x = PApplet.lerp(a.getX(), b.getX(), .4f) - normal.x;
         arrowend2.y = PApplet.lerp(a.getY(), b.getY(), .4f) - normal.y;
 
+//        parent.shapeMode(CORNERS);
         shape = parent.createShape();
         shape.beginShape(LINES);
         shape.stroke(255);
@@ -257,7 +284,12 @@ public class Edge extends Shape implements PConstants, IEdge {
         shape.vertex(a.getCentroid().x, a.getCentroid().y);
         shape.vertex(b.getCentroid().x, b.getCentroid().y);
         shape.endShape();
+        shape.setStrokeWeight(3);
+        shape.setStroke(c);
+        shape.setFill(true);
+        shapeGroup.addChild(shape);
 
+//        parent.shapeMode(CORNERS);
         arrow = parent.createShape();
         arrow.beginShape(LINES);
         arrow.stroke(255);
@@ -267,6 +299,9 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrow.vertex(arrowstart.x, arrowstart.y);
         arrow.vertex(arrowend2.x, arrowend2.y);
         arrow.endShape();
+        //shapeGroup.addChild(arrow);
+
+        parent.popMatrix();
     }
 
     /**
@@ -288,11 +323,13 @@ public class Edge extends Shape implements PConstants, IEdge {
         }
     }
 
-    /* (non-Javadoc)
-	 * @see de.hawilux.mapper.shapes.IEdge#select()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hawilux.mapper.shapes.IEdge#select()
+     */
     @Override
-	public int select() {
+    public int select() {
         if (mouseOver()) {
             return id;
         } else {

@@ -26,6 +26,7 @@ package de.hawilux.mapper.shapes;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PShape;
 import processing.core.PVector;
 import de.hawilux.mapper.MapperServer;
 
@@ -46,9 +47,9 @@ public class ServerFace extends Face implements PConstants, IFace {
 	 * @param helper_
 	 *            the helper_
 	 */
-	public ServerFace(PApplet parent_, MapperServer server_, int id_,
+	public ServerFace(PApplet parent_, PShape shapeGroup_, MapperServer server_, int id_,
 			boolean helper_) {
-		super(parent_, id_, helper_);
+		super(parent_, shapeGroup_, id_, helper_);
 		server = server_;
 	}
 
