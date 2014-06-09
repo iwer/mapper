@@ -306,8 +306,10 @@ public class FormContainer {
                 p = points.get(sel);
             }
 
-            // if there was a point selected, draw a line to new point
-            if (a != null) {
+            // if there was a point selected and the second point is not the
+            // same as the first one (causes trouble on deletion), draw a line
+            // to new point
+            if (a != null && !p.equals(a)) {
                 maxEdgeId++;
                 Edge e = new Edge(parent, edgeShapeGroup, maxEdgeId, a, p,
                         showHelper);
