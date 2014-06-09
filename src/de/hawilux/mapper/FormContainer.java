@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PShape;
 import processing.core.PVector;
 import controlP5.Button;
 import controlP5.CallbackEvent;
@@ -53,83 +55,90 @@ import de.hawilux.mapper.ui.Gui;
 public class FormContainer {
 
     /** The parent. */
-    PApplet parent;
+    PApplet                  parent;
 
     /** The edges. */
-    HashMap<Integer, IEdge> edges;
+    HashMap<Integer, IEdge>  edges;
 
     /** The points. */
     HashMap<Integer, IPoint> points;
 
     /** The faces. */
-    HashMap<Integer, IFace> faces;
+    HashMap<Integer, IFace>  faces;
 
     /** The file handler. */
-    FileHandler fileHandler;
+    FileHandler              fileHandler;
 
     /** The face to build. */
-    IFace faceToBuild;
+    IFace                    faceToBuild;
+
+    /** The group to store individual point shapes. */
+    PShape                   pointShapeGroup;
+    /** The group to store individual edge shapes. */
+    PShape                   edgeShapeGroup;
+    /** The group to store individual face shapes. */
+    PShape                   faceShapeGroup;
 
     /** The selected point. */
-    int selectedPoint;
+    int                      selectedPoint;
 
     /** The selected edge. */
-    int selectedEdge;
+    int                      selectedEdge;
 
     /** The selected face. */
-    int selectedFace;
+    int                      selectedFace;
 
     /** The select mode. */
-    int selectMode;
+    int                      selectMode;
 
     /** The select points. */
-    public final int SELECT_POINTS = 0;
+    public final int         SELECT_POINTS = 0;
 
     /** The select edges. */
-    public final int SELECT_EDGES = 1;
+    public final int         SELECT_EDGES  = 1;
 
     /** The select faces. */
-    public final int SELECT_FACES = 2;
+    public final int         SELECT_FACES  = 2;
 
     /** The max point id. */
-    int maxPointId = -1;
+    int                      maxPointId    = -1;
 
     /** The max edge id. */
-    int maxEdgeId = -1;
+    int                      maxEdgeId     = -1;
 
     /** The max face id. */
-    int maxFaceId = -1;
+    int                      maxFaceId     = -1;
 
     /** The show helper. */
-    boolean showHelper = true;
+    boolean                  showHelper    = true;
 
     // gui elements
     /** The btn new config. */
-    Button btnNewConfig;
+    Button                   btnNewConfig;
 
     /** The btn load config. */
-    Button btnLoadConfig;
+    Button                   btnLoadConfig;
 
     /** The btn save config. */
-    Button btnSaveConfig;
+    Button                   btnSaveConfig;
 
     /** The tgl helper. */
-    Toggle tglHelper;
+    Toggle                   tglHelper;
 
     /** The rdb select mode. */
-    RadioButton rdbSelectMode;
+    RadioButton              rdbSelectMode;
 
     /** The btn delete selected. */
-    Button btnDeleteSelected;
+    Button                   btnDeleteSelected;
 
     /** The btn switch dir. */
-    Button btnSwitchDir;
+    Button                   btnSwitchDir;
 
     /** The btn subdivide. */
-    Button btnSubdivide;
+    Button                   btnSubdivide;
 
     /** The file chooser. */
-    FileChooser fileChooser;
+    FileChooser              fileChooser;
 
     /**
      * Instantiates a new form container.
@@ -142,6 +151,10 @@ public class FormContainer {
         edges = new HashMap<Integer, IEdge>();
         points = new HashMap<Integer, IPoint>();
         faces = new HashMap<Integer, IFace>();
+
+        pointShapeGroup = parent.createShape(PConstants.GROUP);
+        edgeShapeGroup = parent.createShape(PConstants.GROUP);
+        faceShapeGroup = parent.createShape(PConstants.GROUP);
 
         fileHandler = new FileHandler(this);
 
@@ -156,24 +169,37 @@ public class FormContainer {
 
     /**
      * Adds the edge to new face. Considers Face complete when point count does
-     * not increase with aa added line. This needs to be improved!
+     * not increase with an added line. This needs to be improved!
      */
     public void addEdgeToFace() {
         if (selectMode == SELECT_EDGES) {
             if (faceToBuild == null) {
                 maxFaceId++;
-                faceToBuild = new Face(parent, maxFaceId, showHelper);
+                faceToBuild = new Face(parent, faceShapeGroup, maxFaceId,
+                        showHelper);
+                faceToBuild.getShape().setFill(parent.color(180));
+                faceShapeGroup.addChild(faceToBuild.getShape());
             }
             select();
             if (selectedEdge != -1) {
                 IEdge toAdd = edges.get(selectedEdge);
                 int nBefore = faceToBuild.getPoints().size();
+                faceShapeGroup.removeChild(faceShapeGroup
+                        .getChildIndex(faceToBuild.getShape()));
                 faceToBuild.addEdge(toAdd);
+                faceShapeGroup.addChild(faceToBuild.getShape());
+
                 int nAfter = faceToBuild.getPoints().size();
                 // TODO: this needs a better check (line-loop?)
                 if (nBefore == nAfter) {
-                    faces.put(faceToBuild.getId(), faceToBuild);
+                    int id = faceToBuild.getId();
+                    // faceToBuild.update();
+                    faces.put(id, faceToBuild);
+                    faceShapeGroup.removeChild(faceShapeGroup
+                            .getChildIndex(faceToBuild.getShape()));
                     faceToBuild = null;
+                    faces.get(id).getShape().setFill(parent.color(100));
+                    faceShapeGroup.addChild(faces.get(id).getShape());
                 }
             }
         }
@@ -269,8 +295,9 @@ public class FormContainer {
             // not over existing point, create new one
             if (sel == -1) {
                 maxPointId++;
-                p = new Point(parent, maxPointId, parent.mouseX, parent.mouseY,
-                        showHelper);
+                p = new Point(parent, pointShapeGroup, maxPointId,
+                        parent.mouseX, parent.mouseY, showHelper);
+                pointShapeGroup.addChild(p.getShape());
                 selectedPoint = p.select();
                 points.put(p.getId(), p);
             }
@@ -282,8 +309,10 @@ public class FormContainer {
             // if there was a point selected, draw a line to new point
             if (a != null) {
                 maxEdgeId++;
-                Edge e = new Edge(parent, maxEdgeId, a, p, showHelper);
+                Edge e = new Edge(parent, edgeShapeGroup, maxEdgeId, a, p,
+                        showHelper);
                 edges.put(maxEdgeId, e);
+                edgeShapeGroup.addChild(e.getShape());
                 // face.addEdge(e);
             }
         }
@@ -352,6 +381,9 @@ public class FormContainer {
         points.clear();
         edges.clear();
         faces.clear();
+        pointShapeGroup = parent.createShape(PConstants.GROUP);
+        edgeShapeGroup = parent.createShape(PConstants.GROUP);
+        faceShapeGroup = parent.createShape(PConstants.GROUP);
         maxPointId = -1;
         maxEdgeId = -1;
         maxFaceId = -1;
@@ -378,11 +410,17 @@ public class FormContainer {
                     for (Integer j : conFaces) {
                         PApplet.println("CoCoDelete Face " + j);
                         faces.get(j).prepareDelete();
+                        faceShapeGroup.removeChild(faceShapeGroup
+                                .getChildIndex(faces.get(j).getShape()));
                         faces.remove(j);
                     }
                     edges.get(i).prepareDelete();
+                    edgeShapeGroup.removeChild(edgeShapeGroup
+                            .getChildIndex(edges.get(i).getShape()));
                     edges.remove(i);
                 }
+                pointShapeGroup.removeChild(pointShapeGroup
+                        .getChildIndex(points.get(selectedPoint).getShape()));
                 points.remove(selectedPoint);
                 selectedPoint = -1;
             }
@@ -396,9 +434,13 @@ public class FormContainer {
                 for (Integer i : conFaces) {
                     PApplet.println("CoDelete Face " + i);
                     faces.get(i).prepareDelete();
+                    faceShapeGroup.removeChild(faceShapeGroup
+                            .getChildIndex(faces.get(i).getShape()));
                     faces.remove(i);
                 }
                 edges.remove(selectedEdge);
+                edgeShapeGroup.removeChild(edgeShapeGroup.getChildIndex(edges
+                        .get(selectedEdge).getShape()));
                 selectedEdge = -1;
             }
             PApplet.println("Edges:" + edges.size());
@@ -407,6 +449,8 @@ public class FormContainer {
             if (selectedFace != -1) {
                 IFace toRemove = faces.get(selectedFace);
                 toRemove.prepareDelete();
+                faceShapeGroup.removeChild(faceShapeGroup
+                        .getChildIndex(toRemove.getShape()));
                 faces.remove(selectedFace);
                 selectedEdge = -1;
             }
@@ -428,41 +472,15 @@ public class FormContainer {
      *            the config
      */
     public void display(boolean config) {
-        boolean selected;
         if (faceToBuild != null) {
-            faceToBuild.display(config, true, false);
+            faceToBuild.display(config, false, false);
         }
-        for (IFace f : faces.values()) {
-            if (selectedFace == f.getId()) {
-                selected = true;
-            } else {
-                selected = false;
-            }
-            f.display(config, selected, (selectMode == SELECT_FACES));
-        }
-        for (IEdge e : edges.values()) {
-            if (selectedEdge == e.getId()) {
-                selected = true;
-            } else {
-                selected = false;
-            }
-            e.display(config, selected, (selectMode == SELECT_EDGES));
-            if (config && showHelper) {
-                e.displayHelper(selected, (selectMode == SELECT_EDGES));
-            }
-        }
+        parent.shape(faceShapeGroup);
+
+        parent.shape(edgeShapeGroup);
+
         if (config) {
-            for (IPoint p : points.values()) {
-                if (selectedPoint == p.getId()) {
-                    selected = true;
-                } else {
-                    selected = false;
-                }
-                p.display(config, selected, (selectMode == SELECT_POINTS));
-                if (showHelper) {
-                    p.displayHelper(selected, (selectMode == SELECT_POINTS));
-                }
-            }
+            parent.shape(pointShapeGroup);
         }
     }
 
@@ -482,6 +500,18 @@ public class FormContainer {
      */
     public HashMap<Integer, IFace> getFaces() {
         return faces;
+    }
+
+    public PShape getPointShapeGroup() {
+        return pointShapeGroup;
+    }
+
+    public PShape getEdgeShapeGroup() {
+        return edgeShapeGroup;
+    }
+
+    public PShape getFaceShapeGroup() {
+        return faceShapeGroup;
     }
 
     /**
@@ -563,16 +593,12 @@ public class FormContainer {
         if (selectedPoint != -1) {
             IPoint p = points.get(selectedPoint);
             if (p != null) {
+                pointShapeGroup.removeChild(pointShapeGroup.getChildIndex(p
+                        .getShape()));
                 p.move();
-                ArrayList<Integer> conEdges = p.getConnectedEdges();
-                for (Integer i : conEdges) {
-                    edges.get(i).update();
-                    ArrayList<Integer> conFaces = edges.get(i)
-                            .getConnectedFaces();
-                    for (Integer j : conFaces) {
-                        faces.get(j).update();
-                    }
-                }
+                p.update();
+                pointShapeGroup.addChild(p.getShape());
+                updateShapesAfterPointMoved(p);
             }
         }
     }
@@ -589,16 +615,41 @@ public class FormContainer {
         if (selectedPoint != -1) {
             IPoint p = points.get(selectedPoint);
             if (p != null) {
+                pointShapeGroup.removeChild(pointShapeGroup.getChildIndex(p
+                        .getShape()));
                 p.move(dx, dy);
-                ArrayList<Integer> conEdges = p.getConnectedEdges();
-                for (Integer i : conEdges) {
-                    edges.get(i).update();
-                    ArrayList<Integer> conFaces = edges.get(i)
-                            .getConnectedFaces();
-                    for (Integer j : conFaces) {
-                        faces.get(j).update();
-                    }
+                p.update();
+                pointShapeGroup.addChild(p.getShape());
+                updateShapesAfterPointMoved(p);
+            }
+        }
+    }
+
+    /**
+     * After a point moved, edges and faces have to be updated. Therefore this
+     * method traverses through the connected edges and faces and updates them.
+     * 
+     * @param p
+     *            the point that moved
+     */
+    private void updateShapesAfterPointMoved(IPoint p) {
+        ArrayList<Integer> conEdges = p.getConnectedEdges();
+        for (Integer i : conEdges) {
+            int eIndex = edgeShapeGroup.getChildIndex(edges.get(i).getShape());
+            if (eIndex != -1) {
+                edgeShapeGroup.removeChild(eIndex);
+            }
+            edges.get(i).update();
+            edgeShapeGroup.addChild(edges.get(i).getShape());
+            ArrayList<Integer> conFaces = edges.get(i).getConnectedFaces();
+            for (Integer j : conFaces) {
+                int fIndex = faceShapeGroup.getChildIndex(faces.get(j)
+                        .getShape());
+                if (fIndex != -1) {
+                    faceShapeGroup.removeChild(fIndex);
                 }
+                faces.get(j).update();
+                faceShapeGroup.addChild(faces.get(j).getShape());
             }
         }
     }
@@ -754,17 +805,20 @@ public class FormContainer {
 
             // create new Point
             maxPointId++;
-            Point newPoint = new Point(parent, maxPointId, (int) newPointPos.x,
-                    (int) newPointPos.y, showHelper);
+            Point newPoint = new Point(parent, pointShapeGroup, maxPointId,
+                    (int) newPointPos.x, (int) newPointPos.y, showHelper);
+            pointShapeGroup.addChild(newPoint.getShape());
             selectedPoint = newPoint.select();
             points.put(newPoint.getId(), newPoint);
 
             // add new edges
             maxEdgeId++;
-            Edge e1 = new Edge(parent, maxEdgeId, start, newPoint, showHelper);
+            Edge e1 = new Edge(parent, edgeShapeGroup, maxEdgeId, start,
+                    newPoint, showHelper);
 
             maxEdgeId++;
-            Edge e2 = new Edge(parent, maxEdgeId, newPoint, end, showHelper);
+            Edge e2 = new Edge(parent, edgeShapeGroup, maxEdgeId, newPoint,
+                    end, showHelper);
 
             for (Integer i : connectedFaces) {
                 faces.get(i).addEdge(e1);
@@ -779,6 +833,8 @@ public class FormContainer {
 
             edges.put(e1.getId(), e1);
             edges.put(e2.getId(), e2);
+            edgeShapeGroup.addChild(e1.getShape());
+            edgeShapeGroup.addChild(e2.getShape());
         }
     }
 
@@ -797,11 +853,13 @@ public class FormContainer {
 
             // add new edges first edge reuses id of deleted
             maxEdgeId++;
-            Edge e = new Edge(parent, maxEdgeId, end, start, showHelper);
+            Edge e = new Edge(parent, edgeShapeGroup, maxEdgeId, end, start,
+                    showHelper);
             for (Integer i : toSwitch.getConnectedFaces()) {
                 e.addConnectedFace(i);
             }
             edges.put(maxEdgeId, e);
+            edgeShapeGroup.addChild(e.getShape());
         }
     }
 }

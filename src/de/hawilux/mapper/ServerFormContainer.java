@@ -32,6 +32,7 @@ import oscP5.OscEventListener;
 import oscP5.OscMessage;
 import oscP5.OscStatus;
 import processing.core.PApplet;
+import processing.core.PShape;
 import processing.core.PVector;
 import controlP5.Button;
 import controlP5.RadioButton;
@@ -67,6 +68,13 @@ public class ServerFormContainer {
     /** The faces. */
     HashMap<Integer, IFace>  faces;
 
+    /** The group to store individual point shapes. */
+    PShape                   pointShapeGroup;
+    /** The group to store individual edge shapes. */
+    PShape                   edgeShapeGroup;
+    /** The group to store individual face shapes. */
+    PShape                   faceShapeGroup;
+    
     /** The file handler. */
     ServerFileHandler        fileHandler;
 
@@ -191,7 +199,7 @@ public class ServerFormContainer {
         if (selectMode == SELECT_EDGES) {
             if (faceToBuild == null) {
                 maxFaceId++;
-                faceToBuild = new ServerFace(parent, server, maxFaceId, showHelper);
+                faceToBuild = new ServerFace(parent, faceShapeGroup, server, maxFaceId, showHelper);
             }
             select();
             if (selectedEdge != -1) {
@@ -233,7 +241,7 @@ public class ServerFormContainer {
             // not over existing point, create new one
             if (sel == -1) {
                 maxPointId++;
-                p = new ServerPoint(parent, server, maxPointId, server.mouseX, server.mouseY,
+                p = new ServerPoint(parent, pointShapeGroup, server, maxPointId, server.mouseX, server.mouseY,
                         showHelper);
                 selectedPoint = p.select();
                 points.put(p.getId(), p);
@@ -246,7 +254,7 @@ public class ServerFormContainer {
             // if there was a point selected, draw a line to new point
             if (a != null) {
                 maxEdgeId++;
-                IEdge e = new ServerEdge(parent, server, maxEdgeId, a, p, showHelper);
+                IEdge e = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, a, p, showHelper);
                 edges.put(maxEdgeId, e);
                 // face.addEdge(e);
             }
@@ -399,6 +407,18 @@ public class ServerFormContainer {
      */
     public HashMap<Integer, IFace> getFaces() {
         return faces;
+    }
+
+    public PShape getPointShapeGroup() {
+        return pointShapeGroup;
+    }
+
+    public PShape getEdgeShapeGroup() {
+        return edgeShapeGroup;
+    }
+
+    public PShape getFaceShapeGroup() {
+        return faceShapeGroup;
     }
 
     /**
@@ -699,17 +719,17 @@ public class ServerFormContainer {
 
             // create new Point
             maxPointId++;
-            IPoint newPoint = new ServerPoint(parent, server, maxPointId, (int) newPointPos.x,
+            IPoint newPoint = new ServerPoint(parent, pointShapeGroup, server, maxPointId, (int) newPointPos.x,
                     (int) newPointPos.y, showHelper);
             selectedPoint = newPoint.select();
             points.put(newPoint.getId(), newPoint);
 
             // add new edges
             maxEdgeId++;
-            IEdge e1 = new ServerEdge(parent, server, maxEdgeId, start, newPoint, showHelper);
+            IEdge e1 = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, start, newPoint, showHelper);
 
             maxEdgeId++;
-            IEdge e2 = new ServerEdge(parent, server, maxEdgeId, newPoint, end, showHelper);
+            IEdge e2 = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, newPoint, end, showHelper);
 
             for (Integer i : connectedFaces) {
                 faces.get(i).addEdge(e1);
@@ -742,7 +762,7 @@ public class ServerFormContainer {
 
             // add new edges first edge reuses id of deleted
             maxEdgeId++;
-            IEdge e = new ServerEdge(parent, server, maxEdgeId, end, start, showHelper);
+            IEdge e = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, end, start, showHelper);
             for (Integer i : toSwitch.getConnectedFaces()) {
                 e.addConnectedFace(i);
             }
