@@ -13,7 +13,7 @@ public class OscStack implements OscEventListener {
     static OscStack                   theInstance;
 
     OscP5                             oscP5;
-    OscEventListener                  listener;    // TODO: this out for this:
+    //OscEventListener                  listener;    // TODO: this out for this:
     HashMap<String, OscEventListener> oscReceivers;
 
     public static OscStack getInstance(PApplet parent, OscEventListener listener_,

@@ -201,9 +201,13 @@ public class Edge extends Shape implements PConstants, IEdge {
      */
     @Override
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
-        if (a.isUpdated() || b.isUpdated()) {
-            update();
-        }
+        int c = getColor(config, selected, mouseOverColor);
+
+        shapeGroup.getChild("Edge_" + id + "_line").setStroke(c);
+
+        // if (a.isUpdated() || b.isUpdated()) {
+        // update();
+        // }
         // parent.pushMatrix();
         // int c = getColor(config, selected, mouseOverColor);
         //
@@ -263,10 +267,10 @@ public class Edge extends Shape implements PConstants, IEdge {
         parent.pushMatrix();
         int c = getColor(true, false, mouseOver());
 
-//        parent.shapeMode(CENTER);
+        // parent.shapeMode(CENTER);
         grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
-//        shapeGroup.addChild(grabber);
+        // shapeGroup.addChild(grabber);
 
         PVector arrowstart = new PVector(), arrowend1 = new PVector(), arrowend2 = new PVector();
         arrowstart.x = PApplet.lerp(a.getX(), b.getX(), .6f);
@@ -276,7 +280,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrowend2.x = PApplet.lerp(a.getX(), b.getX(), .4f) - normal.x;
         arrowend2.y = PApplet.lerp(a.getY(), b.getY(), .4f) - normal.y;
 
-//        parent.shapeMode(CORNERS);
+        // parent.shapeMode(CORNERS);
         shape = parent.createShape();
         shape.beginShape(LINES);
         shape.stroke(255);
@@ -287,9 +291,10 @@ public class Edge extends Shape implements PConstants, IEdge {
         shape.setStrokeWeight(3);
         shape.setStroke(c);
         shape.setFill(true);
+        shape.setName("Edge_" + id + "_line");
         shapeGroup.addChild(shape);
 
-//        parent.shapeMode(CORNERS);
+        // parent.shapeMode(CORNERS);
         arrow = parent.createShape();
         arrow.beginShape(LINES);
         arrow.stroke(255);
@@ -299,7 +304,9 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrow.vertex(arrowstart.x, arrowstart.y);
         arrow.vertex(arrowend2.x, arrowend2.y);
         arrow.endShape();
-        //shapeGroup.addChild(arrow);
+        arrow.setName("Edge_" + id + "_arrow");
+
+        // shapeGroup.addChild(arrow);
 
         parent.popMatrix();
     }

@@ -135,25 +135,26 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void display(boolean config, boolean selected, boolean mouseOverColor) {
-        int c = getColor(true, true, true);
-        circle.setStrokeWeight(3);
-        circle.setStroke(c);
+        int c = getColor(config, selected, mouseOverColor);
 
-//        parent.pushMatrix();
-//
-//        int c = getColor(config, selected, mouseOverColor);
-//        circle.setStroke(c);
-//        parent.shapeMode(CENTER);
-//        circle.resetMatrix();
-//        circle.translate(centroid.x, centroid.y);
-//        parent.shape(circle);
-//        shape.setStroke(c);
-//        shape.resetMatrix();
-//        shape.translate(centroid.x, centroid.y);
-//        parent.shape(shape);
-//        ;
-//
-//        parent.popMatrix();
+        shapeGroup.getChild("Point_" + id + "_circle").setStroke(c);
+        shapeGroup.getChild("Point_" + id + "_dot").setStroke(c);
+
+        // parent.pushMatrix();
+        //
+        // int c = getColor(config, selected, mouseOverColor);
+        // circle.setStroke(c);
+        // parent.shapeMode(CENTER);
+        // circle.resetMatrix();
+        // circle.translate(centroid.x, centroid.y);
+        // parent.shape(circle);
+        // shape.setStroke(c);
+        // shape.resetMatrix();
+        // shape.translate(centroid.x, centroid.y);
+        // parent.shape(shape);
+        // ;
+        //
+        // parent.popMatrix();
     }
 
     /*
@@ -234,26 +235,28 @@ public class Point extends Shape implements PConstants, IPoint {
     public void update() {
         shapeGroup = parent.createShape(GROUP);
         int c = getColor(true, true, mouseOver(centroid));
-        // TODO: Shapes need a method that updates their color in each frame. 
-        // To do this without changing the shapeGroup the need to be accessed 
-        // by shapeGroup.getChild(<indexOfSubShape>) 
+        // TODO: Shapes need a method that updates their color in each frame.
+        // To do this without changing the shapeGroup the need to be accessed
+        // by shapeGroup.getChild(<indexOfSubShape>)
         parent.pushMatrix();
-//        parent.shapeMode(CENTER);
+        // parent.shapeMode(CENTER);
         circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
         circle.setStroke(c);
         circle.resetMatrix();
         circle.translate(centroid.x - RADIUS / 2, centroid.y - RADIUS / 2);
+        circle.setName("Point_" + id + "_circle");
         shapeGroup.addChild(circle);
 
-//        parent.shapeMode(CORNER);
+        // parent.shapeMode(CORNER);
         shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
         shape.setFill(false);
         shape.setStrokeWeight(3);
         shape.setStroke(c);
         shape.resetMatrix();
-        shape.translate(centroid.x-1, centroid.y-1);
+        shape.translate(centroid.x - 1, centroid.y - 1);
+        shape.setName("Point_" + id + "_dot");
         shapeGroup.addChild(shape);
         parent.popMatrix();
 
