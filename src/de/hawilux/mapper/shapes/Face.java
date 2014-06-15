@@ -89,16 +89,6 @@ public class Face extends Shape implements PConstants, IFace {
     /*
      * (non-Javadoc)
      * 
-     * @see de.hawilux.mapper.shapes.IFace#getShape()
-     */
-    @Override
-    public PShape getShape() {
-        return shape;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see de.hawilux.mapper.shapes.IFace#getPoints()
      */
     @Override
@@ -192,6 +182,10 @@ public class Face extends Shape implements PConstants, IFace {
         if (update) {
             update();
         }
+        int c = getColor(config, selected, mouseOverColor);
+        shapeGroup.getChild("Face_" + id + "_area").setStroke(c);
+        shapeGroup.getChild("Face_" + id + "_area").setFill(c);
+
         // parent.pushMatrix();
         // int c = getColor(config, selected, mouseOverColor);
         //
@@ -225,7 +219,7 @@ public class Face extends Shape implements PConstants, IFace {
 
         int c = getColor(true, false, false);
         shapeGroup = parent.createShape(GROUP);
-
+        shapeGroup.setName("Face_" + id);
         parent.pushMatrix();
 
         // parent.shapeMode(CORNERS);
@@ -239,6 +233,7 @@ public class Face extends Shape implements PConstants, IFace {
         shape.setFill(true);
         shape.setFill(parent.color(100));
         shape.setStroke(parent.color(255, 255, 255));
+        shape.setName("Face_" + id + "_area");
         shapeGroup.addChild(shape);
 
         // parent.shapeMode(CENTER);
@@ -247,8 +242,9 @@ public class Face extends Shape implements PConstants, IFace {
         grabber.setFill(true);
         grabber.setFill(parent.color(0, 255, 255));
         grabber.setStroke(c);
+        grabber.setName("Face_" + id + "_grabber");
         shapeGroup.addChild(grabber);
-        //shapeGroup.setFill(c);
+        // shapeGroup.setFill(c);
         parent.popMatrix();
 
     }
