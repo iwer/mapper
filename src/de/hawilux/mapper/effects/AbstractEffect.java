@@ -31,12 +31,13 @@ import controlP5.Group;
 import controlP5.Toggle;
 import de.hawilux.mapper.Mapper;
 import de.hawilux.mapper.ui.Gui;
+import de.hawilux.mapper.ui.GuiElement;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class AbstractEffect.
  */
-public abstract class AbstractEffect {
+public abstract class AbstractEffect implements GuiElement {
 
     /** The parent. */
     protected PApplet parent;
@@ -67,18 +68,18 @@ public abstract class AbstractEffect {
         this.gui = null;
     }
 
-    /**
-     * Adds the controllers to gui.
+    /*
+     * (non-Javadoc)
      * 
-     * calls the addEffectControllersToGui method where custom gui elements can
-     * be added.
-     * 
-     * @param gui
-     *            the gui
+     * @see
+     * de.hawilux.mapper.effects.GuiElement#addControllersToGui(de.hawilux.mapper
+     * .ui.Gui)
      */
+    @Override
     public void addControllersToGui(Gui gui_) {
         this.gui = gui_;
-        grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC()).hide();
+        grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC())
+                .hide();
         gui.getEffectAccordion().addItem(grpEffectParams);
 
         addEffectControllersToGui(gui);
@@ -87,11 +88,12 @@ public abstract class AbstractEffect {
 
     }
 
-    /**
-     * Adds the effect controllers to gui.
+    /*
+     * (non-Javadoc)
      * 
-     * @param gui
-     *            the gui
+     * @see
+     * de.hawilux.mapper.effects.GuiElement#addEffectControllersToGui(de.hawilux
+     * .mapper.ui.Gui)
      */
     public abstract void addEffectControllersToGui(Gui gui_);
 
@@ -109,12 +111,12 @@ public abstract class AbstractEffect {
                         float value = theEvent.getController().getValue();
                         if (value == 0) {
                             try {
-                                Mapper.getExistingInstance().disableEffect(name);
+                                Mapper.getExistingInstance()
+                                        .disableEffect(name);
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
                             }
-                        }
-                        else {
+                        } else {
                             try {
                                 Mapper.getExistingInstance().enableEffect(name);
                             } catch (IllegalAccessException e) {
@@ -168,11 +170,12 @@ public abstract class AbstractEffect {
         return name;
     }
 
-    /**
-     * Removes the effect controllers from gui.
+    /*
+     * (non-Javadoc)
      * 
-     * @param gui
-     *            the gui
+     * @see
+     * de.hawilux.mapper.effects.GuiElement#removeEffectControllersFromGui(de
+     * .hawilux.mapper.ui.Gui)
      */
     @Deprecated
     public void removeEffectControllersFromGui(Gui gui_) {
