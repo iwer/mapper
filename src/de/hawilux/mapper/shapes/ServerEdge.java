@@ -33,11 +33,11 @@ import de.hawilux.mapper.MapperServer;
  * The Class ServerEdge.
  */
 public class ServerEdge extends Edge implements PConstants, IEdge {
-	MapperServer server;
+    MapperServer server;
 
-    public ServerEdge(PApplet parent_, PShape shapeGroup_, MapperServer server_, int id_,
-            IPoint a_, IPoint b_, boolean helper_) {
-        super(parent_, shapeGroup_,id_,a_,b_,helper_);
+    public ServerEdge(PApplet parent_, PShape shapeGroup_,
+            MapperServer server_, int id_, IPoint a_, IPoint b_, boolean helper_) {
+        super(parent_, shapeGroup_, id_, a_, b_, helper_);
         server = server_;
     }
 

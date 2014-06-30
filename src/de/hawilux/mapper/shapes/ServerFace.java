@@ -35,40 +35,40 @@ import de.hawilux.mapper.MapperServer;
  * The Class Face.
  */
 public class ServerFace extends Face implements PConstants, IFace {
-	MapperServer server;
+    MapperServer server;
 
-	/**
-	 * Instantiates a new face.
-	 * 
-	 * @param parent_
-	 *            the parent_
-	 * @param id_
-	 *            the id_
-	 * @param helper_
-	 *            the helper_
-	 */
-	public ServerFace(PApplet parent_, PShape shapeGroup_, MapperServer server_, int id_,
-			boolean helper_) {
-		super(parent_, shapeGroup_, id_, helper_);
-		server = server_;
-	}
+    /**
+     * Instantiates a new face.
+     * 
+     * @param parent_
+     *            the parent_
+     * @param id_
+     *            the id_
+     * @param helper_
+     *            the helper_
+     */
+    public ServerFace(PApplet parent_, PShape shapeGroup_,
+            MapperServer server_, int id_, boolean helper_) {
+        super(parent_, shapeGroup_, id_, helper_);
+        server = server_;
+    }
 
-	/**
-	 * Mouse over.
-	 * 
-	 * @return true, if successful
-	 */
-	boolean mouseOver() {
-		PVector dist = new PVector();
+    /**
+     * Mouse over.
+     * 
+     * @return true, if successful
+     */
+    boolean mouseOver() {
+        PVector dist = new PVector();
 
-		dist.x = centroid.x - server.mouseX;
-		dist.y = centroid.y - server.mouseY;
+        dist.x = centroid.x - server.mouseX;
+        dist.y = centroid.y - server.mouseY;
 
-		float len2 = dist.magSq();
-		if (len2 < 100) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+        float len2 = dist.magSq();
+        if (len2 < 100) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

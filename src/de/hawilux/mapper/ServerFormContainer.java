@@ -74,7 +74,7 @@ public class ServerFormContainer {
     PShape                   edgeShapeGroup;
     /** The group to store individual face shapes. */
     PShape                   faceShapeGroup;
-    
+
     /** The file handler. */
     ServerFileHandler        fileHandler;
 
@@ -199,7 +199,8 @@ public class ServerFormContainer {
         if (selectMode == SELECT_EDGES) {
             if (faceToBuild == null) {
                 maxFaceId++;
-                faceToBuild = new ServerFace(parent, faceShapeGroup, server, maxFaceId, showHelper);
+                faceToBuild = new ServerFace(parent, faceShapeGroup, server,
+                        maxFaceId, showHelper);
             }
             select();
             if (selectedEdge != -1) {
@@ -241,8 +242,8 @@ public class ServerFormContainer {
             // not over existing point, create new one
             if (sel == -1) {
                 maxPointId++;
-                p = new ServerPoint(parent, pointShapeGroup, server, maxPointId, server.mouseX, server.mouseY,
-                        showHelper);
+                p = new ServerPoint(parent, pointShapeGroup, server,
+                        maxPointId, server.mouseX, server.mouseY, showHelper);
                 selectedPoint = p.select();
                 points.put(p.getId(), p);
             }
@@ -254,7 +255,8 @@ public class ServerFormContainer {
             // if there was a point selected, draw a line to new point
             if (a != null) {
                 maxEdgeId++;
-                IEdge e = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, a, p, showHelper);
+                IEdge e = new ServerEdge(parent, edgeShapeGroup, server,
+                        maxEdgeId, a, p, showHelper);
                 edges.put(maxEdgeId, e);
                 // face.addEdge(e);
             }
@@ -289,13 +291,16 @@ public class ServerFormContainer {
             PApplet.println("Delete Point " + selectedPoint);
             if (selectedPoint != -1) {
                 IPoint toRemove = points.get(selectedPoint);
-                ArrayList<Integer> conEdges = new ArrayList<Integer>(toRemove.getConnectedEdges());
-                PApplet.println("Connected Edges at point " + selectedPoint + " : " + conEdges);
+                ArrayList<Integer> conEdges = new ArrayList<Integer>(
+                        toRemove.getConnectedEdges());
+                PApplet.println("Connected Edges at point " + selectedPoint
+                        + " : " + conEdges);
                 for (Integer i : conEdges) {
                     PApplet.println("CoDelete Edge " + i);
-                    ArrayList<Integer> conFaces = new ArrayList<Integer>(edges.get(i)
-                            .getConnectedFaces());
-                    PApplet.println("Connected Faces at edge " + i + " : " + conFaces);
+                    ArrayList<Integer> conFaces = new ArrayList<Integer>(edges
+                            .get(i).getConnectedFaces());
+                    PApplet.println("Connected Faces at edge " + i + " : "
+                            + conFaces);
                     for (Integer j : conFaces) {
                         PApplet.println("CoCoDelete Face " + j);
                         faces.get(j).prepareDelete();
@@ -307,13 +312,13 @@ public class ServerFormContainer {
                 points.remove(selectedPoint);
                 selectedPoint = -1;
             }
-        }
-        else if (selectMode == SELECT_EDGES) {
+        } else if (selectMode == SELECT_EDGES) {
             PApplet.println("Delete Edge " + selectedEdge);
             if (selectedEdge != -1) {
                 IEdge toRemove = edges.get(selectedEdge);
                 toRemove.prepareDelete();
-                ArrayList<Integer> conFaces = new ArrayList<Integer>(toRemove.getConnectedFaces());
+                ArrayList<Integer> conFaces = new ArrayList<Integer>(
+                        toRemove.getConnectedFaces());
                 for (Integer i : conFaces) {
                     PApplet.println("CoDelete Face " + i);
                     faces.get(i).prepareDelete();
@@ -323,8 +328,7 @@ public class ServerFormContainer {
                 selectedEdge = -1;
             }
             PApplet.println("Edges:" + edges.size());
-        }
-        else if (selectMode == SELECT_FACES) {
+        } else if (selectMode == SELECT_FACES) {
             PApplet.println("Delete Face " + selectedFace);
             if (selectedFace != -1) {
                 IFace toRemove = faces.get(selectedFace);
@@ -357,8 +361,7 @@ public class ServerFormContainer {
         for (IFace f : faces.values()) {
             if (selectedFace == f.getId()) {
                 selected = true;
-            }
-            else {
+            } else {
                 selected = false;
             }
             f.display(config, selected, (selectMode == SELECT_FACES));
@@ -366,8 +369,7 @@ public class ServerFormContainer {
         for (IEdge e : edges.values()) {
             if (selectedEdge == e.getId()) {
                 selected = true;
-            }
-            else {
+            } else {
                 selected = false;
             }
             e.display(config, selected, (selectMode == SELECT_EDGES));
@@ -379,8 +381,7 @@ public class ServerFormContainer {
             for (IPoint p : points.values()) {
                 if (selectedPoint == p.getId()) {
                     selected = true;
-                }
-                else {
+                } else {
                     selected = false;
                 }
                 p.display(config, selected, (selectMode == SELECT_POINTS));
@@ -504,7 +505,8 @@ public class ServerFormContainer {
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
                 for (Integer i : conEdges) {
                     edges.get(i).update();
-                    ArrayList<Integer> conFaces = edges.get(i).getConnectedFaces();
+                    ArrayList<Integer> conFaces = edges.get(i)
+                            .getConnectedFaces();
                     for (Integer j : conFaces) {
                         faces.get(j).update();
                     }
@@ -529,7 +531,8 @@ public class ServerFormContainer {
                 ArrayList<Integer> conEdges = p.getConnectedEdges();
                 for (Integer i : conEdges) {
                     edges.get(i).update();
-                    ArrayList<Integer> conFaces = edges.get(i).getConnectedFaces();
+                    ArrayList<Integer> conFaces = edges.get(i)
+                            .getConnectedFaces();
                     for (Integer j : conFaces) {
                         faces.get(j).update();
                     }
@@ -552,8 +555,7 @@ public class ServerFormContainer {
             }
             selectedPoint = sel;
             PApplet.println("Selected Point " + selectedPoint);
-        }
-        else if (selectMode == SELECT_EDGES) {
+        } else if (selectMode == SELECT_EDGES) {
             for (IEdge e : edges.values()) {
                 int ret = e.select();
                 if (ret != -1) {
@@ -562,8 +564,7 @@ public class ServerFormContainer {
             }
             selectedEdge = sel;
             PApplet.println("Selected Edge " + selectedEdge);
-        }
-        else if (selectMode == SELECT_FACES) {
+        } else if (selectMode == SELECT_FACES) {
             for (IFace f : faces.values()) {
                 int ret = f.select();
                 if (ret != -1) {
@@ -633,8 +634,7 @@ public class ServerFormContainer {
         if (state == true) {
             btnSubdivide.show();
             btnSwitchDir.show();
-        }
-        else {
+        } else {
             btnSubdivide.hide();
             btnSwitchDir.hide();
         }
@@ -677,7 +677,8 @@ public class ServerFormContainer {
      *            the new select mode
      */
     public void setSelectMode(int mode_) {
-        if (mode_ == SELECT_POINTS || mode_ == SELECT_EDGES || mode_ == SELECT_FACES) {
+        if (mode_ == SELECT_POINTS || mode_ == SELECT_EDGES
+                || mode_ == SELECT_FACES) {
             selectMode = mode_;
             selectedPoint = -1;
             selectedEdge = -1;
@@ -719,17 +720,20 @@ public class ServerFormContainer {
 
             // create new Point
             maxPointId++;
-            IPoint newPoint = new ServerPoint(parent, pointShapeGroup, server, maxPointId, (int) newPointPos.x,
-                    (int) newPointPos.y, showHelper);
+            IPoint newPoint = new ServerPoint(parent, pointShapeGroup, server,
+                    maxPointId, (int) newPointPos.x, (int) newPointPos.y,
+                    showHelper);
             selectedPoint = newPoint.select();
             points.put(newPoint.getId(), newPoint);
 
             // add new edges
             maxEdgeId++;
-            IEdge e1 = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, start, newPoint, showHelper);
+            IEdge e1 = new ServerEdge(parent, edgeShapeGroup, server,
+                    maxEdgeId, start, newPoint, showHelper);
 
             maxEdgeId++;
-            IEdge e2 = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, newPoint, end, showHelper);
+            IEdge e2 = new ServerEdge(parent, edgeShapeGroup, server,
+                    maxEdgeId, newPoint, end, showHelper);
 
             for (Integer i : connectedFaces) {
                 faces.get(i).addEdge(e1);
@@ -762,7 +766,8 @@ public class ServerFormContainer {
 
             // add new edges first edge reuses id of deleted
             maxEdgeId++;
-            IEdge e = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId, end, start, showHelper);
+            IEdge e = new ServerEdge(parent, edgeShapeGroup, server, maxEdgeId,
+                    end, start, showHelper);
             for (Integer i : toSwitch.getConnectedFaces()) {
                 e.addConnectedFace(i);
             }
@@ -780,70 +785,64 @@ public class ServerFormContainer {
             if (theMessage.checkAddrPattern(OscMessagePaths.HELPER) == true) {
                 if (theMessage.get(0).intValue() == 1) {
                     setHelper(true);
-                }
-                else {
+                } else {
                     setHelper(false);
                 }
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.NEXT) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.NEXT) == true) {
                 if (theMessage.get(0).intValue() == 1) {
-                    OscMessage myOscMessage = new OscMessage(OscMessagePaths.SELECTEDPOINT);
+                    OscMessage myOscMessage = new OscMessage(
+                            OscMessagePaths.SELECTEDPOINT);
                     selectNextPoint();
                     myOscMessage.add(selectedPoint);
                     try {
-                        OscStack.getExistingInstance().sendOscMessage(myOscMessage);
+                        OscStack.getExistingInstance().sendOscMessage(
+                                myOscMessage);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.PREVIOUS) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.PREVIOUS) == true) {
                 if (theMessage.get(0).intValue() == 1) {
-                    OscMessage myOscMessage = new OscMessage(OscMessagePaths.SELECTEDPOINT);
+                    OscMessage myOscMessage = new OscMessage(
+                            OscMessagePaths.SELECTEDPOINT);
                     selectPreviousPoint();
                     myOscMessage.add(selectedPoint);
                     try {
-                        OscStack.getExistingInstance().sendOscMessage(myOscMessage);
+                        OscStack.getExistingInstance().sendOscMessage(
+                                myOscMessage);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
                 }
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.UP) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.UP) == true) {
                 preDrawTasks.queueTask(new Runnable() {
                     public void run() {
                         points.get(selectedPoint).move(0, -1);
                     }
                 });
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.DOWN) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.DOWN) == true) {
                 preDrawTasks.queueTask(new Runnable() {
                     public void run() {
                         points.get(selectedPoint).move(0, 1);
                     }
                 });
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.LEFT) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.LEFT) == true) {
                 preDrawTasks.queueTask(new Runnable() {
                     public void run() {
                         points.get(selectedPoint).move(-1, 0);
                     }
                 });
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.RIGHT) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.RIGHT) == true) {
                 preDrawTasks.queueTask(new Runnable() {
                     public void run() {
                         points.get(selectedPoint).move(1, 0);
                     }
                 });
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.SELECTMODE) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.SELECTMODE) == true) {
                 setSelectMode(theMessage.get(0).intValue());
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.NEWCONFIG) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.NEWCONFIG) == true) {
                 clear();
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.REQFILES) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.REQFILES) == true) {
                 OscMessage filelist = new OscMessage(OscMessagePaths.FILELIST);
                 String[] files = fileHandler.filelist();
                 filelist.add(files);
@@ -852,8 +851,7 @@ public class ServerFormContainer {
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.LOADCONFIG) == true) {
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.LOADCONFIG) == true) {
                 final String filename = theMessage.get(0).stringValue();
                 PApplet.println("Loading " + filename);
                 preDrawTasks.queueTask(new Runnable() {
@@ -861,9 +859,9 @@ public class ServerFormContainer {
                         fileHandler.loadXML(filename);
                     }
                 });
-            }
-            else if (theMessage.checkAddrPattern(OscMessagePaths.SAVECONFIG) == true) {
-                final String filename = parent.dataPath(theMessage.get(0).stringValue());
+            } else if (theMessage.checkAddrPattern(OscMessagePaths.SAVECONFIG) == true) {
+                final String filename = parent.dataPath(theMessage.get(0)
+                        .stringValue());
                 PApplet.println("Saveing " + filename);
                 preDrawTasks.queueTask(new Runnable() {
                     public void run() {
