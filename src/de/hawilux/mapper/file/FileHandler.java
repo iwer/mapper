@@ -114,13 +114,16 @@ public class FileHandler {
 
             Face f = new Face(data.getParent(), data.getFaceShapeGroup(), id,
                     data.isShowHelper());
-            data.getFaceShapeGroup().addChild(f.getShape());
+
             XML[] edgeElements = facesElement[i].getChildren("edge");
             for (int j = 0; j < edgeElements.length; j++) {
                 int edgeId = edgeElements[j].getInt("id");
-                // println("Face "+ id + " addsedge " + edgeId);
+                // println("Face "+ id + " adds edge " + edgeId);
                 f.addEdge(data.getEdges().get(edgeId));
             }
+
+            f.update();
+            data.getFaceShapeGroup().addChild(f.getShape());
             data.getFaces().put(id, f);
             data.setMaxFaceId(PApplet.max(id, data.getMaxFaceId()));
         }
