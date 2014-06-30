@@ -81,7 +81,8 @@ public class ServerFileHandler {
             int y = positionElement.getInt("y");
 
             PApplet.println("Point: " + id + " # " + x + "," + y);
-            ServerPoint p = new ServerPoint(data.getParent(), data.getPointShapeGroup(), data.server, id, x, y,
+            ServerPoint p = new ServerPoint(data.getParent(),
+                    data.getPointShapeGroup(), data.server, id, x, y,
                     data.isShowHelper());
             data.getPoints().put(id, p);
             data.getParent();
@@ -101,8 +102,10 @@ public class ServerFileHandler {
             int b = pointElement.getInt("b");
 
             PApplet.println("Edge: " + id + " # " + a + "," + b);
-            ServerEdge e = new ServerEdge(data.getParent(), data.getEdgeShapeGroup(), data.server, id, data.getPoints()
-                    .get(a), data.getPoints().get(b), data.isShowHelper());
+            ServerEdge e = new ServerEdge(data.getParent(),
+                    data.getEdgeShapeGroup(), data.server, id, data.getPoints()
+                            .get(a), data.getPoints().get(b),
+                    data.isShowHelper());
             data.getEdges().put(id, e);
             data.setMaxEdgeId(PApplet.max(id, data.getMaxEdgeId()));
         }
@@ -112,7 +115,9 @@ public class ServerFileHandler {
             XML idElement = facesElement[i].getChild("id");
             int id = idElement.getInt("id");
 
-            ServerFace f = new ServerFace(data.getParent(), data.getFaceShapeGroup(), data.server, id, data.isShowHelper());
+            ServerFace f = new ServerFace(data.getParent(),
+                    data.getFaceShapeGroup(), data.server, id,
+                    data.isShowHelper());
             XML[] edgeElements = facesElement[i].getChildren("edge");
             for (int j = 0; j < edgeElements.length; j++) {
                 int edgeId = edgeElements[j].getInt("id");

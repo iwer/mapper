@@ -67,6 +67,8 @@ public class Mapper implements PConstants {
      */
     EffectManager         effectManager;
 
+    ColorManager          cm;
+
     /**
      * The cursor. To find your mouse on the projection
      */
@@ -152,6 +154,9 @@ public class Mapper implements PConstants {
         formContainer.addGui(gui);
 
         effectManager = new EffectManager(this);
+
+        cm = new ColorManager(parent);
+        cm.addControllersToGui(gui);
 
         parent.registerMethod("draw", this);
         // parent.registerMethod("dispose", this);
@@ -339,6 +344,10 @@ public class Mapper implements PConstants {
      */
     public HashMap<Integer, IFace> getFaces() {
         return formContainer.getFaces();
+    }
+
+    public ColorManager getColorManager() {
+        return cm;
     }
 
     /**

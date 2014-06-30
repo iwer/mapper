@@ -78,7 +78,8 @@ public class FileHandler {
             int y = positionElement.getInt("y");
 
             PApplet.println("Point: " + id + " # " + x + "," + y);
-            Point p = new Point(data.getParent(), data.getPointShapeGroup(), id, x, y, data.isShowHelper());
+            Point p = new Point(data.getParent(), data.getPointShapeGroup(),
+                    id, x, y, data.isShowHelper());
             data.getPointShapeGroup().addChild(p.getShape());
             data.getPoints().put(id, p);
             data.getParent();
@@ -98,8 +99,9 @@ public class FileHandler {
             int b = pointElement.getInt("b");
 
             PApplet.println("Edge: " + id + " # " + a + "," + b);
-            Edge e = new Edge(data.getParent(), data.getEdgeShapeGroup(), id, data.getPoints().get(a),
-                    data.getPoints().get(b), data.isShowHelper());
+            Edge e = new Edge(data.getParent(), data.getEdgeShapeGroup(), id,
+                    data.getPoints().get(a), data.getPoints().get(b),
+                    data.isShowHelper());
             data.getEdgeShapeGroup().addChild(e.getShape());
             data.getEdges().put(id, e);
             data.setMaxEdgeId(PApplet.max(id, data.getMaxEdgeId()));
@@ -110,14 +112,18 @@ public class FileHandler {
             XML idElement = facesElement[i].getChild("id");
             int id = idElement.getInt("id");
 
-            Face f = new Face(data.getParent(), data.getFaceShapeGroup(), id, data.isShowHelper());
-            data.getFaceShapeGroup().addChild(f.getShape());
+            Face f = new Face(data.getParent(), data.getFaceShapeGroup(), id,
+                    data.isShowHelper());
+
             XML[] edgeElements = facesElement[i].getChildren("edge");
             for (int j = 0; j < edgeElements.length; j++) {
                 int edgeId = edgeElements[j].getInt("id");
-                // println("Face "+ id + " addsedge " + edgeId);
+                // println("Face "+ id + " adds edge " + edgeId);
                 f.addEdge(data.getEdges().get(edgeId));
             }
+
+            f.update();
+            data.getFaceShapeGroup().addChild(f.getShape());
             data.getFaces().put(id, f);
             data.setMaxFaceId(PApplet.max(id, data.getMaxFaceId()));
         }

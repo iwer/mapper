@@ -8,13 +8,13 @@ import controlP5.CColor;
 import controlP5.ControllerView;
 
 public class ArrowButton implements ControllerView<Button>, PConstants {
-    PApplet parent;
-    PShape arrow;
-    CColor colorScheme;
+    PApplet                 parent;
+    PShape                  arrow;
+    CColor                  colorScheme;
 
-    public static final int UP = 0;
-    public static final int LEFT = 1;
-    public static final int DOWN = 2;
+    public static final int UP    = 0;
+    public static final int LEFT  = 1;
+    public static final int DOWN  = 2;
     public static final int RIGHT = 3;
 
     public ArrowButton(PApplet parent, int orientation) {

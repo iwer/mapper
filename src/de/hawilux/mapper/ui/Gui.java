@@ -42,69 +42,69 @@ import controlP5.Toggle;
 public class Gui implements IGui {
 
     /** The parent. */
-    PApplet parent;
+    PApplet          parent;
 
     /** The cp5. */
-    ControlP5 cp5;
+    ControlP5        cp5;
 
     /** The cb. */
     CallbackListener cb;
 
     /** The c active. */
-    int cActive;
+    int              cActive;
 
     /** The c background. */
-    int cBackground;
+    int              cBackground;
 
     /** The c caption label. */
-    int cCaptionLabel;
+    int              cCaptionLabel;
 
     /** The c foreground. */
-    int cForeground;
+    int              cForeground;
 
     /** The c value label. */
-    int cValueLabel;
+    int              cValueLabel;
 
     /** The c. */
-    CColor c;
+    CColor           c;
 
     /** The console. */
-    Println console;
+    Println          console;
 
     /** The console text area. */
-    Textarea consoleTextArea;
+    Textarea         consoleTextArea;
 
     /** The fps label. */
-    Textlabel fpsLabel;
+    Textlabel        fpsLabel;
 
     /** The main accordion. */
-    Accordion mainAccordion;
+    Accordion        mainAccordion;
 
     /** The effect accordion. */
-    Accordion effectAccordion;
+    Accordion        effectAccordion;
 
     /** The rdb effects. */
-    RadioButton rdbEffects;
+    RadioButton      rdbEffects;
 
     /** The effect group. */
-    Group effectGroup;
+    Group            effectGroup;
 
     /** The file group. */
-    Group fileGroup;
+    Group            fileGroup;
 
     /** The setup group. */
-    Group setupGroup;
+    Group            setupGroup;
 
     /** The setup select mode group. */
-    Group setupSelectModeGroup;
+    Group            setupSelectModeGroup;
 
     /** The setup edit group. */
-    Group setupEditGroup;
+    Group            setupEditGroup;
 
     /** The filename. */
-    String filename;
+    String           filename;
 
-    private int nextEffectTogglePos = 10;
+    private int      nextEffectTogglePos = 10;
 
     /**
      * Instantiates a new gui.
@@ -178,6 +178,7 @@ public class Gui implements IGui {
         ;
 
         console = cp5.addConsole(consoleTextArea);//
+        consoleTextArea.hide();
     }
 
     /**

@@ -11,7 +11,7 @@ public abstract class Shape {
 
     /** The shape. */
     protected PShape  shapeGroup;
-    
+
     /** The shape. */
     protected PShape  shape;
 
@@ -21,7 +21,7 @@ public abstract class Shape {
     /** The centroid. */
     protected PVector centroid;
 
-    public Shape(PApplet parent_, PShape  shapeGroup_, int id_) {
+    public Shape(PApplet parent_, PShape shapeGroup_, int id_) {
         parent = parent_;
         shapeGroup = parent.createShape(PConstants.GROUP);
         id = id_;

@@ -34,10 +34,10 @@ public class Cursor {
     private PApplet parent;
 
     /** The line width. */
-    private int lineWidth = 1;
+    private int     lineWidth  = 1;
 
     /** The circle size. */
-    private int circleSize = 50;
+    private int     circleSize = 50;
 
     /**
      * Instantiates a new cursor.

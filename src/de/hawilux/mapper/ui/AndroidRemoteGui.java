@@ -16,16 +16,16 @@ import de.hawilux.mapper.ui.cp5view.ArrowButton;
 
 public class AndroidRemoteGui {
     /** The parent. */
-    PApplet parent;
+    PApplet           parent;
 
     /** The cp5. */
-    ControlP5 cp5;
+    ControlP5         cp5;
 
-    Accordion mainAccordion;
-    Group effectGroup;
-    Group setupGroup;
+    Accordion         mainAccordion;
+    Group             effectGroup;
+    Group             setupGroup;
     private Textlabel selectedPointsLabel;
-    CColor colorScheme;
+    CColor            colorScheme;
 
     public AndroidRemoteGui(PApplet parent) {
         this(parent, new ControlP5(parent));
@@ -91,7 +91,7 @@ public class AndroidRemoteGui {
     }
 
     int effectCnt = 0;
-    int yPos = 10;
+    int yPos      = 10;
 
     public void addEffectToggle(String effectname, final OscStack oscStack) {
         Toggle t;

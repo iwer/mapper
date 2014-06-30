@@ -32,13 +32,13 @@ import de.hawilux.mapper.MapperServer;
 public class ServerCursor {
 
     /** The parent. */
-    private PApplet parent;
+    private PApplet      parent;
     private MapperServer server;
     /** The line width. */
-    private int lineWidth = 1;
+    private int          lineWidth  = 1;
 
     /** The circle size. */
-    private int circleSize = 50;
+    private int          circleSize = 50;
 
     /**
      * Instantiates a new cursor.
