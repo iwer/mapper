@@ -29,7 +29,7 @@ public class ColorManager implements GuiElement {
     public ColorManager(PApplet parent_/* , int colorCount */) {
         this.parent = parent_;
         int w = parent.color(255);
-        white = new CColor(w, w, w, w, w);
+        white = new CColor(w, w, w, colorComplement(w), w);
         colors = new int[4];
     }
 
@@ -51,7 +51,8 @@ public class ColorManager implements GuiElement {
                         if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[0] = c;
-                            color1.setColor(new CColor(c, c, c, c, c));
+                            color1.setColor(new CColor(c, c, c,
+                                    colorComplement(c), c));
                         }
                     }
                 });
@@ -64,7 +65,8 @@ public class ColorManager implements GuiElement {
                         if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[1] = c;
-                            color2.setColor(new CColor(c, c, c, c, c));
+                            color2.setColor(new CColor(c, c, c,
+                                    colorComplement(c), c));
                         }
                     }
                 });
@@ -77,7 +79,8 @@ public class ColorManager implements GuiElement {
                         if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[2] = c;
-                            color3.setColor(new CColor(c, c, c, c, c));
+                            color3.setColor(new CColor(c, c, c,
+                                    colorComplement(c), c));
                         }
                     }
                 });
@@ -90,7 +93,8 @@ public class ColorManager implements GuiElement {
                         if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[3] = c;
-                            color4.setColor(new CColor(c, c, c, c, c));
+                            color4.setColor(new CColor(c, c, c,
+                                    colorComplement(c), c));
                         }
                     }
                 });
@@ -102,5 +106,17 @@ public class ColorManager implements GuiElement {
         } else {
             return parent.color(255);
         }
+    }
+
+    private int colorComplement(int color) {
+        float R = parent.red(color);
+        float G = parent.green(color);
+        float B = parent.blue(color);
+        float minRGB = PApplet.min(R, PApplet.min(G, B));
+        float maxRGB = PApplet.max(R, PApplet.max(G, B));
+        float minPlusMax = minRGB + maxRGB;
+        int complement = parent.color(minPlusMax - R, minPlusMax - G,
+                minPlusMax - B);
+        return complement;
     }
 }
