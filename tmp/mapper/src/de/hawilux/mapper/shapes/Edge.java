@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
 
@@ -38,22 +37,22 @@ import processing.core.PVector;
 public class Edge extends Shape implements PConstants, IEdge {
 
     /** The arrow. */
-    private PShape arrow;
+    private PShape             arrow;
 
     /** The grabber. */
-    private PShape grabber;
+    private PShape             grabber;
 
     /** The b. */
-    IPoint a, b;
+    IPoint                     a, b;
 
     /** The connected faces. */
     private ArrayList<Integer> connectedFaces;
 
     /** The labelpos. */
-    private PVector labelpos;
+    private PVector            labelpos;
 
     /** The show helper. */
-    private boolean showHelper;
+    private boolean            showHelper;
 
     /**
      * Instantiates a new edge.
@@ -69,9 +68,9 @@ public class Edge extends Shape implements PConstants, IEdge {
      * @param helper_
      *            the helper_
      */
-    public Edge(PGraphics layer, PApplet parent_, PShape shapeGroup_, int id_,
-            IPoint a_, IPoint b_, boolean helper_) {
-        super(layer, parent_, shapeGroup_, id_);
+    public Edge(PApplet parent_, PShape shapeGroup_, int id_, IPoint a_,
+            IPoint b_, boolean helper_) {
+        super(parent_, shapeGroup_, id_);
         a = a_;
         b = b_;
         connectedFaces = new ArrayList<Integer>();
@@ -178,18 +177,18 @@ public class Edge extends Shape implements PConstants, IEdge {
             boolean mouseOverColor) {
         int c;
         if (!config) {
-            c = layer.color(255, 255, 255);
+            c = parent.color(255, 255, 255);
         } else if (mouseOver() && mouseOverColor) {
             if (selected) {
-                c = layer.color(0, 255, 255);
+                c = parent.color(0, 255, 255);
             } else {
-                c = layer.color(255, 255, 0);
+                c = parent.color(255, 255, 0);
             }
         } else {
             if (selected) {
-                c = layer.color(0, 255, 0);
+                c = parent.color(0, 255, 0);
             } else {
-                c = layer.color(255, 255, 255);
+                c = parent.color(255, 255, 255);
             }
         }
         return c;
@@ -236,13 +235,13 @@ public class Edge extends Shape implements PConstants, IEdge {
     @Override
     public void displayHelper(boolean selected, boolean mouseOverColor) {
         int c = getColor(true, selected, mouseOverColor);
-        layer.pushMatrix();
-        layer.fill(c);
-        layer.text(id, labelpos.x, labelpos.y);
+        parent.pushMatrix();
+        parent.fill(c);
+        parent.text(id, labelpos.x, labelpos.y);
         arrow.setStroke(c);
-        layer.shapeMode(CORNERS);
-        layer.shape(arrow);
-        layer.popMatrix();
+        parent.shapeMode(CORNERS);
+        parent.shape(arrow);
+        parent.popMatrix();
     }
 
     /*
@@ -252,7 +251,7 @@ public class Edge extends Shape implements PConstants, IEdge {
      */
     @Override
     public void update() {
-        shapeGroup = layer.createShape(GROUP);
+        shapeGroup = parent.createShape(GROUP);
         PVector normal = new PVector(a.getCentroid().x, a.getCentroid().y);
 
         normal.sub(b.getCentroid());
@@ -265,11 +264,11 @@ public class Edge extends Shape implements PConstants, IEdge {
         labelpos.x = centroid.x + normal.x;
         labelpos.y = centroid.y + normal.y;
 
-        layer.pushMatrix();
+        parent.pushMatrix();
         int c = getColor(true, false, mouseOver());
 
         // parent.shapeMode(CENTER);
-        grabber = layer.createShape(RECT, centroid.x, centroid.y, 5, 5);
+        grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
         // shapeGroup.addChild(grabber);
 
@@ -282,7 +281,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrowend2.y = PApplet.lerp(a.getY(), b.getY(), .4f) - normal.y;
 
         // parent.shapeMode(CORNERS);
-        shape = layer.createShape();
+        shape = parent.createShape();
         shape.beginShape(LINES);
         shape.stroke(255);
         shape.strokeCap(ROUND);
@@ -296,7 +295,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         shapeGroup.addChild(shape);
 
         // parent.shapeMode(CORNERS);
-        arrow = layer.createShape();
+        arrow = parent.createShape();
         arrow.beginShape(LINES);
         arrow.stroke(255);
         arrow.strokeCap(ROUND);
@@ -309,7 +308,7 @@ public class Edge extends Shape implements PConstants, IEdge {
 
         // shapeGroup.addChild(arrow);
 
-        layer.popMatrix();
+        parent.popMatrix();
     }
 
     /**

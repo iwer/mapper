@@ -29,7 +29,6 @@ import java.util.HashSet;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
 
@@ -41,21 +40,21 @@ public class Face extends Shape implements PConstants, IFace {
 
     // this should be edges rather than id's
     /** The connected edges. */
-    ArrayList<IEdge> connectedEdges;
+    ArrayList<IEdge>   connectedEdges;
 
     // this also could be an ArrayList with contains() check in addEdge,
     // then we can get rid of the cast in sortVertices
     /** The points. */
-    HashSet<IPoint> points;
+    HashSet<IPoint>    points;
 
     /** The vertices. */
     ArrayList<PVector> vertices;
 
     /** The grabber. */
-    PShape grabber;
+    PShape             grabber;
 
     /** The helper. */
-    boolean helper;
+    boolean            helper;
 
     /**
      * Instantiates a new face.
@@ -67,9 +66,8 @@ public class Face extends Shape implements PConstants, IFace {
      * @param helper_
      *            the helper_
      */
-    public Face(PGraphics layer, PApplet parent_, PShape shapeGroup_, int id_,
-            boolean helper_) {
-        super(layer, parent_, shapeGroup_, id_);
+    public Face(PApplet parent_, PShape shapeGroup_, int id_, boolean helper_) {
+        super(parent_, shapeGroup_, id_);
         helper = helper_;
         connectedEdges = new ArrayList<IEdge>();
         points = new HashSet<IPoint>();
@@ -151,18 +149,18 @@ public class Face extends Shape implements PConstants, IFace {
     int getColor(boolean config, boolean selected, boolean mouseOverColor) {
         int c;
         if (!config) {
-            c = layer.color(100, 100, 100);
+            c = parent.color(100, 100, 100);
         } else if (mouseOver() && mouseOverColor) {
             if (selected) {
-                c = layer.color(200, 200, 200);
+                c = parent.color(200, 200, 200);
             } else {
-                c = layer.color(150, 150, 150);
+                c = parent.color(150, 150, 150);
             }
         } else {
             if (selected) {
-                c = layer.color(180, 180, 180);
+                c = parent.color(180, 180, 180);
             } else {
-                c = layer.color(100, 100, 100);
+                c = parent.color(100, 100, 100);
             }
         }
         return c;
@@ -220,12 +218,12 @@ public class Face extends Shape implements PConstants, IFace {
         sortVertices();
 
         int c = getColor(true, false, false);
-        shapeGroup = layer.createShape(GROUP);
+        shapeGroup = parent.createShape(GROUP);
         shapeGroup.setName("Face_" + id);
-        layer.pushMatrix();
+        parent.pushMatrix();
 
         // parent.shapeMode(CORNERS);
-        shape = layer.createShape();
+        shape = parent.createShape();
         shape.beginShape();
         for (PVector v : vertices) {
             shape.vertex(v.x, v.y);
@@ -233,21 +231,21 @@ public class Face extends Shape implements PConstants, IFace {
         shape.endShape(CLOSE);
         shape.setStrokeWeight((float) .5);
         shape.setFill(true);
-        shape.setFill(layer.color(100));
-        shape.setStroke(layer.color(255, 255, 255));
+        shape.setFill(parent.color(100));
+        shape.setStroke(parent.color(255, 255, 255));
         shape.setName("Face_" + id + "_area");
         shapeGroup.addChild(shape);
 
         // parent.shapeMode(CENTER);
-        grabber = layer.createShape(RECT, centroid.x, centroid.y, 5, 5);
+        grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
         grabber.setFill(true);
-        grabber.setFill(layer.color(0, 255, 255));
+        grabber.setFill(parent.color(0, 255, 255));
         grabber.setStroke(c);
         grabber.setName("Face_" + id + "_grabber");
         shapeGroup.addChild(grabber);
         // shapeGroup.setFill(c);
-        layer.popMatrix();
+        parent.popMatrix();
 
     }
 

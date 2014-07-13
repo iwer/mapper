@@ -54,7 +54,7 @@ public class Mapper implements PConstants {
      * OffscreenBuffer to draw everything but the menu on, so it can be copied
      * to the Projektor Window
      */
-    private PGraphics     offscreenBuffer;
+    PGraphics             offscreenBuffer;
 
     PImage                remoteImage;
 
@@ -102,8 +102,8 @@ public class Mapper implements PConstants {
     /** The effect mode flag. */
     boolean               effectMode  = false;
 
-    // int tgtWidth, tgtHeigth;
-    // float scaleRatio;
+    int                   tgtWidth, tgtHeigth;
+    float                 scaleRatio;
 
     /** The version string. */
     String                version     = "0.1.2";
@@ -158,37 +158,34 @@ public class Mapper implements PConstants {
     private Mapper(PApplet parent, ControlP5 cp5, PImage target) {
         this.parent = parent;
 
-        setOffscreenBuffer(parent.createGraphics(target.width, target.height,
-                P2D));
-        offscreenBuffer.smooth(8);
+        offscreenBuffer = parent.createGraphics(target.width, target.height,
+                P2D);
 
-        // int projektorScreenWidth = target.width;
-        // int projektorScreenHeight = target.height;
-        // int controlScreenWidth = parent.width;
-        // int controlScreenHeight = parent.height;
-        //
-        // float widthRatio = (float) projektorScreenWidth / controlScreenWidth;
-        // float heightRatio = (float) projektorScreenHeight /
-        // controlScreenHeight;
-        //
-        // PApplet.println("WidthRatio: " + widthRatio + " HeightRatio: "
-        // + heightRatio);
-        //
-        // if (widthRatio >= heightRatio) {
-        // tgtWidth = (int) (projektorScreenWidth / widthRatio);
-        // tgtHeigth = (int) (projektorScreenHeight / widthRatio);
-        // scaleRatio = widthRatio;
-        // } else {
-        // tgtWidth = (int) (projektorScreenWidth / heightRatio);
-        // tgtHeigth = (int) (projektorScreenHeight / heightRatio);
-        // scaleRatio = heightRatio;
-        // }
-        //
-        // PApplet.println("tgtWidth: " + tgtWidth + " tgtHeigth: " +
-        // tgtHeigth);
+        int projektorScreenWidth = target.width;
+        int projektorScreenHeight = target.height;
+        int controlScreenWidth = parent.width;
+        int controlScreenHeight = parent.height;
+
+        float widthRatio = (float) projektorScreenWidth / controlScreenWidth;
+        float heightRatio = (float) projektorScreenHeight / controlScreenHeight;
+
+        PApplet.println("WidthRatio: " + widthRatio + " HeightRatio: "
+                + heightRatio);
+
+        if (widthRatio >= heightRatio) {
+            tgtWidth = (int) (projektorScreenWidth / widthRatio);
+            tgtHeigth = (int) (projektorScreenHeight / widthRatio);
+            scaleRatio = widthRatio;
+        } else {
+            tgtWidth = (int) (projektorScreenWidth / heightRatio);
+            tgtHeigth = (int) (projektorScreenHeight / heightRatio);
+            scaleRatio = heightRatio;
+        }
+
+        PApplet.println("tgtWidth: " + tgtWidth + " tgtHeigth: " + tgtHeigth);
 
         fileChooser = new FileChooser(parent);
-        formContainer = new FormContainer(parent, getOffscreenBuffer());
+        formContainer = new FormContainer(parent);
         cursor = new Cursor(parent);
 
         gui = new Gui(parent, cp5);
@@ -238,36 +235,26 @@ public class Mapper implements PConstants {
      * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void draw() {
-
+        // parent.blendMode(ADD);
         if (setupMode) {
-            getOffscreenBuffer().beginDraw();
-            getOffscreenBuffer().blendMode(ADD);
-            getOffscreenBuffer().background(0);
-            formContainer.display(getOffscreenBuffer(), setupMode);
-            cursor.display(getOffscreenBuffer());
-            getOffscreenBuffer().endDraw();
+            offscreenBuffer.background(0);
+            formContainer.display(offscreenBuffer, setupMode);
+            cursor.display(offscreenBuffer);
         } else if (effectMode) {
-            getOffscreenBuffer().beginDraw();
-            getOffscreenBuffer().blendMode(ADD);
-            getOffscreenBuffer().background(0);
+            offscreenBuffer.background(0);
             for (AbstractEffect ae : effectManager.effectsEnabled.values()) {
                 ae.update();
                 ae.display();
             }
-            getOffscreenBuffer().endDraw();
-
         } else {
-            getOffscreenBuffer().beginDraw();
-            getOffscreenBuffer().blendMode(ADD);
-            offscreenBuffer.background(0);
-            formContainer.display(getOffscreenBuffer(), setupMode);
-            getOffscreenBuffer().endDraw();
+            // offscreenBuffer.background(0);
+            formContainer.display(offscreenBuffer, setupMode);
         }
 
-        remoteImage = getOffscreenBuffer().get();
+        remoteImage = offscreenBuffer.get();
 
-        // parent.image(getOffscreenBuffer(), (parent.width - tgtWidth) / 2,
-        // (parent.height - tgtHeigth) / 2, tgtWidth, tgtHeigth);
+        parent.image(offscreenBuffer, (parent.width - tgtWidth) / 2,
+                (parent.height - tgtHeigth) / 2, tgtWidth, tgtHeigth);
     }
 
     /**
@@ -413,14 +400,6 @@ public class Mapper implements PConstants {
 
     public PImage getRemoteImage() {
         return remoteImage;
-    }
-
-    public PGraphics getOffscreenBuffer() {
-        return offscreenBuffer;
-    }
-
-    public void setOffscreenBuffer(PGraphics offscreenBuffer) {
-        this.offscreenBuffer = offscreenBuffer;
     }
 
     /**

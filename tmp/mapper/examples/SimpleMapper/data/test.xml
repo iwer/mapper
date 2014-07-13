@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <point>
+    <id id="0"/>
+    <position x="356" y="104"/>
+  </point>
+  <point>
+    <id id="1"/>
+    <position x="465" y="243"/>
+  </point>
+  <point>
+    <id id="2"/>
+    <position x="305" y="286"/>
+  </point>
+  <edge>
+    <id id="0"/>
+    <points a="0" b="1"/>
+  </edge>
+  <edge>
+    <id id="1"/>
+    <points a="1" b="2"/>
+  </edge>
+  <edge>
+    <id id="2"/>
+    <points a="2" b="0"/>
+  </edge>
+  <face>
+    <id id="0"/>
+    <edge id="2"/>
+    <edge id="0"/>
+    <edge id="1"/>
+  </face>
+</data>

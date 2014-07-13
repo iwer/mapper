@@ -8,25 +8,22 @@ import processing.core.PVector;
 
 public abstract class Shape {
     /** The parent. */
-    protected PApplet   parent;
+    protected PApplet parent;
 
     /** The shape. */
-    protected PShape    shapeGroup;
+    protected PShape  shapeGroup;
 
     /** The shape. */
-    protected PShape    shape;
-
-    protected PGraphics layer;
+    protected PShape  shape;
 
     /** The id. */
-    protected int       id;
+    protected int     id;
 
     /** The centroid. */
-    protected PVector   centroid;
+    protected PVector centroid;
 
-    public Shape(PGraphics layer_, PApplet parent_, PShape shapeGroup_, int id_) {
+    public Shape(PGraphics layer, PApplet parent_, PShape shapeGroup_, int id_) {
         parent = parent_;
-        layer = layer_;
         shapeGroup = layer.createShape(PConstants.GROUP);
         id = id_;
         centroid = new PVector();
