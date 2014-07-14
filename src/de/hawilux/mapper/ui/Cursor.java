@@ -35,10 +35,10 @@ public class Cursor {
     private PApplet parent;
 
     /** The line width. */
-    private int lineWidth = 1;
+    private int     lineWidth  = 1;
 
     /** The circle size. */
-    private int circleSize = 50;
+    private int     circleSize = 50;
 
     /**
      * Instantiates a new cursor.
@@ -58,10 +58,13 @@ public class Cursor {
         layer.noFill();
         layer.strokeWeight(lineWidth);
         // x-line
-        layer.line(0, parent.mouseY, layer.width, parent.mouseY);
+        layer.line(0, MapperControlFrame.projectorMouseY, layer.width,
+                MapperControlFrame.projectorMouseY);
         // y-line
-        layer.line(parent.mouseX, 0, parent.mouseX, layer.height);
+        layer.line(MapperControlFrame.projectorMouseX, 0,
+                MapperControlFrame.projectorMouseX, layer.height);
         // circle
-        layer.ellipse(parent.mouseX, parent.mouseY, circleSize, circleSize);
+        layer.ellipse(MapperControlFrame.projectorMouseX,
+                MapperControlFrame.projectorMouseY, circleSize, circleSize);
     }
 }

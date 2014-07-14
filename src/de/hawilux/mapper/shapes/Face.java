@@ -32,6 +32,7 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -41,21 +42,21 @@ public class Face extends Shape implements PConstants, IFace {
 
     // this should be edges rather than id's
     /** The connected edges. */
-    ArrayList<IEdge> connectedEdges;
+    ArrayList<IEdge>   connectedEdges;
 
     // this also could be an ArrayList with contains() check in addEdge,
     // then we can get rid of the cast in sortVertices
     /** The points. */
-    HashSet<IPoint> points;
+    HashSet<IPoint>    points;
 
     /** The vertices. */
     ArrayList<PVector> vertices;
 
     /** The grabber. */
-    PShape grabber;
+    PShape             grabber;
 
     /** The helper. */
-    boolean helper;
+    boolean            helper;
 
     /**
      * Instantiates a new face.
@@ -315,8 +316,8 @@ public class Face extends Shape implements PConstants, IFace {
     boolean mouseOver() {
         PVector dist = new PVector();
 
-        dist.x = centroid.x - parent.mouseX;
-        dist.y = centroid.y - parent.mouseY;
+        dist.x = centroid.x - MapperControlFrame.projectorMouseX;
+        dist.y = centroid.y - MapperControlFrame.projectorMouseY;
 
         float len2 = dist.magSq();
         if (len2 < 100) {

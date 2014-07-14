@@ -30,6 +30,7 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,21 +39,21 @@ import processing.core.PVector;
 public class Point extends Shape implements PConstants, IPoint {
 
     /** The radius. */
-    private int RADIUS = 16;
+    private int                RADIUS  = 16;
 
     /** The RADIUS to the power of 2. */
-    protected int RADIUS2 = RADIUS * 2;
+    protected int              RADIUS2 = RADIUS * 2;
 
     /** The show helper. */
-    boolean showHelper;
+    boolean                    showHelper;
 
-    protected boolean updated;
+    protected boolean          updated;
 
     /** The connected edges. */
     private ArrayList<Integer> connectedEdges;
 
     /** The dot. */
-    private PShape circle;
+    private PShape             circle;
 
     /**
      * Instantiates a new point.
@@ -180,7 +181,8 @@ public class Point extends Shape implements PConstants, IPoint {
      * @return true, if successful
      */
     boolean mouseOver(PVector v) {
-        PVector dist = new PVector(parent.mouseX, parent.mouseY);
+        PVector dist = new PVector(MapperControlFrame.projectorMouseX,
+                MapperControlFrame.projectorMouseY);
         dist.sub(v);
         if (dist.magSq() > RADIUS2 * 1.5) {
             return false;
@@ -210,8 +212,8 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void move() {
-        centroid.x = parent.mouseX;
-        centroid.y = parent.mouseY;
+        centroid.x = MapperControlFrame.projectorMouseX;
+        centroid.y = MapperControlFrame.projectorMouseY;
         updated = true;
     }
 

@@ -48,6 +48,7 @@ import de.hawilux.mapper.shapes.IPoint;
 import de.hawilux.mapper.shapes.Point;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -301,7 +302,8 @@ public class FormContainer {
             if (sel == -1) {
                 maxPointId++;
                 p = new Point(renderLayer, parent, pointShapeGroup, maxPointId,
-                        parent.mouseX, parent.mouseY, showHelper);
+                        MapperControlFrame.projectorMouseX,
+                        MapperControlFrame.projectorMouseY, showHelper);
                 pointShapeGroup.addChild(p.getShape());
                 selectedPoint = p.select();
                 points.put(p.getId(), p);

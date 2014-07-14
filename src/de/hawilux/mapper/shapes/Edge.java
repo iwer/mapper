@@ -30,6 +30,7 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,22 +39,22 @@ import processing.core.PVector;
 public class Edge extends Shape implements PConstants, IEdge {
 
     /** The arrow. */
-    private PShape arrow;
+    private PShape             arrow;
 
     /** The grabber. */
-    private PShape grabber;
+    private PShape             grabber;
 
     /** The b. */
-    IPoint a, b;
+    IPoint                     a, b;
 
     /** The connected faces. */
     private ArrayList<Integer> connectedFaces;
 
     /** The labelpos. */
-    private PVector labelpos;
+    private PVector            labelpos;
 
     /** The show helper. */
-    private boolean showHelper;
+    private boolean            showHelper;
 
     /**
      * Instantiates a new edge.
@@ -320,8 +321,8 @@ public class Edge extends Shape implements PConstants, IEdge {
     protected boolean mouseOver() {
         PVector dist = new PVector();
 
-        dist.x = centroid.x - parent.mouseX;
-        dist.y = centroid.y - parent.mouseY;
+        dist.x = centroid.x - MapperControlFrame.projectorMouseX;
+        dist.y = centroid.y - MapperControlFrame.projectorMouseY;
 
         float len2 = dist.magSq();
         if (len2 < 100) {
