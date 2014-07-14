@@ -27,8 +27,19 @@ Aktivitätsfaktor berechnet, welche die Farbgebung der Projektion beeinflusst.
 PolyScape/42
 ================
 
-Für die Installation Polyscape/42 wurden die Objekte aus 3D Modellen gefertigt. Die gleichen 3D Modelle wurden verwendet um texturiert in einer 3D Umgebung gerendert zu werden. Mit Hilfe eines vvvv-Patches wurde eine Blickrichtung auf die virtuelle Szene berechnet, welche der "Blick"-Richtung des Projektor auf die realen Objekte entspricht. Durch genaue Feinkalibrierung fällt das Licht des virtuellen 3D Modells exakt auf das reale Objekt. Mit einer Kinect Kamera wurde der durchschnittliche Abstand von Betrachtern zu dem Objekt gemessen, welcher die Farbtemperatur der Texturen steuert.
+Für die Installation Polyscape/42 wurden die Objekte aus 3D Modellen gefertigt. 
+Die gleichen 3D Modelle werden verwendet um texturiert in einer 3D Umgebung 
+gerendert zu werden. Mit Hilfe eines vvvv-Patches wird eine Blickrichtung auf 
+die virtuelle Szene berechnet, welche der "Blick"-Richtung des Projektor auf die 
+realen Objekte entspricht. Durch genaue Feinkalibrierung fällt das Licht des 
+virtuellen 3D Modells exakt auf das reale Objekt. Mit einer Kinect Kamera wird 
+der durchschnittliche Abstand von Betrachtern zu dem Objekt gemessen, welcher 
+dann die Farbtemperatur der Texturen steuert.
 
 Emorph
 ========
-Die Projektion auf der Emorph Installation besteht im wesentlichen aus einer Fluidsimulation. Scheinbar in Flüssigkeit schwimmende Partikel und Farbe folgen einer unsichtbaren Strömung. Mit einer Kinect Kamera wurde die Händer eines Betrachters getrackt, um mit diesen Information die Strömung zu verändern.
+Die Projektion auf der Emorph Installation besteht im wesentlichen aus einer 
+Fluidsimulation. Scheinbar in Flüssigkeit schwimmende Partikel und Farbe folgen 
+einer unsichtbaren Strömung. Mit einer Kinect Kamera werden die Hände eines 
+Betrachters getrackt, um mit diesen Information die Strömung zu steuern 
+und zu verändern.
