@@ -24,6 +24,7 @@
 package de.hawilux.mapper.effects;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
@@ -41,6 +42,8 @@ public abstract class AbstractEffect implements GuiElement {
 
     /** The parent. */
     protected PApplet parent;
+    
+    protected PGraphics drawLayer;
 
     /** The grp effect params. */
     protected Group   grpEffectParams;
@@ -64,6 +67,11 @@ public abstract class AbstractEffect implements GuiElement {
      */
     public AbstractEffect(PApplet parent, String effectName) {
         this.parent = parent;
+        try {
+            this.drawLayer = Mapper.getExistingInstance().getOffscreenBuffer();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         this.name = effectName;
         this.gui = null;
     }

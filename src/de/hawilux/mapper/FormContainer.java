@@ -181,7 +181,7 @@ public class FormContainer {
                 maxFaceId++;
                 faceToBuild = new Face(renderLayer, parent, faceShapeGroup,
                         maxFaceId, showHelper);
-                faceToBuild.getShape().setFill(renderLayer.color(180));
+                faceToBuild.getShape().setFill(renderLayer.color(180,0,0));
                 faceShapeGroup.addChild(faceToBuild.getShape());
             }
             select();
@@ -495,6 +495,7 @@ public class FormContainer {
     public void display(PGraphics layer, boolean config) {
         if (faceToBuild != null) {
             faceToBuild.display(config, false, false);
+            faceToBuild.getShape().setFill(layer.color(180,0,0));
         }
 
         for (IPoint p : points.values()) {

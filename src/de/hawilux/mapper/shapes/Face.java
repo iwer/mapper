@@ -246,7 +246,7 @@ public class Face extends Shape implements PConstants, IFace {
         grabber.setFill(layer.color(0, 255, 255));
         grabber.setStroke(c);
         grabber.setName("Face_" + id + "_grabber");
-        shapeGroup.addChild(grabber);
+        // shapeGroup.addChild(grabber);
         // shapeGroup.setFill(c);
         layer.popMatrix();
 

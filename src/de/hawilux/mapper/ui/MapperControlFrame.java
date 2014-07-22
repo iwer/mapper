@@ -1,5 +1,6 @@
 package de.hawilux.mapper.ui;
 
+import mapperTestSuite.ColorTestEffect;
 import oscP5.OscEventListener;
 import oscP5.OscMessage;
 import oscP5.OscStatus;
@@ -10,6 +11,14 @@ import ddf.minim.AudioInput;
 import ddf.minim.Minim;
 import de.hawilux.mapper.Mapper;
 import de.hawilux.mapper.effects.AbstractEffect;
+import de.hawilux.mapper.effects.jma.EdgeFadeEffect;
+import de.hawilux.mapper.effects.jma.EdgeHitEffect;
+import de.hawilux.mapper.effects.jma.EdgeTextureActivationEffect;
+import de.hawilux.mapper.effects.jma.EdgeWalkEffect;
+import de.hawilux.mapper.effects.jma.FaceAudioEffect;
+import de.hawilux.mapper.effects.jma.FaceFadeEffect;
+import de.hawilux.mapper.effects.jma.FaceHitEffect;
+import de.hawilux.mapper.effects.jma.VolumeCircleActivationTexture;
 import de.hawilux.mapper.net.OscStack;
 
 public class MapperControlFrame extends PApplet {
@@ -84,18 +93,18 @@ public class MapperControlFrame extends PApplet {
         cp5 = new ControlP5(this);
         mapper = Mapper.getInstance(this, cp5, background);
 
-        // VolumeCircleActivationTexture.getInstance(this, in);
-        //
-        // mapper.registerEffect(new EdgeWalkEffect(this, mapper.getEdges()));
-        // mapper.registerEffect(new EdgeFadeEffect(this, mapper.getEdges()));
-        // mapper.registerEffect(new EdgeHitEffect(this, mapper.getEdges()));
-        // mapper.registerEffect(new FaceFadeEffect(this, mapper.getFaces()));
-        // mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
-        // mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
-        // .getEdges()));
-        // mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
-        // mapper.getColorManager()));
-        // mapper.registerEffect(new FaceAudioEffect(this, mapper.getFaces()));
+         VolumeCircleActivationTexture.getInstance(this, in);
+        
+         mapper.registerEffect(new EdgeWalkEffect(this, mapper.getEdges()));
+         mapper.registerEffect(new EdgeFadeEffect(this, mapper.getEdges()));
+         mapper.registerEffect(new EdgeHitEffect(this, mapper.getEdges()));
+         mapper.registerEffect(new FaceFadeEffect(this, mapper.getFaces()));
+         mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
+         mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
+         .getEdges()));
+         mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
+         mapper.getColorManager()));
+//         mapper.registerEffect(new FaceAudioEffect(this, mapper.getFaces()));
         init = true;
 
         registerMethod("draw", mapper);
