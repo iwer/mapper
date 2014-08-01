@@ -33,10 +33,13 @@ import processing.event.MouseEvent;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import ddf.minim.AudioInput;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.IEdge;
 import de.hawilux.mapper.shapes.IFace;
 import de.hawilux.mapper.shapes.IPoint;
+import de.hawilux.mapper.tools.ActivityTracker;
+import de.hawilux.mapper.tools.ColorManager;
 import de.hawilux.mapper.ui.Cursor;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
@@ -78,6 +81,8 @@ public class Mapper implements PConstants {
     EffectManager         effectManager;
 
     ColorManager          cm;
+    ActivityTracker at;
+    //ActivityTracker       at;
 
     /**
      * The cursor. To find your mouse on the projection
@@ -162,31 +167,6 @@ public class Mapper implements PConstants {
                 P2D));
         offscreenBuffer.smooth(8);
 
-        // int projektorScreenWidth = target.width;
-        // int projektorScreenHeight = target.height;
-        // int controlScreenWidth = parent.width;
-        // int controlScreenHeight = parent.height;
-        //
-        // float widthRatio = (float) projektorScreenWidth / controlScreenWidth;
-        // float heightRatio = (float) projektorScreenHeight /
-        // controlScreenHeight;
-        //
-        // PApplet.println("WidthRatio: " + widthRatio + " HeightRatio: "
-        // + heightRatio);
-        //
-        // if (widthRatio >= heightRatio) {
-        // tgtWidth = (int) (projektorScreenWidth / widthRatio);
-        // tgtHeigth = (int) (projektorScreenHeight / widthRatio);
-        // scaleRatio = widthRatio;
-        // } else {
-        // tgtWidth = (int) (projektorScreenWidth / heightRatio);
-        // tgtHeigth = (int) (projektorScreenHeight / heightRatio);
-        // scaleRatio = heightRatio;
-        // }
-        //
-        // PApplet.println("tgtWidth: " + tgtWidth + " tgtHeigth: " +
-        // tgtHeigth);
-
         fileChooser = new FileChooser(parent);
         formContainer = new FormContainer(parent, getOffscreenBuffer());
         cursor = new Cursor(parent);
@@ -198,14 +178,7 @@ public class Mapper implements PConstants {
 
         effectManager = new EffectManager(this);
 
-        cm = new ColorManager(parent);
-        cm.addControllersToGui(gui);
-
-        // parent.registerMethod("draw", this);
-        // // parent.registerMethod("dispose", this);
-        // parent.registerMethod("mouseEvent", this);
-        // parent.registerMethod("keyEvent", this);
-        // parent.registerMethod("post", this);
+        //addColorManager();
 
         showGUI = true;
         showConsole = false;
@@ -219,6 +192,19 @@ public class Mapper implements PConstants {
                 + ", Copyright (C) 2014 Iwer Petersen.\n\n"
                 + "  Keys:\n  h - help\n  m - show/hide menus\n  c - show/hide console\n\nHave fun mapping!");
 
+    }
+
+    public ColorManager addColorManager() {
+        cm = new ColorManager(parent);
+        cm.addControllersToGui(gui);
+        return cm;
+    }
+    
+    public ActivityTracker addActivityTracker(AudioInput in) {
+        at = new ActivityTracker(parent, in);
+        at.addControllersToGui(gui);
+        return at;
+        
     }
 
     /**
