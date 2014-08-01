@@ -82,7 +82,7 @@ public class ActivityTracker implements GuiElement {
         });
 
         mixLabel = gui_.getCp5().addTextlabel("mixlabel")
-                .setText("Movement    <->    Volume").setPosition(0, 110)
+                .setText("Volume   <->   Movement").setPosition(0, 110)
                 .setColor(gui_.getC()).moveTo(grpEffectParams);
 
         bufLenSlider = gui_.getCp5().addSlider("Slowness").setPosition(0, 135)

@@ -100,12 +100,27 @@ public class ColorManager implements GuiElement {
                 });
     }
 
-    public int getColor(int colorIndex) {
-        if (colorIndex >= 0 && colorIndex < 4) {
-            return colors[colorIndex];
+//    private int getColor(int colorIndex) {
+//        if (colorIndex >= 0 && colorIndex < 4) {
+//            return colors[colorIndex];
+//        } else {
+//            return parent.color(255);
+//        }
+//    }
+    
+    public int getColor(float activity) {
+        int ret;
+        if (activity < .2) {
+            ret = parent.lerpColor(colors[0], colors[1], activity * 5);
+        } else if (activity < .4) {
+            ret = parent.lerpColor(colors[1], colors[2], (activity - .2f) * 5);
+        } else if (activity < .7) {
+            ret = parent.lerpColor(colors[2], colors[3], (activity - .4f) * 10 / 3);
         } else {
-            return parent.color(255);
+            ret = parent.lerpColor(colors[3], parent.color(255),
+                    (activity - .7f) * 10 / 3);
         }
+        return ret;
     }
 
     private int colorComplement(int color) {

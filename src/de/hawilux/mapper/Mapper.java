@@ -81,8 +81,8 @@ public class Mapper implements PConstants {
     EffectManager         effectManager;
 
     ColorManager          cm;
-    ActivityTracker at;
-    //ActivityTracker       at;
+    ActivityTracker       at;
+    // ActivityTracker at;
 
     /**
      * The cursor. To find your mouse on the projection
@@ -178,7 +178,7 @@ public class Mapper implements PConstants {
 
         effectManager = new EffectManager(this);
 
-        //addColorManager();
+        // addColorManager();
 
         showGUI = true;
         showConsole = false;
@@ -199,12 +199,12 @@ public class Mapper implements PConstants {
         cm.addControllersToGui(gui);
         return cm;
     }
-    
+
     public ActivityTracker addActivityTracker(AudioInput in) {
         at = new ActivityTracker(parent, in);
         at.addControllersToGui(gui);
         return at;
-        
+
     }
 
     /**
@@ -237,6 +237,9 @@ public class Mapper implements PConstants {
             getOffscreenBuffer().blendMode(ADD);
             getOffscreenBuffer().background(0);
             for (AbstractEffect ae : effectManager.effectsEnabled.values()) {
+                if (cm != null && at != null) {
+                    ae.setCurrentColor(cm.getColor(at.getActivityFaktor()));
+                }
                 ae.update();
                 ae.display();
             }

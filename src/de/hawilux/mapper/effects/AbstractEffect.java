@@ -41,21 +41,35 @@ import de.hawilux.mapper.ui.GuiElement;
 public abstract class AbstractEffect implements GuiElement {
 
     /** The parent. */
-    protected PApplet parent;
-    
+    protected PApplet   parent;
+
     protected PGraphics drawLayer;
 
     /** The grp effect params. */
-    protected Group   grpEffectParams;
+    protected Group     grpEffectParams;
 
     /** The gui. */
-    protected Gui     gui;
+    protected Gui       gui;
 
     /** The name. */
-    protected String  name;
+    protected String    name;
 
     /** The tgl enabled. */
-    private Toggle    tglEnabled;
+    private Toggle      tglEnabled;
+
+    private Toggle      useColorManager;
+    
+    
+    protected boolean   useCM = false;
+    protected int       currentColor;
+
+    public void setCurrentColor(int currentColor) {
+        if(useCM){
+            this.currentColor = currentColor;
+        } else {
+            this.currentColor = parent.color(255);
+        }
+    }
 
     /**
      * Instantiates a new abstract effect.
@@ -74,6 +88,7 @@ public abstract class AbstractEffect implements GuiElement {
         }
         this.name = effectName;
         this.gui = null;
+        this.currentColor = parent.color(255);
     }
 
     /*
@@ -89,6 +104,18 @@ public abstract class AbstractEffect implements GuiElement {
         grpEffectParams = gui.getCp5().addGroup(name).setColor(gui.getC())
                 .hide();
         gui.getEffectAccordion().addItem(grpEffectParams);
+
+        useColorManager = gui.getCp5().addToggle(name + "useCM")
+                .setCaptionLabel("use cm").setPosition(0, 10)
+                .setColor(gui_.getC()).setValue(useCM).moveTo(grpEffectParams);
+        useColorManager.addCallback(new CallbackListener() {
+            @Override
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    useCM = useColorManager.getState();
+                }
+            }
+        });
 
         addEffectControllersToGui(gui);
 

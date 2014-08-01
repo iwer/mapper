@@ -120,6 +120,10 @@ public class MapperControlFrame extends PApplet {
         return init;
     }
 
+    public void registerEffect(AbstractEffect effect){
+        mapper.registerEffect(effect);
+    }
+    
     public void draw() {
         background(10, 10, 50);
         image(mapper.getOffscreenBuffer(), leftRightMarginWidth(),
