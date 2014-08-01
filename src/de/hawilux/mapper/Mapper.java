@@ -106,7 +106,7 @@ public class Mapper implements PConstants {
     // float scaleRatio;
 
     /** The version string. */
-    String                version     = "0.1.2";
+    String                version     = "0.1.3_alpha";
 
     /** The Mapper instance. */
     static Mapper         theInstance;

@@ -1,6 +1,5 @@
 package de.hawilux.mapper.ui;
 
-import mapperTestSuite.ColorTestEffect;
 import oscP5.OscEventListener;
 import oscP5.OscMessage;
 import oscP5.OscStatus;
@@ -15,7 +14,6 @@ import de.hawilux.mapper.effects.jma.EdgeFadeEffect;
 import de.hawilux.mapper.effects.jma.EdgeHitEffect;
 import de.hawilux.mapper.effects.jma.EdgeTextureActivationEffect;
 import de.hawilux.mapper.effects.jma.EdgeWalkEffect;
-import de.hawilux.mapper.effects.jma.FaceAudioEffect;
 import de.hawilux.mapper.effects.jma.FaceFadeEffect;
 import de.hawilux.mapper.effects.jma.FaceHitEffect;
 import de.hawilux.mapper.effects.jma.VolumeCircleActivationTexture;
@@ -102,8 +100,8 @@ public class MapperControlFrame extends PApplet {
          mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
          mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
          .getEdges()));
-         mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
-         mapper.getColorManager()));
+//         mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
+//         mapper.getColorManager()));
 //         mapper.registerEffect(new FaceAudioEffect(this, mapper.getFaces()));
         init = true;
 
