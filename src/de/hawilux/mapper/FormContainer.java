@@ -30,6 +30,7 @@ import java.util.HashMap;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
 import controlP5.Button;
@@ -47,6 +48,7 @@ import de.hawilux.mapper.shapes.IPoint;
 import de.hawilux.mapper.shapes.Point;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -79,6 +81,7 @@ public class FormContainer {
     /** The group to store individual face shapes. */
     PShape                   faceShapeGroup;
 
+    public PGraphics         renderLayer;
     /** The selected point. */
     int                      selectedPoint;
 
@@ -146,15 +149,16 @@ public class FormContainer {
      * @param parent_
      *            the parent_
      */
-    public FormContainer(PApplet parent_) {
+    public FormContainer(PApplet parent_, PGraphics renderLayer) {
         parent = parent_;
         edges = new HashMap<Integer, IEdge>();
         points = new HashMap<Integer, IPoint>();
         faces = new HashMap<Integer, IFace>();
 
-        pointShapeGroup = parent.createShape(PConstants.GROUP);
-        edgeShapeGroup = parent.createShape(PConstants.GROUP);
-        faceShapeGroup = parent.createShape(PConstants.GROUP);
+        this.renderLayer = renderLayer;
+        pointShapeGroup = renderLayer.createShape(PConstants.GROUP);
+        edgeShapeGroup = renderLayer.createShape(PConstants.GROUP);
+        faceShapeGroup = renderLayer.createShape(PConstants.GROUP);
 
         fileHandler = new FileHandler(this);
 
@@ -175,9 +179,9 @@ public class FormContainer {
         if (selectMode == SELECT_EDGES) {
             if (faceToBuild == null) {
                 maxFaceId++;
-                faceToBuild = new Face(parent, faceShapeGroup, maxFaceId,
-                        showHelper);
-                faceToBuild.getShape().setFill(parent.color(180));
+                faceToBuild = new Face(renderLayer, parent, faceShapeGroup,
+                        maxFaceId, showHelper);
+                faceToBuild.getShape().setFill(renderLayer.color(180,0,0));
                 faceShapeGroup.addChild(faceToBuild.getShape());
             }
             select();
@@ -200,7 +204,7 @@ public class FormContainer {
                             .getChildIndex(faceShapeGroup.findChild("Face_"
                                     + faceToBuild.getId())));
                     faceToBuild = null;
-                    faces.get(id).getShape().setFill(parent.color(100));
+                    faces.get(id).getShape().setFill(renderLayer.color(100));
                     faceShapeGroup.addChild(faces.get(id).getShape());
                 }
             }
@@ -297,8 +301,9 @@ public class FormContainer {
             // not over existing point, create new one
             if (sel == -1) {
                 maxPointId++;
-                p = new Point(parent, pointShapeGroup, maxPointId,
-                        parent.mouseX, parent.mouseY, showHelper);
+                p = new Point(renderLayer, parent, pointShapeGroup, maxPointId,
+                        MapperControlFrame.projectorMouseX,
+                        MapperControlFrame.projectorMouseY, showHelper);
                 pointShapeGroup.addChild(p.getShape());
                 selectedPoint = p.select();
                 points.put(p.getId(), p);
@@ -313,8 +318,8 @@ public class FormContainer {
             // to new point
             if (a != null && !p.equals(a)) {
                 maxEdgeId++;
-                Edge e = new Edge(parent, edgeShapeGroup, maxEdgeId, a, p,
-                        showHelper);
+                Edge e = new Edge(renderLayer, parent, edgeShapeGroup,
+                        maxEdgeId, a, p, showHelper);
                 edges.put(maxEdgeId, e);
                 edgeShapeGroup.addChild(e.getShape());
                 // face.addEdge(e);
@@ -385,9 +390,9 @@ public class FormContainer {
         points.clear();
         edges.clear();
         faces.clear();
-        pointShapeGroup = parent.createShape(PConstants.GROUP);
-        edgeShapeGroup = parent.createShape(PConstants.GROUP);
-        faceShapeGroup = parent.createShape(PConstants.GROUP);
+        pointShapeGroup = renderLayer.createShape(PConstants.GROUP);
+        edgeShapeGroup = renderLayer.createShape(PConstants.GROUP);
+        faceShapeGroup = renderLayer.createShape(PConstants.GROUP);
         maxPointId = -1;
         maxEdgeId = -1;
         maxFaceId = -1;
@@ -487,9 +492,10 @@ public class FormContainer {
      * @param config
      *            the config
      */
-    public void display(boolean config) {
+    public void display(PGraphics layer, boolean config) {
         if (faceToBuild != null) {
             faceToBuild.display(config, false, false);
+            faceToBuild.getShape().setFill(layer.color(180,0,0));
         }
 
         for (IPoint p : points.values()) {
@@ -507,12 +513,12 @@ public class FormContainer {
                     selectMode == SELECT_FACES);
         }
 
-        parent.shape(faceShapeGroup);
+        layer.shape(faceShapeGroup);
 
-        parent.shape(edgeShapeGroup);
+        layer.shape(edgeShapeGroup);
 
         if (config) {
-            parent.shape(pointShapeGroup);
+            layer.shape(pointShapeGroup);
         }
     }
 
@@ -866,20 +872,21 @@ public class FormContainer {
 
             // create new Point
             maxPointId++;
-            Point newPoint = new Point(parent, pointShapeGroup, maxPointId,
-                    (int) newPointPos.x, (int) newPointPos.y, showHelper);
+            Point newPoint = new Point(renderLayer, parent, pointShapeGroup,
+                    maxPointId, (int) newPointPos.x, (int) newPointPos.y,
+                    showHelper);
             pointShapeGroup.addChild(newPoint.getShape());
             selectedPoint = newPoint.select();
             points.put(newPoint.getId(), newPoint);
 
             // add new edges
             maxEdgeId++;
-            Edge e1 = new Edge(parent, edgeShapeGroup, maxEdgeId, start,
-                    newPoint, showHelper);
+            Edge e1 = new Edge(renderLayer, parent, edgeShapeGroup, maxEdgeId,
+                    start, newPoint, showHelper);
 
             maxEdgeId++;
-            Edge e2 = new Edge(parent, edgeShapeGroup, maxEdgeId, newPoint,
-                    end, showHelper);
+            Edge e2 = new Edge(renderLayer, parent, edgeShapeGroup, maxEdgeId,
+                    newPoint, end, showHelper);
 
             // remove edge but remember connected Faces
             edgeShapeGroup.removeChild(edgeShapeGroup.getChildIndex(toDivide
@@ -930,8 +937,8 @@ public class FormContainer {
 
             // add new edges first edge reuses id of deleted
             maxEdgeId++;
-            Edge e = new Edge(parent, edgeShapeGroup, maxEdgeId, end, start,
-                    showHelper);
+            Edge e = new Edge(renderLayer, parent, edgeShapeGroup, maxEdgeId,
+                    end, start, showHelper);
             for (Integer i : conFaces) {
                 e.addConnectedFace(i);
             }

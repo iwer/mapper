@@ -29,8 +29,10 @@ import java.util.HashSet;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,8 +68,9 @@ public class Face extends Shape implements PConstants, IFace {
      * @param helper_
      *            the helper_
      */
-    public Face(PApplet parent_, PShape shapeGroup_, int id_, boolean helper_) {
-        super(parent_, shapeGroup_, id_);
+    public Face(PGraphics layer, PApplet parent_, PShape shapeGroup_, int id_,
+            boolean helper_) {
+        super(layer, parent_, shapeGroup_, id_);
         helper = helper_;
         connectedEdges = new ArrayList<IEdge>();
         points = new HashSet<IPoint>();
@@ -149,18 +152,18 @@ public class Face extends Shape implements PConstants, IFace {
     int getColor(boolean config, boolean selected, boolean mouseOverColor) {
         int c;
         if (!config) {
-            c = parent.color(100, 100, 100);
+            c = layer.color(100, 100, 100);
         } else if (mouseOver() && mouseOverColor) {
             if (selected) {
-                c = parent.color(200, 200, 200);
+                c = layer.color(200, 200, 200);
             } else {
-                c = parent.color(150, 150, 150);
+                c = layer.color(150, 150, 150);
             }
         } else {
             if (selected) {
-                c = parent.color(180, 180, 180);
+                c = layer.color(180, 180, 180);
             } else {
-                c = parent.color(100, 100, 100);
+                c = layer.color(100, 100, 100);
             }
         }
         return c;
@@ -218,12 +221,12 @@ public class Face extends Shape implements PConstants, IFace {
         sortVertices();
 
         int c = getColor(true, false, false);
-        shapeGroup = parent.createShape(GROUP);
+        shapeGroup = layer.createShape(GROUP);
         shapeGroup.setName("Face_" + id);
-        parent.pushMatrix();
+        layer.pushMatrix();
 
         // parent.shapeMode(CORNERS);
-        shape = parent.createShape();
+        shape = layer.createShape();
         shape.beginShape();
         for (PVector v : vertices) {
             shape.vertex(v.x, v.y);
@@ -231,21 +234,21 @@ public class Face extends Shape implements PConstants, IFace {
         shape.endShape(CLOSE);
         shape.setStrokeWeight((float) .5);
         shape.setFill(true);
-        shape.setFill(parent.color(100));
-        shape.setStroke(parent.color(255, 255, 255));
+        shape.setFill(layer.color(100));
+        shape.setStroke(layer.color(255, 255, 255));
         shape.setName("Face_" + id + "_area");
         shapeGroup.addChild(shape);
 
         // parent.shapeMode(CENTER);
-        grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
+        grabber = layer.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
         grabber.setFill(true);
-        grabber.setFill(parent.color(0, 255, 255));
+        grabber.setFill(layer.color(0, 255, 255));
         grabber.setStroke(c);
         grabber.setName("Face_" + id + "_grabber");
-        shapeGroup.addChild(grabber);
+        // shapeGroup.addChild(grabber);
         // shapeGroup.setFill(c);
-        parent.popMatrix();
+        layer.popMatrix();
 
     }
 
@@ -313,8 +316,8 @@ public class Face extends Shape implements PConstants, IFace {
     boolean mouseOver() {
         PVector dist = new PVector();
 
-        dist.x = centroid.x - parent.mouseX;
-        dist.y = centroid.y - parent.mouseY;
+        dist.x = centroid.x - MapperControlFrame.projectorMouseX;
+        dist.y = centroid.y - MapperControlFrame.projectorMouseY;
 
         float len2 = dist.magSq();
         if (len2 < 100) {

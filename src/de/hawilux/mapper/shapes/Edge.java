@@ -27,8 +27,10 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -68,9 +70,9 @@ public class Edge extends Shape implements PConstants, IEdge {
      * @param helper_
      *            the helper_
      */
-    public Edge(PApplet parent_, PShape shapeGroup_, int id_, IPoint a_,
-            IPoint b_, boolean helper_) {
-        super(parent_, shapeGroup_, id_);
+    public Edge(PGraphics layer, PApplet parent_, PShape shapeGroup_, int id_,
+            IPoint a_, IPoint b_, boolean helper_) {
+        super(layer, parent_, shapeGroup_, id_);
         a = a_;
         b = b_;
         connectedFaces = new ArrayList<Integer>();
@@ -177,18 +179,18 @@ public class Edge extends Shape implements PConstants, IEdge {
             boolean mouseOverColor) {
         int c;
         if (!config) {
-            c = parent.color(255, 255, 255);
+            c = layer.color(255, 255, 255);
         } else if (mouseOver() && mouseOverColor) {
             if (selected) {
-                c = parent.color(0, 255, 255);
+                c = layer.color(0, 255, 255);
             } else {
-                c = parent.color(255, 255, 0);
+                c = layer.color(255, 255, 0);
             }
         } else {
             if (selected) {
-                c = parent.color(0, 255, 0);
+                c = layer.color(0, 255, 0);
             } else {
-                c = parent.color(255, 255, 255);
+                c = layer.color(255, 255, 255);
             }
         }
         return c;
@@ -235,13 +237,13 @@ public class Edge extends Shape implements PConstants, IEdge {
     @Override
     public void displayHelper(boolean selected, boolean mouseOverColor) {
         int c = getColor(true, selected, mouseOverColor);
-        parent.pushMatrix();
-        parent.fill(c);
-        parent.text(id, labelpos.x, labelpos.y);
+        layer.pushMatrix();
+        layer.fill(c);
+        layer.text(id, labelpos.x, labelpos.y);
         arrow.setStroke(c);
-        parent.shapeMode(CORNERS);
-        parent.shape(arrow);
-        parent.popMatrix();
+        layer.shapeMode(CORNERS);
+        layer.shape(arrow);
+        layer.popMatrix();
     }
 
     /*
@@ -251,7 +253,7 @@ public class Edge extends Shape implements PConstants, IEdge {
      */
     @Override
     public void update() {
-        shapeGroup = parent.createShape(GROUP);
+        shapeGroup = layer.createShape(GROUP);
         PVector normal = new PVector(a.getCentroid().x, a.getCentroid().y);
 
         normal.sub(b.getCentroid());
@@ -264,11 +266,11 @@ public class Edge extends Shape implements PConstants, IEdge {
         labelpos.x = centroid.x + normal.x;
         labelpos.y = centroid.y + normal.y;
 
-        parent.pushMatrix();
+        layer.pushMatrix();
         int c = getColor(true, false, mouseOver());
 
         // parent.shapeMode(CENTER);
-        grabber = parent.createShape(RECT, centroid.x, centroid.y, 5, 5);
+        grabber = layer.createShape(RECT, centroid.x, centroid.y, 5, 5);
         grabber.setStrokeWeight(1);
         // shapeGroup.addChild(grabber);
 
@@ -281,7 +283,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         arrowend2.y = PApplet.lerp(a.getY(), b.getY(), .4f) - normal.y;
 
         // parent.shapeMode(CORNERS);
-        shape = parent.createShape();
+        shape = layer.createShape();
         shape.beginShape(LINES);
         shape.stroke(255);
         shape.strokeCap(ROUND);
@@ -295,7 +297,7 @@ public class Edge extends Shape implements PConstants, IEdge {
         shapeGroup.addChild(shape);
 
         // parent.shapeMode(CORNERS);
-        arrow = parent.createShape();
+        arrow = layer.createShape();
         arrow.beginShape(LINES);
         arrow.stroke(255);
         arrow.strokeCap(ROUND);
@@ -308,7 +310,7 @@ public class Edge extends Shape implements PConstants, IEdge {
 
         // shapeGroup.addChild(arrow);
 
-        parent.popMatrix();
+        layer.popMatrix();
     }
 
     /**
@@ -319,8 +321,8 @@ public class Edge extends Shape implements PConstants, IEdge {
     protected boolean mouseOver() {
         PVector dist = new PVector();
 
-        dist.x = centroid.x - parent.mouseX;
-        dist.y = centroid.y - parent.mouseY;
+        dist.x = centroid.x - MapperControlFrame.projectorMouseX;
+        dist.y = centroid.y - MapperControlFrame.projectorMouseY;
 
         float len2 = dist.magSq();
         if (len2 < 100) {

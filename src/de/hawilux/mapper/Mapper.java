@@ -26,6 +26,8 @@ import java.util.HashMap;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import controlP5.ControlEvent;
@@ -47,6 +49,14 @@ public class Mapper implements PConstants {
 
     /** The parent PApplet. */
     PApplet               parent;
+
+    /**
+     * OffscreenBuffer to draw everything but the menu on, so it can be copied
+     * to the Projektor Window
+     */
+    private PGraphics     offscreenBuffer;
+
+    PImage                remoteImage;
 
     /** The gui. */
     Gui                   gui;
@@ -92,8 +102,11 @@ public class Mapper implements PConstants {
     /** The effect mode flag. */
     boolean               effectMode  = false;
 
+    // int tgtWidth, tgtHeigth;
+    // float scaleRatio;
+
     /** The version string. */
-    String                version     = "0.1.0";
+    String                version     = "0.1.3_alpha";
 
     /** The Mapper instance. */
     static Mapper         theInstance;
@@ -107,9 +120,10 @@ public class Mapper implements PConstants {
      *            the ControlP5 object
      * @return single instance of Mapper
      */
-    public static Mapper getInstance(PApplet parent, ControlP5 cp5) {
+    public static Mapper getInstance(PApplet parent, ControlP5 cp5,
+            PImage target) {
         if (theInstance == null) {
-            theInstance = new Mapper(parent, cp5);
+            theInstance = new Mapper(parent, cp5, target);
         }
         return theInstance;
     }
@@ -141,11 +155,40 @@ public class Mapper implements PConstants {
      * @param cp5
      *            the ControlP5 object
      */
-    private Mapper(PApplet parent, ControlP5 cp5) {
+    private Mapper(PApplet parent, ControlP5 cp5, PImage target) {
         this.parent = parent;
 
+        setOffscreenBuffer(parent.createGraphics(target.width, target.height,
+                P2D));
+        offscreenBuffer.smooth(8);
+
+        // int projektorScreenWidth = target.width;
+        // int projektorScreenHeight = target.height;
+        // int controlScreenWidth = parent.width;
+        // int controlScreenHeight = parent.height;
+        //
+        // float widthRatio = (float) projektorScreenWidth / controlScreenWidth;
+        // float heightRatio = (float) projektorScreenHeight /
+        // controlScreenHeight;
+        //
+        // PApplet.println("WidthRatio: " + widthRatio + " HeightRatio: "
+        // + heightRatio);
+        //
+        // if (widthRatio >= heightRatio) {
+        // tgtWidth = (int) (projektorScreenWidth / widthRatio);
+        // tgtHeigth = (int) (projektorScreenHeight / widthRatio);
+        // scaleRatio = widthRatio;
+        // } else {
+        // tgtWidth = (int) (projektorScreenWidth / heightRatio);
+        // tgtHeigth = (int) (projektorScreenHeight / heightRatio);
+        // scaleRatio = heightRatio;
+        // }
+        //
+        // PApplet.println("tgtWidth: " + tgtWidth + " tgtHeigth: " +
+        // tgtHeigth);
+
         fileChooser = new FileChooser(parent);
-        formContainer = new FormContainer(parent);
+        formContainer = new FormContainer(parent, getOffscreenBuffer());
         cursor = new Cursor(parent);
 
         gui = new Gui(parent, cp5);
@@ -158,11 +201,11 @@ public class Mapper implements PConstants {
         cm = new ColorManager(parent);
         cm.addControllersToGui(gui);
 
-        parent.registerMethod("draw", this);
-        // parent.registerMethod("dispose", this);
-        parent.registerMethod("mouseEvent", this);
-        parent.registerMethod("keyEvent", this);
-        parent.registerMethod("post", this);
+        // parent.registerMethod("draw", this);
+        // // parent.registerMethod("dispose", this);
+        // parent.registerMethod("mouseEvent", this);
+        // parent.registerMethod("keyEvent", this);
+        // parent.registerMethod("post", this);
 
         showGUI = true;
         showConsole = false;
@@ -195,18 +238,36 @@ public class Mapper implements PConstants {
      * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void draw() {
-        parent.blendMode(ADD);
+
         if (setupMode) {
-            formContainer.display(setupMode);
-            cursor.display();
+            getOffscreenBuffer().beginDraw();
+            getOffscreenBuffer().blendMode(ADD);
+            getOffscreenBuffer().background(0);
+            formContainer.display(getOffscreenBuffer(), setupMode);
+            cursor.display(getOffscreenBuffer());
+            getOffscreenBuffer().endDraw();
         } else if (effectMode) {
+            getOffscreenBuffer().beginDraw();
+            getOffscreenBuffer().blendMode(ADD);
+            getOffscreenBuffer().background(0);
             for (AbstractEffect ae : effectManager.effectsEnabled.values()) {
                 ae.update();
                 ae.display();
             }
+            getOffscreenBuffer().endDraw();
+
         } else {
-            formContainer.display(setupMode);
+            getOffscreenBuffer().beginDraw();
+            getOffscreenBuffer().blendMode(ADD);
+            offscreenBuffer.background(0);
+            formContainer.display(getOffscreenBuffer(), setupMode);
+            getOffscreenBuffer().endDraw();
         }
+
+        remoteImage = getOffscreenBuffer().get();
+
+        // parent.image(getOffscreenBuffer(), (parent.width - tgtWidth) / 2,
+        // (parent.height - tgtHeigth) / 2, tgtWidth, tgtHeigth);
     }
 
     /**
@@ -348,6 +409,18 @@ public class Mapper implements PConstants {
 
     public ColorManager getColorManager() {
         return cm;
+    }
+
+    public PImage getRemoteImage() {
+        return remoteImage;
+    }
+
+    public PGraphics getOffscreenBuffer() {
+        return offscreenBuffer;
+    }
+
+    public void setOffscreenBuffer(PGraphics offscreenBuffer) {
+        this.offscreenBuffer = offscreenBuffer;
     }
 
     /**

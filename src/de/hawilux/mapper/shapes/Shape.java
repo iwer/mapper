@@ -2,28 +2,32 @@ package de.hawilux.mapper.shapes;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
 
 public abstract class Shape {
     /** The parent. */
-    protected PApplet parent;
+    protected PApplet   parent;
 
     /** The shape. */
-    protected PShape  shapeGroup;
+    protected PShape    shapeGroup;
 
     /** The shape. */
-    protected PShape  shape;
+    protected PShape    shape;
+
+    protected PGraphics layer;
 
     /** The id. */
-    protected int     id;
+    protected int       id;
 
     /** The centroid. */
-    protected PVector centroid;
+    protected PVector   centroid;
 
-    public Shape(PApplet parent_, PShape shapeGroup_, int id_) {
+    public Shape(PGraphics layer_, PApplet parent_, PShape shapeGroup_, int id_) {
         parent = parent_;
-        shapeGroup = parent.createShape(PConstants.GROUP);
+        layer = layer_;
+        shapeGroup = layer.createShape(PConstants.GROUP);
         id = id_;
         centroid = new PVector();
     }

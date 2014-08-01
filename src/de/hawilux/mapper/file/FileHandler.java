@@ -78,11 +78,10 @@ public class FileHandler {
             int y = positionElement.getInt("y");
 
             PApplet.println("Point: " + id + " # " + x + "," + y);
-            Point p = new Point(data.getParent(), data.getPointShapeGroup(),
-                    id, x, y, data.isShowHelper());
+            Point p = new Point(data.renderLayer, data.getParent(),
+                    data.getPointShapeGroup(), id, x, y, data.isShowHelper());
             data.getPointShapeGroup().addChild(p.getShape());
             data.getPoints().put(id, p);
-            data.getParent();
             data.setMaxPointId(PApplet.max(id, data.getMaxPointId()));
         }
 
@@ -99,9 +98,9 @@ public class FileHandler {
             int b = pointElement.getInt("b");
 
             PApplet.println("Edge: " + id + " # " + a + "," + b);
-            Edge e = new Edge(data.getParent(), data.getEdgeShapeGroup(), id,
-                    data.getPoints().get(a), data.getPoints().get(b),
-                    data.isShowHelper());
+            Edge e = new Edge(data.renderLayer, data.getParent(),
+                    data.getEdgeShapeGroup(), id, data.getPoints().get(a), data
+                            .getPoints().get(b), data.isShowHelper());
             data.getEdgeShapeGroup().addChild(e.getShape());
             data.getEdges().put(id, e);
             data.setMaxEdgeId(PApplet.max(id, data.getMaxEdgeId()));
@@ -112,8 +111,8 @@ public class FileHandler {
             XML idElement = facesElement[i].getChild("id");
             int id = idElement.getInt("id");
 
-            Face f = new Face(data.getParent(), data.getFaceShapeGroup(), id,
-                    data.isShowHelper());
+            Face f = new Face(data.renderLayer, data.getParent(),
+                    data.getFaceShapeGroup(), id, data.isShowHelper());
 
             XML[] edgeElements = facesElement[i].getChildren("edge");
             for (int j = 0; j < edgeElements.length; j++) {
