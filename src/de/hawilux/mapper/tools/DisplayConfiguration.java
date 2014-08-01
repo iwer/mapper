@@ -1,4 +1,4 @@
-package de.hawilux.mapper;
+package de.hawilux.mapper.tools;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;

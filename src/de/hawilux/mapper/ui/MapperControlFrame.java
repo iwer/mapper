@@ -26,6 +26,10 @@ public class MapperControlFrame extends PApplet {
     public int        h;
 
     Mapper            mapper;
+    public Mapper getMapper() {
+        return mapper;
+    }
+
     private ControlP5 cp5;
     Minim             minim;
     AudioInput        in;
@@ -58,7 +62,7 @@ public class MapperControlFrame extends PApplet {
 
     public void setup() {
         size(w, h, P2D);
-        frameRate(25);
+        //frameRate(25);
 
         projektorScreenWidth = background.width;
         projektorScreenHeight = background.height;
@@ -91,15 +95,15 @@ public class MapperControlFrame extends PApplet {
         cp5 = new ControlP5(this);
         mapper = Mapper.getInstance(this, cp5, background);
 
-         VolumeCircleActivationTexture.getInstance(this, in);
-        
-         mapper.registerEffect(new EdgeWalkEffect(this, mapper.getEdges()));
-         mapper.registerEffect(new EdgeFadeEffect(this, mapper.getEdges()));
-         mapper.registerEffect(new EdgeHitEffect(this, mapper.getEdges()));
-         mapper.registerEffect(new FaceFadeEffect(this, mapper.getFaces()));
-         mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
-         mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
-         .getEdges()));
+//         VolumeCircleActivationTexture.getInstance(this, in);
+//        
+//         mapper.registerEffect(new EdgeWalkEffect(this, mapper.getEdges()));
+//         mapper.registerEffect(new EdgeFadeEffect(this, mapper.getEdges()));
+//         mapper.registerEffect(new EdgeHitEffect(this, mapper.getEdges()));
+//         mapper.registerEffect(new FaceFadeEffect(this, mapper.getFaces()));
+//         mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
+//         mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
+//         .getEdges()));
 //         mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
 //         mapper.getColorManager()));
 //         mapper.registerEffect(new FaceAudioEffect(this, mapper.getFaces()));
@@ -110,6 +114,10 @@ public class MapperControlFrame extends PApplet {
         registerMethod("mouseEvent", mapper);
         registerMethod("keyEvent", mapper);
         registerMethod("post", mapper);
+    }
+
+    public boolean isInitialized() {
+        return init;
     }
 
     public void draw() {
@@ -149,9 +157,6 @@ public class MapperControlFrame extends PApplet {
         if (mouseY < topBottomMarginWidth()) {
             projectorMouseY = 0;
         }
-
-        PApplet.println(mainMouseX + "," + mainMouseY + " ~ " + projectorMouseX
-                + "," + projectorMouseY);
     }
 
     private int leftRightMarginWidth() {

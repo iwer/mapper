@@ -1,4 +1,4 @@
-package de.hawilux.mapper;
+package de.hawilux.mapper.tools;
 
 import processing.core.PApplet;
 import controlP5.Button;
