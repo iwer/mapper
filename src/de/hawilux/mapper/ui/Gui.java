@@ -28,6 +28,7 @@ import controlP5.Accordion;
 import controlP5.CColor;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Group;
 import controlP5.Println;
 import controlP5.RadioButton;
@@ -164,11 +165,11 @@ public class Gui implements IGui {
         mainAccordion = cp5.addAccordion("acc").setPosition(10, 40)
                 .setWidth(100).addItem(fileGroup).addItem(setupGroup)
                 .addItem(effectGroup);
-        mainAccordion.setCollapseMode(Accordion.SINGLE);
+        mainAccordion.setCollapseMode(ControlP5Constants.SINGLE);
 
         effectAccordion = cp5.addAccordion("effAcc")
                 .setPosition(parent.width - 210, 40).setWidth(100);
-        mainAccordion.setCollapseMode(Accordion.SINGLE);
+        mainAccordion.setCollapseMode(ControlP5Constants.SINGLE);
 
         // console
         consoleTextArea = cp5.addTextarea("console")
@@ -208,6 +209,7 @@ public class Gui implements IGui {
      * 
      * @return the cp5
      */
+    @Override
     public ControlP5 getCp5() {
         return cp5;
     }
@@ -217,6 +219,7 @@ public class Gui implements IGui {
      * 
      * @return the c
      */
+    @Override
     public CColor getC() {
         return c;
     }
@@ -262,6 +265,7 @@ public class Gui implements IGui {
      * 
      * @return the effect accordion
      */
+    @Override
     public Accordion getEffectAccordion() {
         return effectAccordion;
     }

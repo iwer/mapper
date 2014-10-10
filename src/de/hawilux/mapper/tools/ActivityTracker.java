@@ -3,8 +3,8 @@ package de.hawilux.mapper.tools;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Group;
-import controlP5.Label;
 import controlP5.Slider;
 import controlP5.Textlabel;
 import processing.core.PApplet;
@@ -33,6 +33,7 @@ public class ActivityTracker implements GuiElement {
     Slider             bufLenSlider;
     Slider             mixValueSlider;
     Textlabel          mixLabel;
+    Slider             movementMultiplier;
 
     Slider             movementDisplay;
     Slider             volumeDisplay;
@@ -61,13 +62,13 @@ public class ActivityTracker implements GuiElement {
                 .setPosition(0, 10).setColor(gui_.getC()).setRange(0, 1)
                 .setValue(normMov).moveTo(grpEffectParams);
 
-        volumeDisplay = gui_.getCp5().addSlider("VolumeActivity").setPosition(0, 35)
-                .setColor(gui_.getC()).setRange(0, 1).setValue(normVol)
-                .moveTo(grpEffectParams);
+        volumeDisplay = gui_.getCp5().addSlider("VolumeActivity")
+                .setPosition(0, 35).setColor(gui_.getC()).setRange(0, 1)
+                .setValue(normVol).moveTo(grpEffectParams);
 
-        activityDisplay = gui_.getCp5().addSlider("MixedActivity").setPosition(0, 60)
-                .setColor(gui_.getC()).setRange(0, 1).setValue(activity)
-                .moveTo(grpEffectParams);
+        activityDisplay = gui_.getCp5().addSlider("MixedActivity")
+                .setPosition(0, 60).setColor(gui_.getC()).setRange(0, 1)
+                .setValue(activity).moveTo(grpEffectParams);
 
         mixValueSlider = gui_.getCp5().addSlider("MixValue").setPosition(0, 85)
                 .setColor(gui_.getC()).setRange(0, 1).setValue(mixValue)
@@ -75,7 +76,7 @@ public class ActivityTracker implements GuiElement {
         mixValueSlider.addCallback(new CallbackListener() {
             @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     mixValue = mixValueSlider.getValue();
                 }
             }
@@ -85,18 +86,30 @@ public class ActivityTracker implements GuiElement {
                 .setText("Volume   <->   Movement").setPosition(0, 110)
                 .setColor(gui_.getC()).moveTo(grpEffectParams);
 
-        bufLenSlider = gui_.getCp5().addSlider("Slowness").setPosition(0, 135)
+        movementMultiplier = gui_.getCp5().addSlider("MovementMultiply")
+                .setPosition(0, 135).setColor(gui_.getC()).setRange(1, 20)
+                .setValue(mq.multiplier).moveTo(grpEffectParams);
+        movementMultiplier.addCallback(new CallbackListener() {
+            @Override
+            public void controlEvent(CallbackEvent theEvent) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
+                    mq.multiplier = (int) movementMultiplier.getValue();
+                }
+            }
+        });
+
+        bufLenSlider = gui_.getCp5().addSlider("Slowness").setPosition(0, 160)
                 .setColor(gui_.getC()).setRange(1, 100).setValue(bufLen)
                 .moveTo(grpEffectParams);
         bufLenSlider.addCallback(new CallbackListener() {
             @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     bufLen = (int) bufLenSlider.getValue();
                 }
             }
         });
-        grpEffectParams.setBackgroundHeight(165);
+        grpEffectParams.setBackgroundHeight(190);
 
     }
 
@@ -109,8 +122,8 @@ public class ActivityTracker implements GuiElement {
         normMov = normClamp(avg(movementBuf), 0, 100);
         normVol = normClamp(avg(volumeBuf), 0, 100);
 
-        PApplet.println("Mov: " + String.format("%.2f", normMov) + " - Vol: "
-                + String.format("%.2f", normVol) + " - Act: " + activity);
+        // PApplet.println("Mov: " + String.format("%.2f", normMov) + " - Vol: "
+        // + String.format("%.2f", normVol) + " - Act: " + activity);
         activity = (normMov * mixValue + normVol * (1 - mixValue));
 
         if (movementDisplay != null) {
@@ -123,7 +136,7 @@ public class ActivityTracker implements GuiElement {
             activityDisplay.setValue(activity);
         }
     }
-    
+
     float avg(float[] buffer) {
         float avg = 0;
         for (int i = 0; i < bufLen; i++) {

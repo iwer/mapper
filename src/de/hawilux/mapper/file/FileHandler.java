@@ -182,6 +182,7 @@ public class FileHandler {
 
         // let's set a filter (which returns true if file's extension is .xml)
         java.io.FilenameFilter xmlFilter = new java.io.FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 return name.toLowerCase().endsWith(".xml");
             }

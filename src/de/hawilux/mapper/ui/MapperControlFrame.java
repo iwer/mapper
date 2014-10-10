@@ -10,22 +10,16 @@ import ddf.minim.AudioInput;
 import ddf.minim.Minim;
 import de.hawilux.mapper.Mapper;
 import de.hawilux.mapper.effects.AbstractEffect;
-import de.hawilux.mapper.effects.jma.EdgeFadeEffect;
-import de.hawilux.mapper.effects.jma.EdgeHitEffect;
-import de.hawilux.mapper.effects.jma.EdgeTextureActivationEffect;
-import de.hawilux.mapper.effects.jma.EdgeWalkEffect;
-import de.hawilux.mapper.effects.jma.FaceFadeEffect;
-import de.hawilux.mapper.effects.jma.FaceHitEffect;
-import de.hawilux.mapper.effects.jma.VolumeCircleActivationTexture;
 import de.hawilux.mapper.net.OscStack;
 
 public class MapperControlFrame extends PApplet {
-    PApplet           parent;
-    PImage            background;
-    public int        w;
-    public int        h;
+    PApplet    parent;
+    PImage     background;
+    public int w;
+    public int h;
 
-    Mapper            mapper;
+    Mapper     mapper;
+
     public Mapper getMapper() {
         return mapper;
     }
@@ -60,9 +54,10 @@ public class MapperControlFrame extends PApplet {
         this.h = theHeight;
     }
 
+    @Override
     public void setup() {
         size(w, h, P2D);
-        //frameRate(25);
+        // frameRate(25);
 
         projektorScreenWidth = background.width;
         projektorScreenHeight = background.height;
@@ -95,18 +90,18 @@ public class MapperControlFrame extends PApplet {
         cp5 = new ControlP5(this);
         mapper = Mapper.getInstance(this, cp5, background);
 
-//         VolumeCircleActivationTexture.getInstance(this, in);
-//        
-//         mapper.registerEffect(new EdgeWalkEffect(this, mapper.getEdges()));
-//         mapper.registerEffect(new EdgeFadeEffect(this, mapper.getEdges()));
-//         mapper.registerEffect(new EdgeHitEffect(this, mapper.getEdges()));
-//         mapper.registerEffect(new FaceFadeEffect(this, mapper.getFaces()));
-//         mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
-//         mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
-//         .getEdges()));
-//         mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
-//         mapper.getColorManager()));
-//         mapper.registerEffect(new FaceAudioEffect(this, mapper.getFaces()));
+        // VolumeCircleActivationTexture.getInstance(this, in);
+        //
+        // mapper.registerEffect(new EdgeWalkEffect(this, mapper.getEdges()));
+        // mapper.registerEffect(new EdgeFadeEffect(this, mapper.getEdges()));
+        // mapper.registerEffect(new EdgeHitEffect(this, mapper.getEdges()));
+        // mapper.registerEffect(new FaceFadeEffect(this, mapper.getFaces()));
+        // mapper.registerEffect(new FaceHitEffect(this, mapper.getFaces()));
+        // mapper.registerEffect(new EdgeTextureActivationEffect(this, mapper
+        // .getEdges()));
+        // mapper.registerEffect(new ColorTestEffect(this, mapper.getEdges(),
+        // mapper.getColorManager()));
+        // mapper.registerEffect(new FaceAudioEffect(this, mapper.getFaces()));
         init = true;
 
         registerMethod("draw", mapper);
@@ -120,10 +115,11 @@ public class MapperControlFrame extends PApplet {
         return init;
     }
 
-    public void registerEffect(AbstractEffect effect){
+    public void registerEffect(AbstractEffect effect) {
         mapper.registerEffect(effect);
     }
-    
+
+    @Override
     public void draw() {
         background(10, 10, 50);
         image(mapper.getOffscreenBuffer(), leftRightMarginWidth(),
@@ -133,10 +129,12 @@ public class MapperControlFrame extends PApplet {
         text("Faces:  " + mapper.getFaces().size(), 400, 30);
     }
 
+    @Override
     public void mouseMoved() {
         updateVirtualMouses();
     }
 
+    @Override
     public void mouseDragged() {
         updateVirtualMouses();
     }
