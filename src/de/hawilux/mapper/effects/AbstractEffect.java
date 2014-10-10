@@ -28,6 +28,7 @@ import processing.core.PGraphics;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Group;
 import controlP5.Toggle;
 import de.hawilux.mapper.Mapper;
@@ -111,7 +112,7 @@ public abstract class AbstractEffect implements GuiElement {
         useColorManager.addCallback(new CallbackListener() {
             @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     useCM = useColorManager.getState();
                 }
             }
@@ -141,8 +142,9 @@ public abstract class AbstractEffect implements GuiElement {
     protected void addEnableToggle(String effectPrefix) {
         if (gui != null) {
             tglEnabled = gui.addEffectToggle(name, new CallbackListener() {
+                @Override
                 public void controlEvent(CallbackEvent theEvent) {
-                    if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                    if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                         float value = theEvent.getController().getValue();
                         if (value == 0) {
                             try {

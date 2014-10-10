@@ -212,7 +212,7 @@ ${line}
 	<target name="generate.javadoc" if="is.normal">
 	  	<!-- create the java reference of the library -->
 		<javadoc bottom="Processing library ${project.name} by ${author.name}. ${library.copyright}" 
-				classpath="${classpath.local.location}/core.jar;{project.bin};${sketchbook.location}/libraries/controlP5/library/controlP5.jar;${classpath.localaddon.location}/minim/library/minim.jar;${sketchbook.location}/libraries/oscP5/library/oscP5.jar" 
+				classpath="${classpath.local.location}/core.jar;{project.bin};${sketchbook.location}/libraries/controlP5/library/controlP5.jar;${classpath.localaddon.location}/minim/library/minim.jar;${sketchbook.location}/libraries/oscP5/library/oscP5.jar;${sketchbook.location}/libraries/opencv_processing/library/opencv_processing.jar;${sketchbook.location}/libraries/opencv_processing/library/opencv-245.jar" 
 				destdir="${project.tmp}/${project.name}/reference" 
 				verbose="false" 
 				stylesheetfile="resources/stylesheet.css" 

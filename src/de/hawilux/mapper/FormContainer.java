@@ -37,6 +37,7 @@ import controlP5.Button;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.RadioButton;
 import controlP5.Toggle;
 import de.hawilux.mapper.file.FileHandler;
@@ -222,8 +223,9 @@ public class FormContainer {
         btnNewConfig = gui.getCp5().addButton("newConfig").setPosition(10, 10)
                 .setColor(gui.getC()).moveTo(gui.getFileGroup());
         btnNewConfig.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     clear();
                 }
             }
@@ -233,16 +235,18 @@ public class FormContainer {
                 .moveTo(gui.getFileGroup());
         // callback to open filechooser
         btnLoadConfig.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     PApplet.println("LOAD");
                     fileChooser.addFileChooser("load");
                     // add action callback
                     fileChooser.getActionButton().addCallback(
                             new CallbackListener() {
+                                @Override
                                 public void controlEvent(
                                         CallbackEvent theActionEvent) {
-                                    if (theActionEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                                    if (theActionEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                                         fileHandler.loadXML(fileChooser
                                                 .getFilename());
                                     }
@@ -255,16 +259,18 @@ public class FormContainer {
                 .setPosition(10, 60).setColor(gui.getC())
                 .moveTo(gui.getFileGroup());
         btnSaveConfig.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     PApplet.println("SAVE");
                     fileChooser.addFileChooser("save");
                     // add action callback
                     fileChooser.getActionButton().addCallback(
                             new CallbackListener() {
+                                @Override
                                 public void controlEvent(
                                         CallbackEvent theActionEvent) {
-                                    if (theActionEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                                    if (theActionEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                                         fileHandler.saveXML(fileChooser
                                                 .getFilename());
                                     }
@@ -335,11 +341,12 @@ public class FormContainer {
      */
     public void addSetupGui(Gui gui) {
         tglHelper = gui.getCp5().addToggle("showHelper").setPosition(10, 10)
-                .setColor(gui.getC()).setMode(ControlP5.SWITCH).setValue(true)
+                .setColor(gui.getC()).setMode(ControlP5Constants.SWITCH).setValue(true)
                 .moveTo(gui.getSetupGroup());
         tglHelper.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     if (theEvent.getController().getValue() == 1.0) {
                         setHelper(true);
                     } else {
@@ -357,8 +364,9 @@ public class FormContainer {
                 .setPosition(10, 2).setColor(gui.getC())
                 .moveTo(gui.getSetupEditGroup());
         btnDeleteSelected.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     deleteSelected();
                 }
             }
@@ -366,8 +374,9 @@ public class FormContainer {
         btnSubdivide = gui.getCp5().addButton("subdivide").setPosition(10, 27)
                 .setColor(gui.getC()).hide().moveTo(gui.getSetupEditGroup());
         btnSubdivide.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     subdivideEdge();
                 }
             }
@@ -375,8 +384,9 @@ public class FormContainer {
         btnSwitchDir = gui.getCp5().addButton("switchdir").setPosition(10, 52)
                 .setColor(gui.getC()).hide().moveTo(gui.getSetupEditGroup());
         btnSwitchDir.addCallback(new CallbackListener() {
+            @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     switchEdgeDirection();
                 }
             }

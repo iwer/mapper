@@ -7,6 +7,7 @@ import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ColorPicker;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Group;
 import controlP5.Slider;
 import de.hawilux.mapper.ui.Gui;
@@ -48,7 +49,7 @@ public class ColorManager implements GuiElement {
 
                     @Override
                     public void controlEvent(CallbackEvent theEvent) {
-                        if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                        if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[0] = c;
                             color1.setColor(new CColor(c, c, c,
@@ -62,7 +63,7 @@ public class ColorManager implements GuiElement {
 
                     @Override
                     public void controlEvent(CallbackEvent theEvent) {
-                        if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                        if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[1] = c;
                             color2.setColor(new CColor(c, c, c,
@@ -76,7 +77,7 @@ public class ColorManager implements GuiElement {
 
                     @Override
                     public void controlEvent(CallbackEvent theEvent) {
-                        if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                        if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[2] = c;
                             color3.setColor(new CColor(c, c, c,
@@ -90,7 +91,7 @@ public class ColorManager implements GuiElement {
 
                     @Override
                     public void controlEvent(CallbackEvent theEvent) {
-                        if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                        if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                             int c = colorPicker.getColorValue();
                             colors[3] = c;
                             color4.setColor(new CColor(c, c, c,
