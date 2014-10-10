@@ -2,10 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/processing2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/controlP5"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/minim"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OscP5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/processing221"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv_processing"/>
 	<classpathentry kind="output" path="resources/code"/>
 </classpath>

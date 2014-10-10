@@ -26,15 +26,20 @@ import java.util.HashMap;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import controlP5.ControlEvent;
 import controlP5.ControlListener;
 import controlP5.ControlP5;
+import ddf.minim.AudioInput;
 import de.hawilux.mapper.effects.AbstractEffect;
 import de.hawilux.mapper.shapes.IEdge;
 import de.hawilux.mapper.shapes.IFace;
 import de.hawilux.mapper.shapes.IPoint;
+import de.hawilux.mapper.tools.ActivityTracker;
+import de.hawilux.mapper.tools.ColorManager;
 import de.hawilux.mapper.ui.Cursor;
 import de.hawilux.mapper.ui.FileChooser;
 import de.hawilux.mapper.ui.Gui;
@@ -47,6 +52,14 @@ public class Mapper implements PConstants {
 
     /** The parent PApplet. */
     PApplet               parent;
+
+    /**
+     * OffscreenBuffer to draw everything but the menu on, so it can be copied
+     * to the Projektor Window
+     */
+    private PGraphics     offscreenBuffer;
+
+    PImage                remoteImage;
 
     /** The gui. */
     Gui                   gui;
@@ -68,6 +81,8 @@ public class Mapper implements PConstants {
     EffectManager         effectManager;
 
     ColorManager          cm;
+    ActivityTracker       at;
+    // ActivityTracker at;
 
     /**
      * The cursor. To find your mouse on the projection
@@ -92,8 +107,11 @@ public class Mapper implements PConstants {
     /** The effect mode flag. */
     boolean               effectMode  = false;
 
+    // int tgtWidth, tgtHeigth;
+    // float scaleRatio;
+
     /** The version string. */
-    String                version     = "0.1.0";
+    String                version     = "0.1.3_alpha";
 
     /** The Mapper instance. */
     static Mapper         theInstance;
@@ -107,9 +125,10 @@ public class Mapper implements PConstants {
      *            the ControlP5 object
      * @return single instance of Mapper
      */
-    public static Mapper getInstance(PApplet parent, ControlP5 cp5) {
+    public static Mapper getInstance(PApplet parent, ControlP5 cp5,
+            PImage target) {
         if (theInstance == null) {
-            theInstance = new Mapper(parent, cp5);
+            theInstance = new Mapper(parent, cp5, target);
         }
         return theInstance;
     }
@@ -141,11 +160,15 @@ public class Mapper implements PConstants {
      * @param cp5
      *            the ControlP5 object
      */
-    private Mapper(PApplet parent, ControlP5 cp5) {
+    private Mapper(PApplet parent, ControlP5 cp5, PImage target) {
         this.parent = parent;
 
+        setOffscreenBuffer(parent.createGraphics(target.width, target.height,
+                P2D));
+        offscreenBuffer.smooth(8);
+
         fileChooser = new FileChooser(parent);
-        formContainer = new FormContainer(parent);
+        formContainer = new FormContainer(parent, getOffscreenBuffer());
         cursor = new Cursor(parent);
 
         gui = new Gui(parent, cp5);
@@ -155,14 +178,7 @@ public class Mapper implements PConstants {
 
         effectManager = new EffectManager(this);
 
-        cm = new ColorManager(parent);
-        cm.addControllersToGui(gui);
-
-        parent.registerMethod("draw", this);
-        // parent.registerMethod("dispose", this);
-        parent.registerMethod("mouseEvent", this);
-        parent.registerMethod("keyEvent", this);
-        parent.registerMethod("post", this);
+        // addColorManager();
 
         showGUI = true;
         showConsole = false;
@@ -175,6 +191,19 @@ public class Mapper implements PConstants {
                 + version
                 + ", Copyright (C) 2014 Iwer Petersen.\n\n"
                 + "  Keys:\n  h - help\n  m - show/hide menus\n  c - show/hide console\n\nHave fun mapping!");
+
+    }
+
+    public ColorManager addColorManager() {
+        cm = new ColorManager(parent);
+        cm.addControllersToGui(gui);
+        return cm;
+    }
+
+    public ActivityTracker addActivityTracker(AudioInput in) {
+        at = new ActivityTracker(parent, in);
+        at.addControllersToGui(gui);
+        return at;
 
     }
 
@@ -195,18 +224,39 @@ public class Mapper implements PConstants {
      * Gets called by processing, DO NOT CALL YOURSELF!
      */
     public void draw() {
-        parent.blendMode(ADD);
+
         if (setupMode) {
-            formContainer.display(setupMode);
-            cursor.display();
+            getOffscreenBuffer().beginDraw();
+            getOffscreenBuffer().blendMode(ADD);
+            getOffscreenBuffer().background(0);
+            formContainer.display(getOffscreenBuffer(), setupMode);
+            cursor.display(getOffscreenBuffer());
+            getOffscreenBuffer().endDraw();
         } else if (effectMode) {
+            getOffscreenBuffer().beginDraw();
+            getOffscreenBuffer().blendMode(ADD);
+            getOffscreenBuffer().background(0);
             for (AbstractEffect ae : effectManager.effectsEnabled.values()) {
+                if (cm != null && at != null) {
+                    ae.setCurrentColor(cm.getColor(at.getActivityFaktor()));
+                }
                 ae.update();
                 ae.display();
             }
+            getOffscreenBuffer().endDraw();
+
         } else {
-            formContainer.display(setupMode);
+            getOffscreenBuffer().beginDraw();
+            getOffscreenBuffer().blendMode(ADD);
+            offscreenBuffer.background(0);
+            formContainer.display(getOffscreenBuffer(), setupMode);
+            getOffscreenBuffer().endDraw();
         }
+
+        remoteImage = getOffscreenBuffer().get();
+
+        // parent.image(getOffscreenBuffer(), (parent.width - tgtWidth) / 2,
+        // (parent.height - tgtHeigth) / 2, tgtWidth, tgtHeigth);
     }
 
     /**
@@ -350,6 +400,18 @@ public class Mapper implements PConstants {
         return cm;
     }
 
+    public PImage getRemoteImage() {
+        return remoteImage;
+    }
+
+    public PGraphics getOffscreenBuffer() {
+        return offscreenBuffer;
+    }
+
+    public void setOffscreenBuffer(PGraphics offscreenBuffer) {
+        this.offscreenBuffer = offscreenBuffer;
+    }
+
     /**
      * Register effect.
      * 
@@ -427,6 +489,7 @@ public class Mapper implements PConstants {
          * 
          * @see controlP5.ControlListener#controlEvent(controlP5.ControlEvent)
          */
+        @Override
         public void controlEvent(ControlEvent theEvent) {
             if (theEvent.isGroup()) {
                 PApplet.println("got an event from group "

@@ -50,6 +50,7 @@ public class ArrowButton implements ControllerView<Button>, PConstants {
         return arrow;
     }
 
+    @Override
     public void display(PApplet theApplet, Button theButton) {
         theApplet.pushMatrix();
         if (theButton.isInside()) {

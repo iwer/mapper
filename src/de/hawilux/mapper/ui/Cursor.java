@@ -23,6 +23,7 @@
 package de.hawilux.mapper.ui;
 
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -52,15 +53,18 @@ public class Cursor {
     /**
      * Display.
      */
-    public void display() {
-        parent.stroke(255, 255, 0);
-        parent.noFill();
-        parent.strokeWeight(lineWidth);
+    public void display(PGraphics layer) {
+        layer.stroke(255, 255, 0);
+        layer.noFill();
+        layer.strokeWeight(lineWidth);
         // x-line
-        parent.line(0, parent.mouseY, parent.width, parent.mouseY);
+        layer.line(0, MapperControlFrame.projectorMouseY, layer.width,
+                MapperControlFrame.projectorMouseY);
         // y-line
-        parent.line(parent.mouseX, 0, parent.mouseX, parent.height);
+        layer.line(MapperControlFrame.projectorMouseX, 0,
+                MapperControlFrame.projectorMouseX, layer.height);
         // circle
-        parent.ellipse(parent.mouseX, parent.mouseY, circleSize, circleSize);
+        layer.ellipse(MapperControlFrame.projectorMouseX,
+                MapperControlFrame.projectorMouseY, circleSize, circleSize);
     }
 }

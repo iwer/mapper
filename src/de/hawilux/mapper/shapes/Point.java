@@ -27,8 +27,10 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PShape;
 import processing.core.PVector;
+import de.hawilux.mapper.ui.MapperControlFrame;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -67,9 +69,9 @@ public class Point extends Shape implements PConstants, IPoint {
      * @param helper_
      *            the helper_
      */
-    public Point(PApplet parent_, PShape shapeGroup_, int id_, int x_, int y_,
-            boolean helper_) {
-        super(parent_, shapeGroup_, id_);
+    public Point(PGraphics layer, PApplet parent_, PShape shapeGroup_, int id_,
+            int x_, int y_, boolean helper_) {
+        super(layer, parent_, shapeGroup_, id_);
         centroid = new PVector(x_, y_);
         // selected = false;
         showHelper = helper_;
@@ -111,18 +113,18 @@ public class Point extends Shape implements PConstants, IPoint {
     int getColor(boolean config, boolean selected, boolean mouseOverColor) {
         int c = 0;
         if (!config) {
-            c = parent.color(255, 0, 0);
+            c = layer.color(255, 0, 0);
         } else if (mouseOver(centroid) && mouseOverColor) {
             if (selected) {
-                c = parent.color(0, 255, 255);
+                c = layer.color(0, 255, 255);
             } else {
-                c = parent.color(255, 255, 0);
+                c = layer.color(255, 255, 0);
             }
         } else {
             if (selected) {
-                c = parent.color(0, 255, 0);
+                c = layer.color(0, 255, 0);
             } else {
-                c = parent.color(255, 0, 0);
+                c = layer.color(255, 0, 0);
             }
         }
         return c;
@@ -165,10 +167,10 @@ public class Point extends Shape implements PConstants, IPoint {
     @Override
     public void displayHelper(boolean selected, boolean mouseOverColor) {
         int c = getColor(true, selected, mouseOverColor);
-        parent.pushMatrix();
-        parent.fill(c);
-        parent.text(id, centroid.x - 20, centroid.y - 20);
-        parent.popMatrix();
+        layer.pushMatrix();
+        layer.fill(c);
+        layer.text(id, centroid.x - 20, centroid.y - 20);
+        layer.popMatrix();
     }
 
     /**
@@ -179,7 +181,8 @@ public class Point extends Shape implements PConstants, IPoint {
      * @return true, if successful
      */
     boolean mouseOver(PVector v) {
-        PVector dist = new PVector(parent.mouseX, parent.mouseY);
+        PVector dist = new PVector(MapperControlFrame.projectorMouseX,
+                MapperControlFrame.projectorMouseY);
         dist.sub(v);
         if (dist.magSq() > RADIUS2 * 1.5) {
             return false;
@@ -209,8 +212,8 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void move() {
-        centroid.x = parent.mouseX;
-        centroid.y = parent.mouseY;
+        centroid.x = MapperControlFrame.projectorMouseX;
+        centroid.y = MapperControlFrame.projectorMouseY;
         updated = true;
     }
 
@@ -233,14 +236,14 @@ public class Point extends Shape implements PConstants, IPoint {
      */
     @Override
     public void update() {
-        shapeGroup = parent.createShape(GROUP);
+        shapeGroup = layer.createShape(GROUP);
         int c = getColor(true, true, mouseOver(centroid));
         // TODO: Shapes need a method that updates their color in each frame.
         // To do this without changing the shapeGroup the need to be accessed
         // by shapeGroup.getChild(<indexOfSubShape>)
-        parent.pushMatrix();
+        layer.pushMatrix();
         // parent.shapeMode(CENTER);
-        circle = parent.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
+        circle = layer.createShape(ELLIPSE, 0, 0, RADIUS, RADIUS);
         circle.setFill(false);
         circle.setStrokeWeight(3);
         circle.setStroke(c);
@@ -250,7 +253,7 @@ public class Point extends Shape implements PConstants, IPoint {
         shapeGroup.addChild(circle);
 
         // parent.shapeMode(CORNER);
-        shape = parent.createShape(ELLIPSE, 0, 0, 2, 2);
+        shape = layer.createShape(ELLIPSE, 0, 0, 2, 2);
         shape.setFill(false);
         shape.setStrokeWeight(3);
         shape.setStroke(c);
@@ -258,7 +261,7 @@ public class Point extends Shape implements PConstants, IPoint {
         shape.translate(centroid.x - 1, centroid.y - 1);
         shape.setName("Point_" + id + "_dot");
         shapeGroup.addChild(shape);
-        parent.popMatrix();
+        layer.popMatrix();
 
     }
 

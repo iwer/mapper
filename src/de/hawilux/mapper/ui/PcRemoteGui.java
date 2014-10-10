@@ -7,6 +7,7 @@ import controlP5.CColor;
 import controlP5.CallbackEvent;
 import controlP5.CallbackListener;
 import controlP5.ControlP5;
+import controlP5.ControlP5Constants;
 import controlP5.Group;
 import controlP5.RadioButton;
 import controlP5.Textlabel;
@@ -171,7 +172,7 @@ public class PcRemoteGui implements IGui {
                 .moveTo(setupGroup);
 
         tglHelper = cp5.addToggle("showHelper").setPosition(10, 10).setColor(c)
-                .setMode(ControlP5.SWITCH).setValue(true).moveTo(setupGroup);
+                .setMode(ControlP5Constants.SWITCH).setValue(true).moveTo(setupGroup);
 
         rdbSelectMode = cp5.addRadioButton("selectmode").setPosition(10, 2)
                 .setColor(c).setNoneSelectedAllowed(false).addItem("points", 1)
@@ -191,11 +192,11 @@ public class PcRemoteGui implements IGui {
         mainAccordion = cp5.addAccordion("acc").setPosition(10, 40)
                 .setWidth(100).addItem(fileGroup).addItem(setupGroup)
                 .addItem(effectGroup);
-        mainAccordion.setCollapseMode(Accordion.SINGLE);
+        mainAccordion.setCollapseMode(ControlP5Constants.SINGLE);
 
         effectAccordion = cp5.addAccordion("effAcc")
                 .setPosition(parent.width - 210, 40).setWidth(100);
-        mainAccordion.setCollapseMode(Accordion.SINGLE);
+        mainAccordion.setCollapseMode(ControlP5Constants.SINGLE);
     }
 
     public RadioButton getRdbSelectMode() {
@@ -214,7 +215,7 @@ public class PcRemoteGui implements IGui {
         t.addCallback(new CallbackListener() {
             @Override
             public void controlEvent(CallbackEvent theEvent) {
-                if (theEvent.getAction() == ControlP5.ACTION_BROADCAST) {
+                if (theEvent.getAction() == ControlP5Constants.ACTION_BROADCAST) {
                     oscStack.sendOscMessage("/mapper/effect/"
                             + theEvent.getController().getName(),
                             (int) theEvent.getController().getValue());
@@ -289,6 +290,7 @@ public class PcRemoteGui implements IGui {
      * 
      * @return the effect accordion
      */
+    @Override
     public Accordion getEffectAccordion() {
         return effectAccordion;
     }
